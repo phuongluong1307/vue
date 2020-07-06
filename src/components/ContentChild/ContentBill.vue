@@ -167,14 +167,6 @@ export default {
     };
   },
   methods: {
-    handleCal: function(status, index) {
-      let vm = this;
-      if (status) {
-        vm.$parent.data[index].quantity += 1;
-      } else if (vm.$parent.data[index].quantity > 1) {
-        vm.$parent.data[index].quantity -= 1;
-      }
-    },
     deleteItem: function(index){
       let vm = this;
       vm.$parent.data.splice(index, 1)
@@ -182,6 +174,7 @@ export default {
     handleAdjust: function(item){
       let vm = this;
       vm.obj = item;
+      vm.$refs.AdjustProduct.quantity = item.quantity.toString();
       vm.$refs.AdjustProduct.open = true;
     }
   },
@@ -197,7 +190,7 @@ export default {
     },
     handleQuantity: function(){
       let vm = this;
-      let total = null;
+      let total = 0;
       vm.$parent.data.map((item,index) => {
         total += item.quantity;
       });

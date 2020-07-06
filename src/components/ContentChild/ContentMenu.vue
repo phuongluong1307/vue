@@ -4,7 +4,7 @@
       <div class="block_1_2">
         <div class="block_1_2_1">
           <div class="btn_bars">
-            <button><i class="fas fa-bars"></i></button>
+            <button @click.stop.prevent="$refs.ExtendBar.open = true"><i class="fas fa-bars"></i></button>
           </div>
           <div class="name_store">Soul Master</div>
         </div>
@@ -73,11 +73,16 @@
         </div>
       </div>
     </div>
+    <ExtendBar ref="ExtendBar"></ExtendBar>
   </div>
 </template>
 
 <script>
+import ExtendBar from './ExtendBar';
 export default {
+  components: {
+    ExtendBar
+  },
   name: "ContentMenu",
   data() {
     return {
@@ -240,7 +245,9 @@ export default {
       if(!div){
         alert('Không có sản phẩm theo tên đã chọn')
       }else{
-        div.scrollIntoView(true)
+        div.scrollIntoView({
+          behavior: 'smooth'
+        })
       }
     }
   },

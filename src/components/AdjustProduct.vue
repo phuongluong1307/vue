@@ -40,27 +40,78 @@
                 <div class="list_table table_1" :class="{active: promotion === 'quantity'}">
                     <div class="table_1_1">
                         <div class="table_1_1_1">
-                            <span>{{$parent.obj.quantity}}</span>
+                            <span>{{quantity}}</span>
                         </div>
                         <div class="table_1_1_2">
-                            <div class="grid_item" v-for="item in 9" :key="item">
-                                <button>{{item}}</button>
-                            </div>
-                            <div class="grid_item"><button>.</button></div>
-                            <div class="grid_item"><button>0</button></div>
-                            <div class="grid_item"><button><i class="fas fa-times"></i></button></div>
+                            <Calculator @handleCal="handleCal" @handleMinus="handleMinus"></Calculator>
                         </div>
                     </div>
                 </div>
                 <div class="list_table table_2" :class="{active: promotion === 'tax'}">
-
+                    <ul>
+                        <li>
+                            <label class="label_radio">GST 10%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="label_radio">GST 10%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="label_radio">CSGT 10%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="label_radio">SGST 10%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="label_radio">VAT 14%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="label_radio">VAT 10%
+                                <input type="radio" name="radio">
+                                <span class="check_tax"></span>
+                            </label>
+                        </li>
+                    </ul>
                 </div>
                 <div class="list_table table_3" :class="{active: promotion === 'discount'}">
-
+                    <div class="table_3_1">
+                        <div class="table_3_1_1">
+                            <div class="discount_type">
+                                <label class="label_radio" :class="{active: discount === '%'}">%
+                                    <input type="radio" name="radio"  v-model="discount" @click.stop.prevent="handleDiscount('%')">
+                                    <span class="check_discount"></span>
+                                </label>
+                                <label class="label_radio" :class="{active: discount === 'VND'}">VND
+                                    <input type="radio" name="radio" v-model="discount" @click.stop.prevent="handleDiscount('VND')">
+                                    <span class="check_discount"></span>
+                                </label>
+                            </div>
+                            <div class="discount_price">
+                                <span>{{number}}</span>
+                            </div>
+                        </div>
+                        <div class="table_3_1_2">
+                            <Calculator @handleCal="handleCal" @handleMinus="handleMinus"></Calculator>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form_btn">
-                <button>Cập nhật</button>
+                <button @click.stop.prevent="handleUpdate">Cập nhật</button>
             </div>
         </div>
         <div class="mask" @click.stop.prevent="open = false"></div>
@@ -68,13 +119,20 @@
 </template>
 
 <script>
+import Calculator from './Calculator';
 export default {
     name: 'AdjustProduct',
+    components: {
+        Calculator
+    },
     data: function(){
         return {
             open: false,
             promotion: 'quantity',
-            name_promotion: 'quantity'
+            name_promotion: 'quantity',
+            discount: '%',
+            quantity: null,
+            number: '0'
         }
     },
     methods: {
@@ -82,9 +140,57 @@ export default {
             let vm = this;
             vm.name_promotion = item
             vm.promotion = vm.name_promotion;
+        },
+        handleDiscount: function(dc){
+            let vm = this;
+            if(dc === '%'){
+                vm.discount = dc
+            }else{
+                vm.discount = dc
+            }
+        },
+        handleCal: function(val){
+            let vm = this;
+            if(vm.promotion === 'quantity'){
+                if(vm.quantity == "0"){
+                    vm.quantity = vm.quantity.replace("0", '');
+                }
+                vm.quantity = "" + vm.quantity + val;
+            }else if(vm.promotion === 'discount'){
+                if(vm.number == "0"){
+                    vm.number = vm.number.replace("0", '');
+                }
+                vm.number = "" + vm.number + val;
+            }
+        },
+        handleMinus: function(){
+            let vm = this;
+            let index = vm.quantity.length;
+            if(vm.promotion === 'quantity'){
+                vm.quantity = vm.quantity.substring(0, index - 1);
+                if(vm.quantity == ""){
+                    vm.quantity = "" + 0;
+                }
+            }else if(vm.promotion === 'discount'){
+                let findIndex = vm.number.length;
+                vm.number = vm.number.substring(0, findIndex - 1);
+                if(vm.number == ''){
+                    vm.number = "" + 0;
+                }
+            }
+        },
+        handleUpdate: function(){
+            let vm = this;
         }
     },
+    computed: {
+        
+    },
     created: function(){
+        let vm = this;
+    },
+    watch: {
+        
     }
 }
 </script>
