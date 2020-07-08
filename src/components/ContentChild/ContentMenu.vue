@@ -4,7 +4,7 @@
       <div class="block_1_2">
         <div class="block_1_2_1">
           <div class="btn_bars">
-            <button @click.stop.prevent="$refs.ExtendBar.open = true"><i class="fas fa-bars"></i></button>
+            <button @click.stop.prevent="$refs.ExtendBar.open = true"><i class="fal fa-bars"></i></button>
           </div>
           <div class="name_store">Soul Master</div>
         </div>
@@ -12,11 +12,11 @@
       <div class="block_1_1">
         <div class="block_1_1_1">
           <div class="search">
-            <i class="fas fa-search" @click.stop.prevent="handleInput"></i>
+            <i class="fal fa-search" @click.stop.prevent="handleInput"></i>
             <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" />
           </div>
           <div class="scan">
-            <button class="btn_scan active"><i class="fas fa-qrcode"></i></button>
+            <button class="btn_scan active"><i class="fal fa-barcode-read"></i></button>
           </div>
         </div>
       </div>
@@ -29,16 +29,16 @@
           </div>
           <div class="item item_filter">
             <p>Cà phê</p>
-            <span><i class="fas fa-times"></i></span>
+            <span><i class="fal fa-times"></i></span>
           </div>
           <div class="item item_filter">
             <p>Cà phê</p>
-            <span><i class="fas fa-times"></i></span>
+            <span><i class="fal fa-times"></i></span>
           </div>
         </div>
         <div class="block_2_1_2">
           <a class="filter">
-            <i class="fas fa-list-ul"></i>
+            <i class="fal fa-filter"></i>
             Lọc sản phẩm
           </a>
         </div>
@@ -57,10 +57,11 @@
           </div>
           <div class="product">
             <div class="list_item" v-for="word in sortAlpha" :class="'list_' + word" :key="word">
+              <div class="title">{{word}}</div>
               <div class="item" v-for="item in handleAlpha(word)" :key="item.id" @click.stop.prevent="handleItem(item)">
                 <div class="item_box">
                   <div class="item_image">
-                    <img :src="item.image" style="width:100%; height:100%;" />
+                    <img :src="item.image" style="width:80px; height:80px;" />
                   </div>
                   <div class="item_info">
                     <p class="name">{{item.name_product}}</p>
@@ -74,14 +75,17 @@
       </div>
     </div>
     <ExtendBar ref="ExtendBar"></ExtendBar>
+    <CompOrder ref="CompOrder" :data="$parent.data"></CompOrder>
   </div>
 </template>
 
 <script>
 import ExtendBar from './ExtendBar';
+import CompOrder from '../CompOrder';
 export default {
   components: {
-    ExtendBar
+    ExtendBar,
+    CompOrder
   },
   name: "ContentMenu",
   data() {
@@ -111,7 +115,21 @@ export default {
           price: 15000
         },
         {
+          id: 21,
+          name_product: "Cà phê sữa",
+          image:
+            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
+          price: 15000
+        },
+        {
           id: 3,
+          name_product: "Cà phê sữa",
+          image:
+            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
+          price: 15000
+        },
+        {
+          id: 33,
           name_product: "Cà phê sữa",
           image:
             "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",

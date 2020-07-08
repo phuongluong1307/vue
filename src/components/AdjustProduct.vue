@@ -3,7 +3,7 @@
         <div class="box">
             <div class="detail_product">
                 <div class="image_product">
-                    <img :src="$parent.obj.image" style="width:100px; height:150px;" alt="">
+                    <img :src="$parent.obj.image" style="width:100px; height:100%;" alt="">
                 </div>
                 <div class="info_product">
                     <div class="info_item">
@@ -101,7 +101,8 @@
                                 </label>
                             </div>
                             <div class="discount_price">
-                                <span>{{number}}</span>
+                                <label>{{number}}</label>
+                                <input type="number" id="number_percent" v-model="number" style="display:none;">
                             </div>
                         </div>
                         <div class="table_3_1_2">
@@ -157,6 +158,13 @@ export default {
                 }
                 vm.quantity = "" + vm.quantity + val;
             }else if(vm.promotion === 'discount'){
+                if(vm.discount == '%'){
+                    if(vm.discount === '%'){
+                        let input = document.getElementById('number_percent');
+                        input.min = "1";
+                        input.max = "100";
+                    };
+                };
                 if(vm.number == "0"){
                     vm.number = vm.number.replace("0", '');
                 }
@@ -181,6 +189,7 @@ export default {
         },
         handleUpdate: function(){
             let vm = this;
+            
         }
     },
     computed: {

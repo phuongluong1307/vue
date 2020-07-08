@@ -2,7 +2,7 @@
   <div class="add_customer" :class="open ? 'open' : ''">
       <div class="box">
           <div class="top">
-              <div class="back" @click.stop.prevent="closePopup"><i class="fas fa-arrow-left"></i></div>
+              <div class="back" @click.stop.prevent="closePopup"><i class="fal fa-arrow-left"></i></div>
               <div class="title">Khách hàng mới</div>
           </div>
           <div class="center">
@@ -19,7 +19,7 @@
                   <input type="text" name="name" placeholder="Ghi chú">
               </div>
               <div class="form-group">
-                  <button><i class="fas fa-plus"></i>Thêm chi tiết</button>
+                  <button><i class="fal fa-plus"></i>Thêm chi tiết</button>
               </div>
           </div>
           <div class="bottom">

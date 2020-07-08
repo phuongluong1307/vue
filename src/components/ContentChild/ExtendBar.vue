@@ -9,9 +9,9 @@
             <div class="center">
                 <div class="list">
                     <ul>
-                        <li><i class="fas fa-th-large"></i><span>Dashboard</span></li>
+                        <li @click.stop.prevent="handleDashboard"><i class="fas fa-th-large"></i><span>Trang chủ</span></li>
                         <li><i class="fas fa-shopping-basket"></i><span>Danh sách bán hàng</span></li>
-                        <li><i class="fas fa-receipt"></i><span>Đơn đặt hàng</span></li>
+                        <li @click.stop.prevent="handleOrder"><i class="fas fa-receipt"></i><span>Đơn đặt hàng</span></li>
                     </ul>
                 </div>
             </div>
@@ -27,13 +27,23 @@
 <script>
 export default {
     name: 'ExtendBar',
+    props: ['status'],
     data: function(){
         return {
             open: false
         }
     },
     methods: {
-        
+        handleOrder: function(){
+            let vm = this;
+            vm.$parent.$refs.CompOrder.open = true;
+            vm.open = false;
+        },
+        handleDashboard: function(){
+            let vm = this;
+            vm.open = false;
+            vm.$parent.$refs.CompOrder.open = false;
+        }
     },
     created: function(){
         

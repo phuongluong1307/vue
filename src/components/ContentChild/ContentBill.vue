@@ -4,12 +4,12 @@
       <div class="block_1_1">
         <div class="block_tab">
           <ul>
-            <li>Tên nhân viên</li>
+            <li>Nguyễn Văn Tí</li>
           </ul>
         </div>
         <div class="block_bar">
           <button>
-            <i class="fas fa-ellipsis-h"></i>
+            <i class="fal fa-ellipsis-h"></i>
           </button>
         </div>
       </div>
@@ -20,11 +20,11 @@
           <div>
             <li class="tab">
               <a><span>#1</span></a>
-              <span class="close_tab"><i class="fas fa-times"></i></span>
+              <span class="close_tab"><i class="fal fa-times"></i></span>
             </li>
           </div>
           <li class="add_bill">
-            <a><i class="fas fa-plus"></i></a>
+            <a><i class="fal fa-plus"></i></a>
           </li>
         </ul>
       </div>
@@ -32,12 +32,12 @@
     <div class="block_2">
       <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true">
         <div class="block_2_1_member">
-          <i class="fas fa-user-circle"></i>
+          <i class="fal fa-user-circle"></i>
           <p>Thêm khách hàng</p>
         </div>
         <div class="block_2_1_button">
           <button class="plus_circle">
-            <i class="fas fa-plus-circle"></i>
+            <i class="fal fa-plus-circle"></i>
           </button>
         </div>
       </div>
@@ -45,7 +45,7 @@
     <div class="block_3" :class="{empty: $parent.data.length == 0}">
       <div class="block_3_bill">
         <div class="cart_empty" v-if="$parent.data.length == 0">
-          <i class="fas fa-shopping-cart"></i>
+          <i class="fal fa-shopping-cart"></i>
           <p>Không có sản phẩm trong giỏ hàng</p>
           <p>Vui lòng tìm và chọn sản phẩm thêm vào</p>
         </div>
@@ -53,7 +53,7 @@
           <div class="list_item">
             <div class="item" v-for="(item, index) in $parent.data" :key="index" @click.stop.prevent="handleAdjust(item)">
               <div class="delete" @click.stop.prevent="deleteItem(index)">
-                <i class="fas fa-times"></i>
+                <i class="fal fa-times"></i>
               </div>
               <div class="name">{{item.name_product}}</div>
               <div class="quantity">
@@ -87,7 +87,7 @@
         <div class="discount">
           <a>
             <p>Thêm giảm giá</p>
-            <i class="fas fa-plus-circle"></i>
+            <i class="fal fa-plus-circle"></i>
           </a>
         </div>
       </div>
@@ -138,21 +138,24 @@
     </div> -->
     <div class="block_6">
       <button class="provisional">Tạm tính</button>
-      <button class="pay">Thanh toán</button>
+      <button class="pay" @click.stop.prevent="openCharge">Thanh toán</button>
     </div>
     <CreateCustomer ref="CreateCustomer"></CreateCustomer>
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
+    <CompCharge :data="$parent.data" ref="CompCharge"></CompCharge>
   </div>
 </template>
 
 <script>
 import CreateCustomer from '../CreateCustomer';
 import AdjustProduct from '../AdjustProduct';
+import CompCharge from '../CompCharge';
 export default {
   name: "ContentBill",
   components: {
       CreateCustomer,
-      AdjustProduct
+      AdjustProduct,
+      CompCharge
     },
   data() {
     return {
@@ -176,6 +179,14 @@ export default {
       vm.obj = item;
       vm.$refs.AdjustProduct.quantity = item.quantity.toString();
       vm.$refs.AdjustProduct.open = true;
+    },
+    openCharge: function(){
+      let vm = this;
+      if(vm.$parent.data != ''){
+        vm.$refs.CompCharge.open = true;
+      }else{
+        alert('Vui lòng chọn sản phẩm!')
+      }
     }
   },
   computed: {

@@ -6,8 +6,8 @@ import router from './router'
 import { Plugin } from 'vue-fragment'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '@/assets/fonts/fontawesome-all.css'
 import '@/assets/css/index.css'
+import '@/assets/font-awesome/css/all.css'
 
 Vue.config.productionTip = false
 Vue.use(Plugin)
