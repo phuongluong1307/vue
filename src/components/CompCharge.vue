@@ -2,6 +2,7 @@
     <div class="charge" :class="open ? 'open' : ''">
         <div class="charge_back">
             <button @click.stop.prevent="open = false"><i class="fal fa-arrow-left"></i></button>
+            <h5>Thanh toán</h5>
         </div>
         <div class="charge_content">
             <div class="content_left">
@@ -13,7 +14,7 @@
                     </div>
                     <div class="left_1_2">
                         <div class="left_1_2_1">
-                            <p class="store_credit">Store Credits</p>
+                            <p class="store_credit">Số dư khả dụng</p>
                             <p class="txt">0</p>
                         </div>
                         <div class="left_1_2_2">
@@ -94,7 +95,7 @@
                     <div class="right_1_3"></div>
                 </div>
                 <div class="right_2">
-                    <button class="complete">Hoàn thành</button>
+                    <button class="complete" @click.stop.prevent="handlePrint">Hoàn thành</button>
                 </div>
             </div>
         </div>
@@ -114,6 +115,9 @@ export default {
         deleteItem: function(index){
             let vm = this;
             vm.$parent.deleteItem(index);
+        },
+        handlePrint: function(){
+            window.print();
         }
     },
     created: function(){

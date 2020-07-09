@@ -1,5 +1,5 @@
 <template>
-    <div class="extend_bar" :class="open ? 'open' : ''">
+    <div class="extend_bar" :class="$parent.open_menu_bar ? 'open' : ''">
         <div class="extend_box">
             <div class="top">
                 <div class="name_store">
@@ -16,11 +16,11 @@
                 </div>
             </div>
             <div class="bottom">
-                <button @click.stop.prevent="open = false">Đóng</button>
+                <button @click.stop.prevent="$parent.open_menu_bar = false">Đóng</button>
                 <button>Đăng xuất</button>
             </div>
         </div>
-        <div class="mask" @click.stop.prevent="open = false"></div>
+        <div class="mask" @click.stop.prevent="$parent.open_menu_bar = false"></div>
     </div>
 </template>
 
@@ -30,18 +30,19 @@ export default {
     props: ['status'],
     data: function(){
         return {
-            open: false
+            
         }
     },
     methods: {
         handleOrder: function(){
             let vm = this;
             vm.$parent.$refs.CompOrder.open = true;
-            vm.open = false;
+            vm.$parent.open_menu_bar = false;
         },
         handleDashboard: function(){
             let vm = this;
-            vm.open = false;
+            console.log(vm)
+            vm.$parent.open_menu_bar = false;
             vm.$parent.$refs.CompOrder.open = false;
         }
     },

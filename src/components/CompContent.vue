@@ -1,7 +1,7 @@
 <template>
-  <section class="content">
-    <ContentMenu @handleData="handleData"></ContentMenu>
-    <ContentBill></ContentBill>
+  <section class="content" :class="$parent.open_menu_bar ? 'menu-bar-opened' : ''">
+    <ContentMenu ref="ContentMenu" @handleData="handleData"></ContentMenu>
+    <ContentBill ref="ContentBill" ></ContentBill>
   </section>
 </template>
 

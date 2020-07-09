@@ -17,16 +17,25 @@
     <div class="block_5">
       <div class="block_5_1">
         <ul>
-          <div>
-            <li class="tab">
-              <a><span>#1</span></a>
+          <div v-for="item in totalBill" :key="item.bill">
+            <li class="tab" :class="item.bill == 'HD003' ? 'active' : ''">
+              <a><span>{{item.bill}}</span></a>
               <span class="close_tab"><i class="fal fa-times"></i></span>
             </li>
           </div>
-          <li class="add_bill">
-            <a><i class="fal fa-plus"></i></a>
+          <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="extend_list_bill = !extend_list_bill">
+            <a><i class="fal fa-plus"></i><span v-if="data.length > 4">{{data.length - totalBill.length}}</span></a>
           </li>
         </ul>
+        <div class="list_bill" :class="extend_list_bill ? 'extend_list_bill': ''">
+          <div class="bill" v-for="item in data" :key="item.bill">
+            <span>{{item.bill}}</span>
+            <span>100.000</span>
+          </div>
+          <div class="add_new_bill">
+            <button>Thêm mới</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="block_2">
@@ -159,14 +168,23 @@ export default {
     },
   data() {
     return {
-      data: 4,
+      data: [
+        {bill: 'HD001'},
+        {bill: 'HD002'},
+        {bill: 'HD003'},
+        {bill: 'HD004'},
+        {bill: 'HD005'},
+        {bill: 'HD006'},
+        {bill: 'HD007'}
+      ],
       tax: 0,
       obj: {
         name_product: '',
         image: '',
         price: '',
         quantity: ''
-      }
+      },
+      extend_list_bill: false
     };
   },
   methods: {
@@ -206,7 +224,21 @@ export default {
         total += item.quantity;
       });
       return total;
+    },
+    totalBill: function(){
+      let vm = this;
+      let bill;
+      if(window.innerWidth > 1439){
+        bill = vm.data.slice(0,5);
+      }else{
+        bill = vm.data.slice(0,4);
+      };
+      return bill;
     }
+  },
+  created: function(){
+    let vm = this;
+    
   },
   watch: {
     

@@ -4,7 +4,7 @@
       <div class="block_1_2">
         <div class="block_1_2_1">
           <div class="btn_bars">
-            <button @click.stop.prevent="$refs.ExtendBar.open = true"><i class="fal fa-bars"></i></button>
+            <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
           <div class="name_store">Soul Master</div>
         </div>
@@ -36,12 +36,20 @@
             <span><i class="fal fa-times"></i></span>
           </div>
         </div>
-        <div class="block_2_1_2">
+        <div class="block_2_1_2" @click.stop.prevent="extend_filter = !extend_filter">
           <a class="filter">
             <i class="fal fa-filter"></i>
             Lọc sản phẩm
           </a>
         </div>
+      </div>
+      <div class="extend_filter" :class="extend_filter ? 'extend-filter-opened' : ''">
+        <ul class="extend_filter_1">
+          <li>Nước ép</li>
+          <li>Sinh tố</li>
+          <li>Cà phê</li>
+          <li>Nước ngọt</li>
+        </ul>
       </div>
     </div>
     <div class="block_3" id="style-block3">
@@ -58,10 +66,10 @@
           <div class="product">
             <div class="list_item" v-for="word in sortAlpha" :class="'list_' + word" :key="word">
               <div class="title">{{word}}</div>
-              <div class="item" v-for="item in handleAlpha(word)" :key="item.id" @click.stop.prevent="handleItem(item)">
+              <div class="item" v-for="(item, index) in handleAlpha(word)" :key="item.id" @click.stop.prevent="handleItem(item)">
                 <div class="item_box">
-                  <div class="item_image">
-                    <img :src="item.image" style="width:80px; height:80px;" />
+                  <div class="item_image" :class="index%2==0 ? 'by-height' : 'by-width'">
+                    <img :src="item.image" />
                   </div>
                   <div class="item_info">
                     <p class="name">{{item.name_product}}</p>
@@ -74,18 +82,13 @@
         </div>
       </div>
     </div>
-    <ExtendBar ref="ExtendBar"></ExtendBar>
-    <CompOrder ref="CompOrder" :data="$parent.data"></CompOrder>
   </div>
 </template>
 
 <script>
-import ExtendBar from './ExtendBar';
-import CompOrder from '../CompOrder';
 export default {
   components: {
-    ExtendBar,
-    CompOrder
+    
   },
   name: "ContentMenu",
   data() {
@@ -214,7 +217,8 @@ export default {
         }
       ],
       alpha: [],
-      list_product: null
+      list_product: null,
+      extend_filter: false
     };
   },
   methods: {

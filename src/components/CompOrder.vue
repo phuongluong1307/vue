@@ -1,8 +1,8 @@
 <template>
-    <div class="order" :class="open ? 'open' : ''">
+    <div class="order" :class="{open: open, 'menu-bar-opened':$parent.open_menu_bar}">
         <div class="bar">
             <div class="btn_bars">
-                <button @click.stop.prevent="$parent.$refs.ExtendBar.open = true"><i class="fal fa-bars"></i></button>
+                <button @click.stop.prevent="$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
             </div>
             <div class="name_store">Đơn đặt hàng</div>
         </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="center">
                     <div class="list_item">
-                        <div class="item" v-for="item in data" :key="item.id">
+                        <div class="item" v-for="item in $parent.$refs.Content.data" :key="item.id">
                             <div class="image">
                                 <img :src="item.image">
                             </div>
@@ -135,7 +135,6 @@
 
 <script>
 export default {
-    props: ['data'],
     name: 'CompOrder',
     data: function(){
         return {
