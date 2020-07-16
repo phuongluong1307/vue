@@ -3,7 +3,7 @@
         <div class="box">
             <div class="detail_product">
                 <div class="image_product">
-                    <img :src="$parent.obj.image" style="width:100px; height:100%;" alt="">
+                    <img :src="$parent.obj.image" alt="">
                 </div>
                 <div class="info_product">
                     <div class="info_item">

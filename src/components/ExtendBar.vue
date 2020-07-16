@@ -41,7 +41,6 @@ export default {
         },
         handleDashboard: function(){
             let vm = this;
-            console.log(vm)
             vm.$parent.open_menu_bar = false;
             vm.$parent.$refs.CompOrder.open = false;
         }

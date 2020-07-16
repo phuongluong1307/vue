@@ -9,11 +9,107 @@
         <div class="content">
             <div class="content_left">
                 <div class="search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm">
+                    <div class="search_input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Tìm mã hóa đơn, tên hoặc sđt khách hàng">
+                    </div>
+                    <div class="search_advanced">
+                        <a @click.stop.prevent="$refs.FilterAdvanced.open = true">Tìm kiếm nâng cao</a>
+                    </div>
                 </div>
                 <div class="list_order">
                     <div class="item active">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="code_bill">
+                            <p>#123456</p>
+                            <p>123</p>
+                        </div>
+                        <div class="time_bill">
+                            <p>{{(new Date()).toLocaleDateString()}}</p>
+                            <p>Nguyễn Văn Tèo</p>
+                        </div>
+                        <div class="invoice">
+                            <p>Hóa đơn: #123456</p>
+                        </div>
+                    </div>
+                    <div class="item">
                         <div class="code_bill">
                             <p>#123456</p>
                             <p>123</p>
@@ -130,11 +226,16 @@
                 </div>
             </div>
         </div>
+        <FilterAdvanced ref="FilterAdvanced"></FilterAdvanced>
     </div>
 </template>
 
 <script>
+import FilterAdvanced from './FilterAdvanced';
 export default {
+    components: {
+        FilterAdvanced
+    },
     name: 'CompOrder',
     data: function(){
         return {

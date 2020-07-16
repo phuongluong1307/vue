@@ -1,5 +1,5 @@
 <template>
-  <div class="content_bill">
+  <div class="content_bill" id="billContent">
     <div class="block_1">
       <div class="block_1_1">
         <div class="block_tab">
@@ -7,33 +7,52 @@
             <li>Nguyễn Văn Tí</li>
           </ul>
         </div>
-        <div class="block_bar">
-          <button>
-            <i class="fal fa-ellipsis-h"></i>
-          </button>
+        <div class="sales">
+          <span class="sales_1">Đã bán trong ngày:</span>
+          <span class="sales_2">100.000</span>
         </div>
       </div>
     </div>
-    <div class="block_5">
+    <div class="block_5" id="bill">
       <div class="block_5_1">
         <ul>
-          <div v-for="item in totalBill" :key="item.bill">
-            <li class="tab" :class="item.bill == 'HD003' ? 'active' : ''">
+          <div v-for="(item, index) in totalBill" :key="index">
+            <li class="tab" :class="item.bill == tab ? 'active' : ''" @click.stop.prevent="handleTab(item)">
               <a><span>{{item.bill}}</span></a>
-              <span class="close_tab"><i class="fal fa-times"></i></span>
+              <span class="close_tab" @click.stop.prevent="handleDeleteBill(index)"><i class="fal fa-times"></i></span>
             </li>
           </div>
-          <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="extend_list_bill = !extend_list_bill">
+          <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="handleAddBill">
             <a><i class="fal fa-plus"></i><span v-if="data.length > 4">{{data.length - totalBill.length}}</span></a>
           </li>
         </ul>
         <div class="list_bill" :class="extend_list_bill ? 'extend_list_bill': ''">
+          <div class="list_bill_title">
+            <span>Hóa đơn</span>
+            <span>SL</span>
+            <span>Tổng tiền</span>
+          </div>
           <div class="bill" v-for="item in data" :key="item.bill">
             <span>{{item.bill}}</span>
+            <span>{{handleQuantity}}</span>
             <span>100.000</span>
           </div>
           <div class="add_new_bill">
-            <button>Thêm mới</button>
+            <button @click.stop.prevent="multiBill">Thêm mới</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal_delete" v-if="modalDelete">
+        <div class="box">
+          <div class="top">
+            <h6 class="title">Xóa bỏ hóa đơn</h6>
+          </div>
+          <div class="center">
+            <p>Bạn chắc chắn xóa hóa đơn này!</p>
+          </div>
+          <div class="bottom">
+            <button id="deleteBill">Xóa</button>
+            <button>Hủy</button>
           </div>
         </div>
       </div>
@@ -52,27 +71,7 @@
       </div>
     </div>
     <div class="block_3" :class="{empty: $parent.data.length == 0}">
-      <div class="block_3_bill">
-        <div class="cart_empty" v-if="$parent.data.length == 0">
-          <i class="fal fa-shopping-cart"></i>
-          <p>Không có sản phẩm trong giỏ hàng</p>
-          <p>Vui lòng tìm và chọn sản phẩm thêm vào</p>
-        </div>
-        <div class="cart_product" v-else>
-          <div class="list_item">
-            <div class="item" v-for="(item, index) in $parent.data" :key="index" @click.stop.prevent="handleAdjust(item)">
-              <div class="delete" @click.stop.prevent="deleteItem(index)">
-                <i class="fal fa-times"></i>
-              </div>
-              <div class="name">{{item.name_product}}</div>
-              <div class="quantity">
-                <span>{{item.quantity}}</span>
-              </div>
-              <div class="total">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SingleBill ref="SingleBill"></SingleBill>
     </div>
     <div class="block_4" v-if="$parent.data.length > 0">
       <div class="block_4_1">
@@ -94,57 +93,13 @@
           </div>
         </div>
         <div class="discount">
-          <a>
+          <a @click.stop.prevent="$refs.ModalDiscount.open = true">
             <p>Thêm giảm giá</p>
             <i class="fal fa-plus-circle"></i>
           </a>
         </div>
       </div>
     </div>
-    <!-- <div class="block_5">
-      <div class="block_5_discount">
-        <div class="form-group">
-          <div class="found_user">
-            <i class="fas fa-search"></i>
-            <input type="text" class="form-control" placeholder="Tìm khách hàng" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="discount">
-            <label>Giảm giá:</label>
-            <input type="text" placeholder="Nhập ở đây..." />
-            <button>Đồng ý</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="total">
-            <label>
-              <strong>Tổng tiền:</strong>
-            </label>
-            <div>{{ handleTotal ? handleTotal : 0 }}</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="paying">
-            <div>
-              <label>
-                <span>Hình thức thanh toán:</span>
-                <span>Tiền mặt</span>
-              </label>
-            </div>
-            <div class="payment">
-              <input type="text" />
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="note">
-            <i class="fas fa-pencil-alt"></i>
-            <input type="text" class="form-control" placeholder="Ghi chú" />
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="block_6">
       <button class="provisional">Tạm tính</button>
       <button class="pay" @click.stop.prevent="openCharge">Thanh toán</button>
@@ -152,6 +107,7 @@
     <CreateCustomer ref="CreateCustomer"></CreateCustomer>
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
     <CompCharge :data="$parent.data" ref="CompCharge"></CompCharge>
+    <ModalDiscount ref="ModalDiscount"></ModalDiscount>
   </div>
 </template>
 
@@ -159,23 +115,23 @@
 import CreateCustomer from '../CreateCustomer';
 import AdjustProduct from '../AdjustProduct';
 import CompCharge from '../CompCharge';
+import ModalDiscount from '../ModalDiscount';
+import SingleBill from './SingleBill';
 export default {
   name: "ContentBill",
   components: {
       CreateCustomer,
       AdjustProduct,
-      CompCharge
+      CompCharge,
+      ModalDiscount,
+      SingleBill
     },
   data() {
     return {
       data: [
-        {bill: 'HD001'},
-        {bill: 'HD002'},
-        {bill: 'HD003'},
-        {bill: 'HD004'},
-        {bill: 'HD005'},
-        {bill: 'HD006'},
-        {bill: 'HD007'}
+        {
+          bill: "HD001"
+        }
       ],
       tax: 0,
       obj: {
@@ -184,20 +140,12 @@ export default {
         price: '',
         quantity: ''
       },
-      extend_list_bill: false
+      extend_list_bill: false,
+      tab: 'HD001',
+      modalDelete: false
     };
   },
   methods: {
-    deleteItem: function(index){
-      let vm = this;
-      vm.$parent.data.splice(index, 1)
-    },
-    handleAdjust: function(item){
-      let vm = this;
-      vm.obj = item;
-      vm.$refs.AdjustProduct.quantity = item.quantity.toString();
-      vm.$refs.AdjustProduct.open = true;
-    },
     openCharge: function(){
       let vm = this;
       if(vm.$parent.data != ''){
@@ -205,6 +153,70 @@ export default {
       }else{
         alert('Vui lòng chọn sản phẩm!')
       }
+    },
+    scrollToFixed: function(){
+      let vm = this;
+      let content_bill = document.getElementById("billContent");
+      content_bill.onscroll = function(){
+        let pageBill = content_bill.scrollTop;
+        let bill = document.getElementById('bill');
+        if(pageBill > bill.offsetTop){
+          bill.classList.add("sticky");
+        }else{
+          bill.classList.remove("sticky")
+        }
+      };
+    },
+    handleAddBill: function(){
+      let vm = this;
+      if(vm.data.length > 4){
+        vm.extend_list_bill = !vm.extend_list_bill;
+      }else{
+        vm.multiBill();
+      };
+    },
+    multiBill: function(){
+      let vm = this;
+      for(let i = 0; i < vm.data.length; i++){
+        let number = vm.data[i].bill.substr(3,2);
+        let k = i + 1;
+        let j = number - k;
+        if(j > 0){
+          let h = k < 10 ? "" + "0" + k : "" + k;
+          let new_bill = {
+            bill: `HD0${h}`
+          };
+          vm.data.push(new_bill);
+          vm.data.sort(function(a,b){
+            let number_a = a.bill.substr(3,2);
+            let number_b = b.bill.substr(3,2);
+            if(number_a < number_b) return -1;
+            if(number_a > number_b) return 1;
+            return 0;
+          });
+          break;
+        }else if(i == vm.data.length - 1){
+          let o = vm.data.length;
+          o = o < 9 ? "" + "0" + (o + 1) : "" + (o + 1);
+          let new_bill = {
+            bill: `HD0${o}`
+          };
+          vm.data.push(new_bill);
+          break;
+        }
+      };
+    },
+    handleDeleteBill: function(index){
+      let vm = this;
+      vm.modalDelete = true;
+      let button = document.getElementById('deleteBill');
+      if(vm.data.length > 1){
+        vm.data.splice(index, 1); 
+      };
+    },
+    handleTab: function(item){
+      let vm = this;
+      vm.tab = item.bill;
     }
   },
   computed: {
@@ -236,9 +248,11 @@ export default {
       return bill;
     }
   },
-  created: function(){
+  mounted: function(){
     let vm = this;
-    
+    vm.scrollToFixed();
+  },
+  created: function(){
   },
   watch: {
     

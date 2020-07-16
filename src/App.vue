@@ -22,6 +22,8 @@ body{
 p{margin:0;}
 button:focus{outline:none;}
 label{margin-bottom:0;}
+input,select{outline:none;}
+input:focus,select:focus{border:1px solid #8c9dee;}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

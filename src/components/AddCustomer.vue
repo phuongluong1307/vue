@@ -18,9 +18,6 @@
               <div class="form-group">
                   <input type="text" name="name" placeholder="Ghi chú">
               </div>
-              <div class="form-group">
-                  <button><i class="fal fa-plus"></i>Thêm chi tiết</button>
-              </div>
           </div>
           <div class="bottom">
               <button>Tạo mới khách hàng</button>

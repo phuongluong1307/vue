@@ -70,11 +70,17 @@
                 <div class="right_1">
                     <div class="right_1_1">
                         <div class="right_1_1_1">Khoản tiền</div>
-                        <div class="right_1_1_2">0<i class="fal fa-pen"></i></div>
+                        <div class="right_1_1_2">0<i class="fal fa-pen" @click.stop.prevent="open_caculator = !open_caculator"></i></div>
+                        <div class="box_calculator" :class="open_caculator ? 'open' : ''">
+                            <Calculator ref="Calculator"></Calculator>
+                            <div class="cancel">
+                                <button>OK</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="right_1_2">
                         <div class="payment">
-                            <button>Tiền mặt</button>
+                            <button  @click.stop.prevent="open_caculator = true">Tiền mặt</button>
                         </div>
                         <div class="payment">
                             <button>Thẻ</button>
@@ -89,26 +95,66 @@
                             <button>Thẻ cửa hàng</button>
                         </div>
                         <div class="payment">
-                            <button>Thẻ quà tặng</button>
+                            <button @click.stop.prevent="$refs.GiftCard.open = true">Thẻ quà tặng</button>
                         </div>
                     </div>
-                    <div class="right_1_3"></div>
+                    <div class="right_1_3">
+                        <div class="right_1_3_1">
+                            <span class="right_1_3_1_1">100.000</span>
+                            <span class="right_1_3_1_2">Bằng tiền mặt</span>
+                            <span class="right_1_3_1_3">
+                                <button><i class="fal fa-minus-circle"></i></button>
+                            </span>
+                        </div>
+                        <div class="right_1_3_1">
+                            <span class="right_1_3_1_1">100.000</span>
+                            <span class="right_1_3_1_2">Bằng tiền mặt</span>
+                            <span class="right_1_3_1_3">
+                                <button><i class="fal fa-minus-circle"></i></button>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="right_2">
-                    <button class="complete" @click.stop.prevent="handlePrint">Hoàn thành</button>
+                    <button class="complete" @click.stop.prevent="open_confirm = true">Hoàn thành</button>
+                </div>
+                <div class="popupConfirm" :class="open_confirm ? 'open' : ''">
+                    <div class="box">
+                        <div class="top">
+                            <h6>Xác nhận in</h6>
+                        </div>
+                        <div class="center">
+                            <p>Bạn có muốn in hay không!</p>
+                        </div>
+                        <div class="bottom">
+                            <button class="print" @click.stop.prevent="handlePrint">In</button>
+                            <button class="cancel" @click.stop.prevent="open_confirm = false">Hủy</button>
+                        </div>
+                    </div>
+                    <div class="mask"></div>
                 </div>
             </div>
         </div>
+        <GiftCard ref="GiftCard"></GiftCard>
+        <div class="mask" :class="open_caculator ? 'open' : ''" @click.stop.prevent="open_caculator = false"></div>
     </div>
 </template>
 
 <script>
+import GiftCard from './GiftCard';
+import Calculator from './Calculator';
 export default {
+    components: {
+        GiftCard,
+        Calculator
+    },
     name: 'Charge',
     props: ['data'],
     data: function(){
         return {
-            open: false
+            open: false,
+            open_caculator: false,
+            open_confirm: false
         }
     },
     methods:{
@@ -117,7 +163,12 @@ export default {
             vm.$parent.deleteItem(index);
         },
         handlePrint: function(){
+            let vm = this;
+            let print = document.getElementById('print_80').innerHTML;
+            let body = document.body.innerHTML;
+            document.body.innerHTML = print;
             window.print();
+            document.body.innerHTML = body;
         }
     },
     created: function(){

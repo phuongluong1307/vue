@@ -6,7 +6,7 @@
           <div class="btn_bars">
             <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
-          <div class="name_store">Soul Master</div>
+          <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = true">Soul Master</div>
         </div>
       </div>
       <div class="block_1_1">
@@ -16,7 +16,7 @@
             <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" />
           </div>
           <div class="scan">
-            <button class="btn_scan active"><i class="fal fa-barcode-read"></i></button>
+            <button class="btn_scan active" @click.stop.prevent="scan = !scan"><i class="fal fa-barcode-read"></i></button>
           </div>
         </div>
       </div>
@@ -42,14 +42,6 @@
             Lọc sản phẩm
           </a>
         </div>
-      </div>
-      <div class="extend_filter" :class="extend_filter ? 'extend-filter-opened' : ''">
-        <ul class="extend_filter_1">
-          <li>Nước ép</li>
-          <li>Sinh tố</li>
-          <li>Cà phê</li>
-          <li>Nước ngọt</li>
-        </ul>
       </div>
     </div>
     <div class="block_3" id="style-block3">
@@ -80,6 +72,75 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="scan_qr" v-if="scan">
+        <div class="scan_qr_1">
+          <p>Đang kích hoạt chế độ quét mã vạch</p>
+          <img src="https://file.hstatic.net/1000246569/file/1_b9a45066e30341189f2127cd73c0d080_grande.jpeg" alt="">
+        </div>
+        <div class="scan_qr_mask"></div>
+      </div>
+      <div class="extend_filter" :class="extend_filter ? 'extend-filter-opened' : ''">
+        <ul class="extend_filter_1">
+          <li class="extend_filter_1_1 extend_filter_1_1_1">
+            <select>
+              <option value="0">Vui lòng chọn sản phẩm</option>
+              <option value="1">Cà phê</option>
+            </select>
+          </li>
+          <li class="extend_filter_1_1 extend_filter_1_1_1">
+            <select>
+              <option value="0">Sản phẩm bán chạy</option>
+              <option value="1">Cà phê</option>
+            </select>
+          </li>
+          <li class="extend_filter_1_1 extend_filter_1_1_1">
+            <select>
+              <option value="0">Sản phẩm bán trong ngày</option>
+              <option value="1">Cà phê</option>
+            </select>
+          </li>
+          <li class="extend_filter_1_1 extend_filter_1_1_2">
+            <div class="extend_filter_1_1_2_1">
+              <a class="filter_link">Danh mục</a>
+              <div class="input_select">
+                <label for="un_selectAll" class="select_all">Bỏ chọn</label>
+                <input type="checkbox" id="un_selectAll" @click.stop.prevent="unSelectAll" style="display:none;">
+                <label for="selectAll" class="select_all">Chọn tất cả</label>
+                <input type="checkbox" id="selectAll" @click.stop.prevent="selectCheckAll" style="display:none;">
+              </div>
+            </div>
+            <ul class="list_category">
+              <li>
+                  <label class="label_checkbox">Cà phê
+                      <input type="checkbox" class="checkbox_category" name="checkbox1" value="Cà phê" v-model="checkbox">
+                      <span class="check_tax"></span>
+                  </label>
+              </li>
+              <li>
+                  <label class="label_checkbox">Nước giải khát
+                      <input type="checkbox" class="checkbox_category" name="checkbox2" value="Nước giải khát" v-model="checkbox">
+                      <span class="check_tax"></span>
+                  </label>
+              </li>
+              <li>
+                  <label class="label_checkbox">Sinh tố
+                      <input type="checkbox" class="checkbox_category" name="checkbox3" value="Sinh tố" v-model="checkbox">
+                      <span class="check_tax"></span>
+                  </label>
+              </li>
+              <li>
+                  <label class="label_checkbox">Thuốc lá
+                      <input type="checkbox" class="checkbox_category" name="checkbox4" value="Thuốc lá" v-model="checkbox">
+                      <span class="check_tax"></span>
+                  </label>
+              </li>
+            </ul>
+          </li>
+          <div class="button_filter">
+            <button>Lọc</button>
+          </div>
+        </ul>
       </div>
     </div>
   </div>
@@ -218,7 +279,9 @@ export default {
       ],
       alpha: [],
       list_product: null,
-      extend_filter: false
+      extend_filter: false,
+      scan: false,
+      checkbox: []
     };
   },
   methods: {
@@ -270,6 +333,22 @@ export default {
         div.scrollIntoView({
           behavior: 'smooth'
         })
+      }
+    },
+    selectCheckAll: function(){
+      let vm = this;
+      let checkbox = document.querySelectorAll('.checkbox_category');
+      for(let i = 0; i < checkbox.length;i++){
+        checkbox[i].checked = true;
+        vm.checkbox.push(checkbox[i].value)
+      }
+    },
+    unSelectAll: function(){
+      let vm = this;
+      let checkbox = document.querySelectorAll('.checkbox_category');
+      for(let i = 0; i < checkbox.length;i++){
+        checkbox[i].checked = false;
+        vm.checkbox.splice(checkbox[i], 1);
       }
     }
   },
