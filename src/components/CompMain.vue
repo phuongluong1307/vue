@@ -7,6 +7,7 @@
         <!-- <Print ref="Print"></Print> -->
         <Print80 ref="Print80"></Print80>
         <ListStore ref="ListStore"></ListStore>
+        <ListProduct ref="ListProduct"></ListProduct>
     </Fragment>
 </template>
 
@@ -19,6 +20,7 @@ import CompOrder from './CompOrder';
 import Print from './Print/Print';
 import Print80 from './Print/Print80';
 import ListStore from './ListStore';
+import ListProduct from './ListProduct';
 export default {
     components: {
         Header,
@@ -28,13 +30,15 @@ export default {
         CompOrder,
         Print,
         Print80,
-        ListStore
+        ListStore,
+        ListProduct
     },
     name: 'CompMain',
     data: function(){
         return {
             open_menu_bar: false,
-            open_print: false
+            open_print: false,
+            
         }
     }
 }

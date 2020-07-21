@@ -28,13 +28,16 @@ export default {
     methods: {
         handleAdjust: function(item){
             let vm = this;
-            vm.obj = item;
+            vm.$parent.obj = item;
             vm.$parent.$refs.AdjustProduct.quantity = item.quantity.toString();
             vm.$parent.$refs.AdjustProduct.open = true;
         },
         deleteItem: function(index){
             let vm = this;
-            vm.$parent.$parent.data.splice(index, 1)
+            vm.$parent.$parent.data.splice(index, 1);
+            if(vm.$parent.$parent.data.length == 0){
+              vm.$parent.$refs.CompCharge.open = false;
+            }
         },
     }
 }

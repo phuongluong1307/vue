@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '@/assets/css/index.css'
 import '@/assets/font-awesome/css/all.css'
 
+
 Vue.config.productionTip = false
 Vue.use(Plugin)
 
@@ -17,7 +18,12 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data(){
+    return {
+      API_GATE: "http://localhost:3000"
+    }
+  }
 })
 
 

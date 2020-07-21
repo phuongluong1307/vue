@@ -4,32 +4,20 @@
             <div class="filter_advanced_1">
                 <ul class="filter_advanced_1_1">
                     <li class="filter_advanced_1_1_1">
-                        <label>Tìm theo ngày:</label>
                         <Datepicker class="date_picker" :language="vi" placeholder="Tìm theo ngày" input-class="input_picker"></Datepicker>
                     </li>
                     <li class="filter_advanced_1_1_1">
-                        <label>Tìm theo người bán:</label>
-                        <select name="" id="">
-                            <option value="1">Khách lẻ</option>
-                            <option value="2">Thành viên</option>
-                        </select>
+                        <SelectMulti ref="SelectMulti" title="Tìm theo loại khách hàng" :data="data"></SelectMulti>
                     </li>
                     <li class="filter_advanced_1_1_1">
-                        <label>Tìm theo sản phẩm:</label>
-                        <select name="" id="">
-                            <option value="">Vui lòng chọn sản phẩm</option>
-                            <option value="1">Cà phê</option>
-                            <option value="2">Sinh tố</option>
-                        </select>
-                    </li>
-                    <li class="filter_advanced_1_1_1">
-                        <button @click.stop.prevent="filter = true">Tìm kiếm</button>
+                        <SelectMulti ref="SelectMulti" title="Tìm theo loại sản phẩm" :data="category"></SelectMulti>
                     </li>
                 </ul>
             </div>
             <div class="filter_advanced_2">
                 <div class="nope" v-if="!filter">
-                    Vui lòng chọn để tìm kiếm
+                    <div class="filter">Vui lòng chọn để tìm kiếm</div>
+                    <div class="icons_filter"><i class="fal fa-th-list"></i></div>
                 </div>
                 <div class="filter_advanced_2_1" v-else>
                     <div class="list_order">
@@ -111,10 +99,12 @@
 
 <script>
 import Datepicker from 'vuejs-datepicker';
-import {en, vi} from 'vuejs-datepicker/dist/locale'
+import {en, vi} from 'vuejs-datepicker/dist/locale';
+import SelectMulti from './SelectMulti';
 export default {
     components: {
-        Datepicker
+        Datepicker,
+        SelectMulti
     },
     name: 'FilterAdvanced',
     data: function(){
@@ -122,7 +112,9 @@ export default {
             open: false,
             en: en,
             vi: vi,
-            filter: false
+            filter: false,
+            data: ["Khách lẻ", "Khách A"],
+            category: ["Cà phê", "Sinh tố"]
         }
     }
 }

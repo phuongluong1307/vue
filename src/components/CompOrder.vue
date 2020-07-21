@@ -171,9 +171,18 @@
                         <p>Ghi chú: ....</p>
                     </div>
                     <div class="list_button">
-                        <button>In hóa đơn</button>
-                        <button>Trả hàng</button>
-                        <button>Chỉnh sửa</button>
+                        <button>
+                            <i class="fal fa-print"></i>
+                            <span>In hóa đơn</span>
+                        </button>
+                        <button>
+                            <i class="fal fa-exchange"></i>
+                            <span>Trả hàng</span>
+                        </button>
+                        <button>
+                            <i class="fal fa-pen"></i>
+                            <span>Chỉnh sửa</span>
+                        </button>
                     </div>
                 </div>
                 <div class="center">

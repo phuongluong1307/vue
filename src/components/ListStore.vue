@@ -1,30 +1,16 @@
 <template>
     <div class="list_store" :class="open ? 'open' : ''">
         <div class="box">
-            <div class="back" @click.stop.prevent="open = false"><i class="fal fa-arrow-left"></i></div>
             <div class="top">
                 <h6 class="title">Chọn cửa hàng</h6>
             </div>
             <div class="center">
-                <div class="store">
-                    <p>Soul Master 1</p>
-                    <p><i class="fal fa-arrow-right"></i></p>
-                </div>
-                <div class="store">
-                    <p>Soul Master 2</p>
-                    <p><i class="fal fa-arrow-right"></i></p>
-                </div>
-                <div class="store">
-                    <p>Soul Master 3</p>
-                    <p><i class="fal fa-arrow-right"></i></p>
-                </div>
-                <div class="store">
-                    <p>Soul Master 4</p>
-                    <p><i class="fal fa-arrow-right"></i></p>
+                <div class="store" v-for="item in 4" :key="item">
+                    <p>Soul Master {{item}}</p>
                 </div>
             </div>
             <div class="bottom">
-                <button>Chọn</button>
+                <button @click.stop.prevent="handleSelectStore">Chọn</button>
             </div>
         </div>
     </div>
@@ -35,7 +21,14 @@ export default {
     name: 'ListStore',
     data: function(){
         return {
-            open: false
+            open: false,
+            active: ""
+        }
+    },
+    methods: {
+        handleSelectStore: function(){
+            let vm = this;
+            vm.open = false;
         }
     }
 }

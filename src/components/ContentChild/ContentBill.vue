@@ -151,8 +151,9 @@ export default {
       if(vm.$parent.data != ''){
         vm.$refs.CompCharge.open = true;
       }else{
-        alert('Vui lòng chọn sản phẩm!')
-      }
+        alert('Vui lòng chọn sản phẩm!');
+        vm.$forceUpdate();
+      };
     },
     scrollToFixed: function(){
       let vm = this;
@@ -169,11 +170,19 @@ export default {
     },
     handleAddBill: function(){
       let vm = this;
-      if(vm.data.length > 4){
-        vm.extend_list_bill = !vm.extend_list_bill;
+      if(window.innerWidth > 1439){
+        if(vm.data.length > 4){
+          vm.extend_list_bill = !vm.extend_list_bill;
+        }else{
+          vm.multiBill();
+        };
       }else{
-        vm.multiBill();
-      };
+        if(vm.data.length > 3){
+          vm.extend_list_bill = !vm.extend_list_bill;
+        }else{
+          vm.multiBill();
+        };
+      }
     },
     multiBill: function(){
       let vm = this;
@@ -187,6 +196,7 @@ export default {
             bill: `HD0${h}`
           };
           vm.data.push(new_bill);
+          vm.tab = new_bill.bill;
           vm.data.sort(function(a,b){
             let number_a = a.bill.substr(3,2);
             let number_b = b.bill.substr(3,2);
@@ -202,13 +212,14 @@ export default {
             bill: `HD0${o}`
           };
           vm.data.push(new_bill);
+          vm.tab = new_bill.bill;
           break;
         }
       };
     },
     handleDeleteBill: function(index){
       let vm = this;
-      vm.modalDelete = true;
+      // vm.modalDelete = true;
       let button = document.getElementById('deleteBill');
       if(vm.data.length > 1){
         vm.data.splice(index, 1); 

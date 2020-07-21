@@ -10,7 +10,7 @@
                 <div class="list">
                     <ul>
                         <li @click.stop.prevent="handleDashboard"><i class="fas fa-th-large"></i><span>Trang chủ</span></li>
-                        <li><i class="fas fa-shopping-basket"></i><span>Danh sách bán hàng</span></li>
+                        <li @click.stop.prevent="handleListProduct"><i class="fal fa-list-alt"></i><span>Danh sách sản phẩm</span></li>
                         <li @click.stop.prevent="handleOrder"><i class="fas fa-receipt"></i><span>Đơn đặt hàng</span></li>
                     </ul>
                 </div>
@@ -38,9 +38,17 @@ export default {
             let vm = this;
             vm.$parent.$refs.CompOrder.open = true;
             vm.$parent.open_menu_bar = false;
+            vm.$parent.$refs.ListProduct.open = true;
         },
         handleDashboard: function(){
             let vm = this;
+            vm.$parent.open_menu_bar = false;
+            vm.$parent.$refs.CompOrder.open = false;
+            vm.$parent.$refs.ListProduct.open = false;
+        },
+        handleListProduct: function(){
+            let vm = this;
+            vm.$parent.$refs.ListProduct.open = true;
             vm.$parent.open_menu_bar = false;
             vm.$parent.$refs.CompOrder.open = false;
         }

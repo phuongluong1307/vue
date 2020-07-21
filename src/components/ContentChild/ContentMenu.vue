@@ -16,7 +16,7 @@
             <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" />
           </div>
           <div class="scan">
-            <button class="btn_scan active" @click.stop.prevent="scan = !scan"><i class="fal fa-barcode-read"></i></button>
+            <button class="btn_scan" :class="scan ? 'active' : '' " @click.stop.prevent="scan = !scan"><i class="fal fa-barcode-read"></i></button>
           </div>
         </div>
       </div>
@@ -76,29 +76,20 @@
       <div class="scan_qr" v-if="scan">
         <div class="scan_qr_1">
           <p>Đang kích hoạt chế độ quét mã vạch</p>
-          <img src="https://file.hstatic.net/1000246569/file/1_b9a45066e30341189f2127cd73c0d080_grande.jpeg" alt="">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/UPC-A-036000291452.svg/1200px-UPC-A-036000291452.svg.png" alt="">
         </div>
         <div class="scan_qr_mask"></div>
       </div>
       <div class="extend_filter" :class="extend_filter ? 'extend-filter-opened' : ''">
         <ul class="extend_filter_1">
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <select>
-              <option value="0">Vui lòng chọn sản phẩm</option>
-              <option value="1">Cà phê</option>
-            </select>
+            <SelectMulti title="Vui lòng chọn sản phẩm" :status="false" :data="category"></SelectMulti>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <select>
-              <option value="0">Sản phẩm bán chạy</option>
-              <option value="1">Cà phê</option>
-            </select>
+            <SelectMulti title="Sản phẩm bán chạy" :status="false" :data="category"></SelectMulti>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <select>
-              <option value="0">Sản phẩm bán trong ngày</option>
-              <option value="1">Cà phê</option>
-            </select>
+            <SelectMulti title="Sản phẩm bán trong ngày" :status="false" :data="selling"></SelectMulti>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_2">
             <div class="extend_filter_1_1_2_1">
@@ -147,9 +138,10 @@
 </template>
 
 <script>
+import SelectMulti from '../SelectMulti';
 export default {
   components: {
-    
+    SelectMulti
   },
   name: "ContentMenu",
   data() {
@@ -281,7 +273,10 @@ export default {
       list_product: null,
       extend_filter: false,
       scan: false,
-      checkbox: []
+      checkbox: [],
+      select: false,
+      category: ["Cà phê", "Sinh tố", "Giải khát"],
+      selling: ["Cà phề", "Thuốc lá"]
     };
   },
   methods: {
@@ -338,6 +333,7 @@ export default {
     selectCheckAll: function(){
       let vm = this;
       let checkbox = document.querySelectorAll('.checkbox_category');
+      console.log(this.$root)
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = true;
         vm.checkbox.push(checkbox[i].value)
