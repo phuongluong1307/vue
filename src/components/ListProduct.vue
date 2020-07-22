@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="thead_table">
                         <tr>
                             <th class="stt">#</th>
                             <th class="name">Tên sản phẩm</th>

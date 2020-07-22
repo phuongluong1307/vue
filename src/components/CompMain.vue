@@ -8,6 +8,7 @@
         <Print80 ref="Print80"></Print80>
         <ListStore ref="ListStore"></ListStore>
         <ListProduct ref="ListProduct"></ListProduct>
+        <Permission ref="Permission"></Permission>
     </Fragment>
 </template>
 
@@ -21,6 +22,7 @@ import Print from './Print/Print';
 import Print80 from './Print/Print80';
 import ListStore from './ListStore';
 import ListProduct from './ListProduct';
+import Permission from './Permission';
 export default {
     components: {
         Header,
@@ -31,14 +33,14 @@ export default {
         Print,
         Print80,
         ListStore,
-        ListProduct
+        ListProduct,
+        Permission
     },
     name: 'CompMain',
     data: function(){
         return {
             open_menu_bar: false,
-            open_print: false,
-            
+            open_print: false
         }
     }
 }
