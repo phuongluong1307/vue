@@ -137,7 +137,6 @@
             </div>
         </div>
         <GiftCard ref="GiftCard"></GiftCard>
-        <iframe frameborder="0" id="printf" name="printf" style="display:none;"></iframe>
         <div class="mask" :class="open_caculator ? 'open' : ''" @click.stop.prevent="open_caculator = false"></div>
     </div>
 </template>
@@ -166,22 +165,11 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-            // let print = document.getElementById('print_80').innerHTML;
-            // let body = document.body.innerHTML;
-            // document.body.innerHTML = print;
-            // window.print();
-            // window.close();
-            // document.body.innerHTML = body;
-            let print = document.getElementById('printf').contentWindow;
-            let body = require('./Print/Print80');
-            print.focus();
-            print.print();
-            print.close();
-            // let newWin = window.frames["printf"];
-            // newWin.focus();
-            // newWin.write(body);
-            // window.print();
-            // newWin.document.close();
+            let print = document.getElementById('print_80').innerHTML;
+            let body = document.body.innerHTML;
+            document.body.innerHTML = print;
+            window.print();
+            document.body.innerHTML = body;
         }
     },
     created: function(){

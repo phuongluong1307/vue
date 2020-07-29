@@ -12,9 +12,11 @@
                         <li @click.stop.prevent="handleDashboard"><i class="fas fa-th-large"></i><span>Trang chủ</span></li>
                         <li @click.stop.prevent="handleListProduct"><i class="fal fa-list-alt"></i><span>Danh sách sản phẩm</span></li>
                         <li @click.stop.prevent="handleOrder"><i class="fas fa-receipt"></i><span>Đơn đặt hàng</span></li>
-                        <li @click.stop.prevent="handlePermission"><i class="fal fa-key"></i><span>CRM</span></li>
                     </ul>
                 </div>
+            </div>
+            <div class="bottom">
+                <button @click.stop.prevent="handleLogout">Đăng xuất</button>
             </div>
         </div>
         <div class="mask" @click.stop.prevent="$parent.open_menu_bar = false"></div>
@@ -35,28 +37,23 @@ export default {
             let vm = this;
             vm.$parent.$refs.CompOrder.open = true;
             vm.$parent.open_menu_bar = false;
-            vm.$parent.$refs.ListProduct.open = true;
-            vm.$parent.$refs.Permission.open = false;
+            vm.$parent.$refs.ListProduct.open = false;
         },
         handleDashboard: function(){
             let vm = this;
             vm.$parent.open_menu_bar = false;
             vm.$parent.$refs.CompOrder.open = false;
             vm.$parent.$refs.ListProduct.open = false;
-            vm.$parent.$refs.Permission.open = false;
         },
         handleListProduct: function(){
             let vm = this;
             vm.$parent.$refs.ListProduct.open = true;
-            vm.$parent.open_menu_bar = false;
             vm.$parent.$refs.CompOrder.open = false;
-            vm.$parent.$refs.Permission.open = false;
         },
-        handlePermission: function(){
+        handleLogout: function(){
             let vm = this;
-            vm.$parent.$refs.Permission.open = true;
-            vm.$parent.$refs.CompOrder.open = false;
-            vm.$parent.$refs.ListProduct.open = false;
+            localStorage.clear();
+            window.location.reload();
         }
     },
     created: function(){

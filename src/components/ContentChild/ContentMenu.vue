@@ -13,7 +13,8 @@
         <div class="block_1_1_1">
           <div class="search">
             <i class="fal fa-search" @click.stop.prevent="handleInput"></i>
-            <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" />
+            <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" v-model="search" @input="isSearching = true" />
+            <div class="searching" v-if="isSearching">Đang tìm kiếm</div>
           </div>
           <div class="scan">
             <button class="btn_scan" :class="scan ? 'active' : '' " @click.stop.prevent="scan = !scan"><i class="fal fa-barcode-read"></i></button>
@@ -25,15 +26,17 @@
       <div class="block_2_1">
         <div class="block_2_1_1">
           <div class="item item_txt">
-            <p>Tìm kiếm</p><b>{{arr.length}}</b><p>kết quả</p>
+            <p>Tìm kiếm</p><b>{{arr_product.length}}</b><p>kết quả</p>
           </div>
-          <div class="item item_filter">
-            <p>Cà phê</p>
-            <span><i class="fal fa-times"></i></span>
-          </div>
-          <div class="item item_filter">
-            <p>Cà phê</p>
-            <span><i class="fal fa-times"></i></span>
+          <div class="block_2_1_1_1" v-if="filter_category">
+            <div class="item item_filter" v-if="allCategory">
+              <p>Tất cả</p>
+              <span @click.stop.prevent="deleteFilter('all', 3)"><i class="fal fa-times"></i></span>
+            </div>
+            <div class="item item_filter" v-for="(item,index) in list_select_category" :key="index" v-else>
+              <p>{{item}}</p>
+              <span @click.stop.prevent="deleteFilter(item,index)"><i class="fal fa-times"></i></span>
+            </div>
           </div>
         </div>
         <div class="block_2_1_2" @click.stop.prevent="extend_filter = !extend_filter">
@@ -55,22 +58,23 @@
               </li>
             </ul>
           </div>
-          <div class="product">
+          <div class="product" v-if="filter == false">
             <div class="list_item" v-for="word in sortAlpha" :class="'list_' + word" :key="word">
               <div class="title">{{word}}</div>
               <div class="item" v-for="(item, index) in handleAlpha(word)" :key="item.id" @click.stop.prevent="handleItem(item)">
                 <div class="item_box">
                   <div class="item_image" :class="index%2==0 ? 'by-height' : 'by-width'">
-                    <img :src="item.image" />
+                    <img :src="item.thumbnail" />
                   </div>
                   <div class="item_info">
-                    <p class="name">{{item.name_product}}</p>
+                    <p class="name">{{item.product_name}}</p>
                     <p class="price">{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price) }}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <SearchProduct ref="SearchProduct" v-else></SearchProduct>
         </div>
       </div>
       <div class="scan_qr" v-if="scan">
@@ -102,34 +106,16 @@
               </div>
             </div>
             <ul class="list_category">
-              <li>
-                  <label class="label_checkbox">Cà phê
-                      <input type="checkbox" class="checkbox_category" name="checkbox1" value="Cà phê" v-model="checkbox">
-                      <span class="check_tax"></span>
-                  </label>
-              </li>
-              <li>
-                  <label class="label_checkbox">Nước giải khát
-                      <input type="checkbox" class="checkbox_category" name="checkbox2" value="Nước giải khát" v-model="checkbox">
-                      <span class="check_tax"></span>
-                  </label>
-              </li>
-              <li>
-                  <label class="label_checkbox">Sinh tố
-                      <input type="checkbox" class="checkbox_category" name="checkbox3" value="Sinh tố" v-model="checkbox">
-                      <span class="check_tax"></span>
-                  </label>
-              </li>
-              <li>
-                  <label class="label_checkbox">Thuốc lá
-                      <input type="checkbox" class="checkbox_category" name="checkbox4" value="Thuốc lá" v-model="checkbox">
-                      <span class="check_tax"></span>
-                  </label>
+              <li v-for="(item, index) in list_category" :key="index">
+                <label class="label_checkbox">{{item.category_name}}
+                    <input type="checkbox" class="checkbox_category" name="checkbox1" :value="item.category" v-model="checkbox">
+                    <span class="check_tax"></span>
+                </label>
               </li>
             </ul>
           </li>
           <div class="button_filter">
-            <button>Lọc</button>
+            <button @click.stop.prevent="handleFilter">Lọc</button>
           </div>
         </ul>
       </div>
@@ -139,9 +125,11 @@
 
 <script>
 import SelectMulti from '../SelectMulti';
+import SearchProduct from './SearchProduct';
 export default {
   components: {
-    SelectMulti
+    SelectMulti,
+    SearchProduct
   },
   name: "ContentMenu",
   data() {
@@ -156,135 +144,32 @@ export default {
           age: 19
         }
       ],
-      arr: [
-        {
-          id: 1,
-          name_product: "Cà phê đá",
-          image: "https://comgasg.com/wp-content/uploads/2019/11/cafe-da-3.jpg",
-          price: 15000
-        },
-        {
-          id: 2,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 21,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 3,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 33,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 4,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 5,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 6,
-          name_product: "Cà phê sữa",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 7,
-          name_product: "Sinh tố dâu",
-          image:
-            "https://yeunoitro.net/wp-content/uploads/sinh-to-dau-tay1.jpg",
-          price: 15000
-        },
-        {
-          id: 8,
-          name_product: "Sinh tố bơ",
-          image:
-            "https://media.cooky.vn/recipe/g4/36472/s480x480/recipe36472-cook-step3-636692472537038778.JPG",
-          price: 15000
-        },
-        {
-          id: 9,
-          name_product: "Yogurt",
-          image:
-            "https://www.washingtonpost.com/rf/image_982w/2010-2019/WashingtonPost/2020/04/09/Food/Images/VhowtoMakeyogurt04.JPG",
-          price: 15000
-        },
-        {
-          id: 10,
-          name_product: "Aquafina",
-          image:
-            "https://www.washingtonpost.com/rf/image_982w/2010-2019/WashingtonPost/2020/04/09/Food/Images/VhowtoMakeyogurt04.JPG",
-          price: 15000
-        },
-        {
-          id: 21,
-          name_product: "D",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 24,
-          name_product: "E",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 22,
-          name_product: "F",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        },
-        {
-          id: 23,
-          name_product: "G",
-          image:
-            "https://media.cooky.vn/recipe/g1/2022/s320x320/recipe2022-prepare-step11-635711695846648568.jpg",
-          price: 15000
-        }
-      ],
       alpha: [],
       list_product: null,
+      list_select_category: [],
       extend_filter: false,
       scan: false,
       checkbox: [],
       select: false,
       category: ["Cà phê", "Sinh tố", "Giải khát"],
-      selling: ["Cà phề", "Thuốc lá"]
+      selling: ["Cà phề", "Thuốc lá"],
+      arr_product: [],
+      search: '',
+      filter: false,
+      debounce: null,
+      arr_filter: [],
+      filter_category: false,
+      allCategory: false,
+      isSearching: false,
+      filter_product: []
     };
   },
   methods: {
     handleAlpha: function(word) {
       let vm = this;
       let data = [];
-      vm.arr.map(item => {
-        let val = item.name_product;
+      vm.arr_product.map(item => {
+        let val = item.product_name;
         let val_word = val.substr(0, 1);
         if (val_word === word) {
           data.push(item);
@@ -296,9 +181,9 @@ export default {
       let vm = this;
       let obj = {
         id: item.id,
-        name_product: item.name_product,
+        product_name: item.product_name,
         price: item.price,
-        image: item.image,
+        image: item.thumbnail,
         quantity: 1
       };
       vm.$emit("handleData", obj);
@@ -309,16 +194,6 @@ export default {
           a.push(String.fromCharCode(i));
       };
       return a;
-    },
-    alphabet: function() {
-      let vm = this;
-      vm.arr.map((item, index) => {
-        let val = item.name_product;
-        let word = val.substr(0, 1);
-        if (!vm.alpha.includes(word)) {
-          vm.alpha.push(word);
-        }
-      });
     },
     scrollItem: function(item){
       let div = document.querySelector(`.list_${item.toUpperCase()}`);
@@ -333,11 +208,10 @@ export default {
     selectCheckAll: function(){
       let vm = this;
       let checkbox = document.querySelectorAll('.checkbox_category');
-      console.log(this.$root)
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = true;
         vm.checkbox.push(checkbox[i].value)
-      }
+      };
     },
     unSelectAll: function(){
       let vm = this;
@@ -345,7 +219,64 @@ export default {
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = false;
         vm.checkbox.splice(checkbox[i], 1);
+      };
+    },
+    loadProduct: function(){
+      let vm = this;
+      vm.axios({
+        method: "GET",
+        url: vm.$root.API_GATE + '/api/products',
+        headers: {'auth-token': localStorage.getItem('token')},
+        params: {
+          keyword: vm.search
+        }
+      }).then(res => {
+        let result = res.data.data;
+        vm.filter_product = result.docs;
+        vm.arr_product = result.docs;
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleFilter: function(){
+      let vm = this;
+      vm.filter_category = true;
+      vm.extend_filter = false;
+      if(vm.checkbox.length != 0){
+        if(vm.list_category.length == vm.checkbox.length){
+          vm.allCategory = true;
+          vm.loadProduct();
+        }else{
+          vm.allCategory = false;
+          let arr_filter = [];
+          vm.checkbox.map((item) => {
+            if(!vm.list_select_category.includes(item)){
+              vm.list_select_category.push(item)
+            };
+            vm.filter_product.map(row => {
+              if(item == row.category){
+                arr_filter.push(row);
+              }
+            });
+          });
+          vm.filter = true;
+          return vm.arr_product = arr_filter;
+        }
+      }else{
+        vm.filter = false;
+        vm.loadProduct();
       }
+    },
+    deleteFilter: function(item,index){
+      let vm = this;
+      if(item == 'all'){
+        vm.checkbox.splice(0, vm.checkbox.length);
+        vm.allCategory = false;
+      };
+      let findIndex = vm.list_select_category.indexOf(item);
+      vm.list_select_category.splice(findIndex,1);
+      vm.checkbox.splice(findIndex, 1);
+      vm.handleFilter();
     }
   },
   computed: {
@@ -356,17 +287,65 @@ export default {
     listAlpha: function(){
       let vm = this;
       return vm.genCharArray('a','z');
+    },
+    alphabet: function() {
+      let vm = this;
+      if(vm.arr_product.length > 1){
+        vm.arr_product.map((item, index) => {
+          let val = item.product_name;
+          let word = val.substr(0, 1);
+          if (!vm.alpha.includes(word)) {
+            vm.alpha.push(word);
+          }
+        });
+      }
+    },
+    list_category: function(){
+      let vm = this;
+      let arr_category = [];
+      vm.$root.list_category.map((item) => {
+        if(!arr_category.includes(item._id)){
+          arr_category.push(item)
+        }
+      });
+      return arr_category;
     }
   },
   watch: {
     alphabet: {
       deep: true,
       handler: function(newval, oldval) {}
+    },
+    'search': {
+      deep: true,
+      handler: function (newVal, oldVal) {
+        let vm = this;
+        clearTimeout(vm.debounce);
+        vm.debounce = setTimeout(function () {
+          vm.filter = true;
+          vm.loadProduct();
+          vm.isSearching = false;
+          if(newVal === ""){
+            vm.filter = false;
+          }
+        }, 500);
+      }
+    },
+    extend_filter(newval,oldval){
+      let vm = this;
+      if(vm.extend_filter){
+        document.getElementById('style-block3').style.overflow = 'hidden';
+      }else{
+        document.getElementById('style-block3').style.overflow = 'auto';
+      }
     }
   },
   created: function(){
     this.genCharArray('a','z');
-    this.alphabet();
+    this.loadProduct();
+  },
+  mounted: function(){
+    
   }
 };
 </script>

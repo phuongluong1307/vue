@@ -1,14 +1,16 @@
 <template>
     <Fragment>
         <Header></Header>
-        <Content ref="Content"></Content>
-        <ExtendBar ref="ExtendBar"></ExtendBar>
-        <CompOrder ref="CompOrder"></CompOrder>
-        <!-- <Print ref="Print"></Print> -->
-        <Print80 ref="Print80"></Print80>
-        <ListStore ref="ListStore"></ListStore>
-        <ListProduct ref="ListProduct"></ListProduct>
-        <Permission ref="Permission"></Permission>
+        <ModalLogin ref="ModalLogin" v-if="auth_token == false"></ModalLogin>
+        <Fragment v-else>
+            <Content ref="Content"></Content>
+            <ExtendBar ref="ExtendBar"></ExtendBar>
+            <CompOrder ref="CompOrder"></CompOrder>
+            <!-- <Print ref="Print"></Print> -->
+            <Print80 ref="Print80"></Print80>
+            <ListStore ref="ListStore"></ListStore>
+            <ListProduct ref="ListProduct"></ListProduct>
+        </Fragment>
     </Fragment>
 </template>
 
@@ -22,7 +24,7 @@ import Print from './Print/Print';
 import Print80 from './Print/Print80';
 import ListStore from './ListStore';
 import ListProduct from './ListProduct';
-import Permission from './Permission';
+import ModalLogin from './ModalLogin';
 export default {
     components: {
         Header,
@@ -34,13 +36,19 @@ export default {
         Print80,
         ListStore,
         ListProduct,
-        Permission
+        ModalLogin
     },
     name: 'CompMain',
     data: function(){
         return {
             open_menu_bar: false,
-            open_print: false
+            open_print: false,
+            auth_token: false,
+        }
+    },
+    created: function(){
+        if(localStorage.getItem('auth_token')){
+            this.auth_token = localStorage.getItem('auth_token');
         }
     }
 }

@@ -7,20 +7,20 @@
           </div>
           <div class="center">
               <div class="form-group">
-                  <input type="text" name="name" placeholder="Họ và tên">
+                  <input type="text" v-model="form_customer.name" name="name" placeholder="Họ và tên">
               </div>
               <div class="form-group">
-                  <input type="email" name="email" placeholder="Email">
+                  <input type="email" v-model="form_customer.email" name="email" placeholder="Email">
               </div>
               <div class="form-group">
-                  <input type="tel" name="name" placeholder="Số điện thoại">
+                  <input type="tel" v-model="form_customer.phone_number" name="phone" placeholder="Số điện thoại">
               </div>
               <div class="form-group">
                   <input type="text" name="name" placeholder="Ghi chú">
               </div>
           </div>
           <div class="bottom">
-              <button>Tạo mới khách hàng</button>
+              <button @click.stop.prevent="handleAddCustomer">Tạo mới khách hàng</button>
           </div>
       </div>
       <div class="mask"></div>
@@ -32,7 +32,12 @@ export default {
     name: 'AddCustomer',
     data: function(){
         return {
-            open: false
+            open: false,
+            form_customer: {
+                name: '',
+                email: '',
+                phone_number: ''
+            }
         }
     },
     methods: {
@@ -40,6 +45,27 @@ export default {
             let vm = this;
             vm.open = false;
             vm.$parent.popup = false;
+        },
+        handleAddCustomer: function(){
+            let vm = this;
+            vm.axios({
+                method: "POST",
+                url: vm.$root.API_GATE + '/api/customers/',
+                headers: {'auth-token': localStorage.getItem('token')},
+                data: vm.form_customer
+            }).then(res => {
+                if(res.data.error){
+
+                }else{
+                    vm.open = false;
+                    vm.$parent.popup = false;
+                    vm.$parent.closePopup();
+                    vm.$parent.select_customer = true;
+                    vm.$parent.$parent.name_customer = vm.form_customer.name;
+                }
+            }).catch(err => {
+                console.log(err)
+            })
         }
     }
 }

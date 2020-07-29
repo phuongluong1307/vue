@@ -21,8 +21,31 @@ new Vue({
   template: '<App/>',
   data(){
     return {
-      API_GATE: "http://localhost:3000"
+      API_GATE: "http://localhost:3000",
+      list_category: []
     }
+  },
+  methods: {
+    loadCategory: function(){
+      let vm = this;
+      vm.axios({
+        method: "GET",
+        url: vm.$root.API_GATE + '/api/product-categories/',
+        headers: {'auth-token': localStorage.getItem('token')}
+      }).then(res => {
+        let result = res.data;
+        if(result.error){
+
+        }else{
+          vm.list_category = result.data;
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  created: function(){
+    this.loadCategory();
   }
 })
 

@@ -30,6 +30,9 @@ export default {
       };
     }
   },
+  computed: {
+
+  },
   watch: {
     
   }

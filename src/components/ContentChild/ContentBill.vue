@@ -4,7 +4,7 @@
       <div class="block_1_1">
         <div class="block_tab">
           <ul>
-            <li>Nguyễn Văn Tí</li>
+            <li>{{seller}}</li>
           </ul>
         </div>
         <div class="sales">
@@ -19,7 +19,22 @@
           <div v-for="(item, index) in totalBill" :key="index">
             <li class="tab" :class="item.bill == tab ? 'active' : ''" @click.stop.prevent="handleTab(item)">
               <a><span>{{item.bill}}</span></a>
-              <span class="close_tab" @click.stop.prevent="handleDeleteBill(index)"><i class="fal fa-times"></i></span>
+              <span class="close_tab" @click.stop.prevent="handleDeleteBill(item,index)"><i class="fal fa-times"></i></span>
+              <!-- <div class="modal_delete" v-if="modalDelete">
+                <div class="box">
+                  <div class="top">
+                    <h6 class="title">Xóa bỏ hóa đơn</h6>
+                  </div>
+                  <div class="center">
+                    <p>Bạn chắc chắn xóa hóa đơn này!</p>
+                  </div>
+                  <div class="bottom">
+                    <button class="bottom_1" id="deleteBill" @click.stop.prevent="handleDeleteBill(item,index)">Xóa</button>
+                    <button class="bottom_2" @click.stop.prevent="modalDelete = false">Hủy</button>
+                  </div>
+                </div>
+                <div class="mask"></div>
+              </div> -->
             </li>
           </div>
           <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="handleAddBill">
@@ -32,7 +47,7 @@
             <span>SL</span>
             <span>Tổng tiền</span>
           </div>
-          <div class="bill" v-for="item in data" :key="item.bill">
+          <div class="bill" v-for="item in data" :key="item.bill" @click.stop.prevent="handleTab(item)">
             <span>{{item.bill}}</span>
             <span>{{handleQuantity}}</span>
             <span>100.000</span>
@@ -42,67 +57,68 @@
           </div>
         </div>
       </div>
-      <div class="modal_delete" v-if="modalDelete">
-        <div class="box">
-          <div class="top">
-            <h6 class="title">Xóa bỏ hóa đơn</h6>
+    </div>
+    <div class="content_bill_2">
+      <div class="content_bill_2_1" v-for="item in data" :key="item.id" :class="[tab == item.bill ? 'active' : '']">
+        <div class="block_2">
+          <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true" v-if="select_customer">
+            <div class="block_2_1_member">
+              <i class="fal fa-user-circle"></i>
+              <p>{{name_customer}}</p>
+            </div>
+            <div class="block_2_1_button">
+              <button class="times-circle" @click.stop.prevent="handleChangeCustomer">
+                <i class="fal fa-times-circle"></i>
+              </button>
+            </div>
           </div>
-          <div class="center">
-            <p>Bạn chắc chắn xóa hóa đơn này!</p>
+          <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true" v-else>
+            <div class="block_2_1_member">
+              <i class="fal fa-user-circle"></i>
+              <p>Thêm khách hàng</p>
+            </div>
+            <div class="block_2_1_button">
+              <button class="plus_circle">
+                <i class="fal fa-plus-circle"></i>
+              </button>
+            </div>
           </div>
-          <div class="bottom">
-            <button id="deleteBill">Xóa</button>
-            <button>Hủy</button>
+        </div>
+        <div class="block_3" :class="{empty: $parent.data.length == 0}">
+          <SingleBill ref="SingleBill"></SingleBill>
+        </div>
+        <div class="block_4" v-if="$parent.data.length > 0">
+          <div class="block_4_1">
+            <div class="tax">
+              <div class="tax_txt">
+                <span>Thuế VAT(10%)</span>
+              </div>
+              <div class="tax_price">
+                <b>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(tax)}}</b>
+              </div>
+            </div>
+            <div class="sub_total">
+              <div class="total_txt">
+                <p>Tổng tiền</p>
+                <span>({{handleQuantity}} sản phẩm)</span>
+              </div>
+              <div class="total">
+                <b>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(handleTotal)}}</b>
+              </div>
+            </div>
+            <div class="discount">
+              <a @click.stop.prevent="$refs.ModalDiscount.open = true">
+                <p>Thêm giảm giá</p>
+                <i class="fal fa-plus-circle"></i>
+              </a>
+            </div>
           </div>
+        </div>
+        <div class="block_6">
+          <button class="provisional">Tạm tính</button>
+          <button class="pay" @click.stop.prevent="openCharge">Thanh toán</button>
         </div>
       </div>
-    </div>
-    <div class="block_2">
-      <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true">
-        <div class="block_2_1_member">
-          <i class="fal fa-user-circle"></i>
-          <p>Thêm khách hàng</p>
-        </div>
-        <div class="block_2_1_button">
-          <button class="plus_circle">
-            <i class="fal fa-plus-circle"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="block_3" :class="{empty: $parent.data.length == 0}">
-      <SingleBill ref="SingleBill"></SingleBill>
-    </div>
-    <div class="block_4" v-if="$parent.data.length > 0">
-      <div class="block_4_1">
-        <div class="tax">
-          <div class="tax_txt">
-            <span>Thuế VAT(10%)</span>
-          </div>
-          <div class="tax_price">
-            <b>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(tax)}}</b>
-          </div>
-        </div>
-        <div class="sub_total">
-          <div class="total_txt">
-            <p>Tổng tiền</p>
-            <span>({{handleQuantity}} sản phẩm)</span>
-          </div>
-          <div class="total">
-            <b>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(handleTotal)}}</b>
-          </div>
-        </div>
-        <div class="discount">
-          <a @click.stop.prevent="$refs.ModalDiscount.open = true">
-            <p>Thêm giảm giá</p>
-            <i class="fal fa-plus-circle"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="block_6">
-      <button class="provisional">Tạm tính</button>
-      <button class="pay" @click.stop.prevent="openCharge">Thanh toán</button>
     </div>
     <CreateCustomer ref="CreateCustomer"></CreateCustomer>
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
@@ -130,6 +146,7 @@ export default {
     return {
       data: [
         {
+          id: 1,
           bill: "HD001"
         }
       ],
@@ -142,10 +159,17 @@ export default {
       },
       extend_list_bill: false,
       tab: 'HD001',
-      modalDelete: false
+      modalDelete: false,
+      name_customer: '',
+      select_customer: false,
+      seller: ''
     };
   },
   methods: {
+    handleChangeCustomer: function(){
+      let vm = this;
+      vm.select_customer = false;
+    },
     openCharge: function(){
       let vm = this;
       if(vm.$parent.data != ''){
@@ -193,9 +217,15 @@ export default {
         if(j > 0){
           let h = k < 10 ? "" + "0" + k : "" + k;
           let new_bill = {
+            id: Number(h),
             bill: `HD0${h}`
           };
           vm.data.push(new_bill);
+          let findIndex = vm.totalBill.indexOf(new_bill.bill);
+          if(findIndex == -1){
+            vm.totalBill.splice(vm.totalBill.length - 1, 1);
+            vm.totalBill.push(new_bill);
+          }
           vm.tab = new_bill.bill;
           vm.data.sort(function(a,b){
             let number_a = a.bill.substr(3,2);
@@ -209,25 +239,54 @@ export default {
           let o = vm.data.length;
           o = o < 9 ? "" + "0" + (o + 1) : "" + (o + 1);
           let new_bill = {
+            id: Number(o),
             bill: `HD0${o}`
           };
           vm.data.push(new_bill);
+          let findBill = vm.totalBill.indexOf(new_bill.bill);
+          if(findBill == -1){
+            vm.totalBill.splice(vm.totalBill.length - 1, 1);
+            vm.totalBill.push(new_bill);
+          }
           vm.tab = new_bill.bill;
           break;
         }
       };
     },
-    handleDeleteBill: function(index){
+    handleDeleteBill: function(item,index){
       let vm = this;
-      // vm.modalDelete = true;
       let button = document.getElementById('deleteBill');
       if(vm.data.length > 1){
-        vm.data.splice(index, 1); 
+        let findIndex = vm.data.findIndex(row => row.bill === item.bill);
+        if(findIndex > -1){
+          vm.data.splice(findIndex, 1);
+        }
       };
+      if(window.innerWidth > 1439 && vm.data.length < 5){
+        vm.extend_list_bill = false;
+      }else if(window.innerWidth < 1439 && vm.data.length < 4){
+        vm.extend_list_bill = false;
+      };
+      if(vm.tab == item.bill){
+        let popTab = vm.totalBill[vm.totalBill.length - 1];
+        vm.tab = popTab.bill;
+      }
     },
     handleTab: function(item){
       let vm = this;
-      vm.tab = item.bill;
+      if(vm.data.length > 5){
+        let new_bill = {
+          bill: item.bill
+        };
+        let findBill = vm.totalBill.indexOf(item);
+        if(findBill == -1){
+          let pop = vm.totalBill.pop();
+          vm.totalBill.push(new_bill);
+        }
+        vm.tab = item.bill;
+      }else{
+        vm.tab = item.bill;
+      }
     }
   },
   computed: {
@@ -264,6 +323,8 @@ export default {
     vm.scrollToFixed();
   },
   created: function(){
+    let vm = this;
+    vm.seller = localStorage.getItem('name')
   },
   watch: {
     
