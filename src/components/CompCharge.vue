@@ -209,8 +209,41 @@ export default {
                         </div>
                     `)
                     bill.forEach(item => {
-                        window.frames["printf"].document.write(`<div><p>${item.product_id}</p></div>`);
+                        window.frames["printf"].document.write(`
+                            <div class="list_item" style="border-bottom:1px dashed black;padding:3px 0;">
+                                <div class="item" v-for="item in $parent.$refs.Content.data" :key="item.id" style="display:flex;align-items:center;">
+                                    <p style="width:40%;">${item.product_name}</p>
+                                    <p style="width:10%;">${item.quantity}</p>
+                                    <p style="width:25%;text-align:center;">${item.price}</p>
+                                    <p style="width:25%;text-align:right;">${item.quantity * item.price}</p>
+                                </div>
+                            </div>
+                        `);
                     });
+                    let grand_total = 0;
+                    bill.forEach(item => {
+                        return grand_total += item.price * item.quantity;
+                    })
+                    window.frames["printf"].document.write(`
+                        <div style="display:flex; align-items:center;justify-content:flex-end;padding-top:3px;">
+                            <div style="width:60%;display:flex;justify-content:space-between;">
+                                <p>Tổng tiền hàng:</p>
+                                <p>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(grand_total)}</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center;justify-content:flex-end;">
+                            <div style="width:60%;display:flex;justify-content:space-between;">
+                                <p>Chiết khấu:</p>
+                                <p>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(0)}</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center;justify-content:flex-end;">
+                            <div style="width:60%;display:flex;justify-content:space-between;">
+                                <p>Tổng cộng:</p>
+                                <p>${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(grand_total)}</p>
+                            </div>
+                        </div>
+                    `)
                     window.frames["printf"].print();
                 }
             }).catch(err => {

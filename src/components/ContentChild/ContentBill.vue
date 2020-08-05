@@ -8,7 +8,7 @@
           </ul>
         </div>
         <div class="sales">
-          <span class="sales_1">Đã bán trong ngày:</span>
+          <span class="sales_1">Bán trong ngày:</span>
           <span class="sales_2">100.000</span>
         </div>
       </div>
