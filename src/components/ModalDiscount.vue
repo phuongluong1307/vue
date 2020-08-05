@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <button>Thêm</button>
+                <button @click.stop.prevent="handleAddDiscount">Thêm</button>
             </div>
         </div>
         <div class="mask" @click.stop.prevent="open = false"></div>
@@ -89,6 +89,14 @@ export default {
             if(vm.number == ''){
                 vm.number = "" + 0;
             }
+        },
+        handleAddDiscount: function(){
+            let vm = this;
+            let obj = {
+                discount_price: vm.number,
+                discount_type: vm.discount
+            }
+            vm.$emit("handleAddDiscount", obj)
         }
     },
     computed: {

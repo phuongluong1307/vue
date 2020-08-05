@@ -37,6 +37,7 @@ export default {
                 }else{
                     vm.$parent.loadRecords();
                     vm.open = false;
+                    vm.$parent.$parent.$refs.Content.$refs.ContentMenu.loadProduct();
                 }
             }).catch(err => {
                 console.log(res)

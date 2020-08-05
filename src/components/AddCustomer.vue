@@ -61,7 +61,7 @@ export default {
                     vm.$parent.popup = false;
                     vm.$parent.closePopup();
                     vm.$parent.select_customer = true;
-                    vm.$parent.$parent.name_customer = vm.form_customer.name;
+                    vm.$parent.name_customer = vm.form_customer.name;
                 }
             }).catch(err => {
                 console.log(err)

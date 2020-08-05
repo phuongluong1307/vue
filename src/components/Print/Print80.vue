@@ -1,7 +1,7 @@
 <template>
-    <div class="print_container" id="print_80" style="display:none;"> 
+    <div class="print_container" id="print_80"> 
         <div class="box_print">
-            <div class="">
+            <div>
                 <p style="font-size:13px;font-weight:bold;text-align:center;">Hệ thống cửa hàng</p>
                 <p style="text-align:center;font-size:13px;font-weight:bold;">Soul Master</p>
                 <p style="padding-top:3px;">CN1: 123 Nguyễn Văn Khối</p>
@@ -23,7 +23,7 @@
             </div>
             <div class="list_item" style="border-bottom:1px dashed black;padding:3px 0;">
                 <div class="item" v-for="item in $parent.$refs.Content.data" :key="item.id" style="display:flex;align-items:center;">
-                    <p style="width:40%;">{{item.name_product}}</p>
+                    <p style="width:40%;">{{item.product_name}}</p>
                     <p style="width:10%;">{{item.quantity}}</p>
                     <p style="width:25%;text-align:center;">{{item.price}}</p>
                     <p style="width:25%;text-align:right;">{{item.quantity * item.price}}</p>
@@ -54,6 +54,11 @@
 <script>
 export default {
     name: 'Print80',
+    data: function(){
+        return {
+            obj: null
+        }
+    },
     computed: {
         grandTotal: function(){
             let vm = this;
@@ -63,11 +68,15 @@ export default {
             });
             return total;
         }
+    },
+    created: function(){
+        this.obj = this.$parent.$refs.Content.$refs.ContentBill.my_singleBill;
     }
 }
 </script>
 
 <style>
+.print_container{display:none;}
 @media print{
     @page{
         size:80mm;
@@ -85,6 +94,8 @@ export default {
         color: black;
         font-size:10px;
     }
+    .content,.extend_bar,.order,.list_store,.list_product{display:none;}
+    .print_container{display:block;}
     .box_print{width:302px;height:100%;padding:0 20px;}
 }
 </style>

@@ -210,7 +210,12 @@ export default {
       let checkbox = document.querySelectorAll('.checkbox_category');
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = true;
-        vm.checkbox.push(checkbox[i].value)
+        if(vm.checkbox.includes(checkbox[i].value)){
+          vm.checkbox.push(checkbox[i].value);
+        };
+        if(vm.list_select_category.includes(checkbox[i].value)){
+          vm.list_select_category.push(checkbox[i].value);
+        }
       };
     },
     unSelectAll: function(){
@@ -219,6 +224,7 @@ export default {
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = false;
         vm.checkbox.splice(checkbox[i], 1);
+        vm.list_select_category.splice(checkbox[i], 1);
       };
     },
     loadProduct: function(){

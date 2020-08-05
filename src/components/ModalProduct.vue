@@ -110,6 +110,7 @@ export default {
                         vm.form_product.thumbnail = "";
                         vm.form_product.price = "";
                         vm.$refs.SelectMulti.name = "";
+                        vm.$parent.$parent.$refs.Content.$refs.ContentMenu.loadProduct();
                     }
                 }).catch(err => {
                     console.log(err)
@@ -131,6 +132,7 @@ export default {
                         vm.form_product.thumbnail = "";
                         vm.form_product.price = "";
                         vm.$refs.SelectMulti.name = "";
+                        vm.$parent.$parent.$refs.Content.$refs.ContentMenu.loadProduct();
                     }
                 }).catch(err => {
                     console.log(err)

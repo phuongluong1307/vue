@@ -1,13 +1,13 @@
 <template>
-    <div class="adjust" :class="open ? 'open' : '' ">
+    <div class="adjust" v-if="openModalAdjust">
         <div class="box">
             <div class="detail_product">
                 <div class="image_product">
-                    <img :src="$parent.obj.image" alt="">
+                    <img :src="obj.image" alt="">
                 </div>
                 <div class="info_product">
                     <div class="info_item">
-                        <h5>{{$parent.obj.name_product}}</h5>
+                        <h5>{{obj.name_product}}</h5>
                     </div>
                     <div class="info_item">
                         <p>SKU code:</p>
@@ -16,7 +16,10 @@
                         <p>Barcode:</p>
                     </div>
                     <div class="info_item">
-                        <p>Giá bán: <span>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format($parent.obj.price)}}</span></p>
+                        <p>Giá bán: 
+                            <span>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(obj.price)}}</span>
+                            <span v-if="discount_item">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(price_product)}}</span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -24,7 +27,7 @@
                 <ul class="promotion_1">
                     <li class="promotion_1_1" :class="{active: promotion === 'quantity'}" @click.stop.prevent="handleActive('quantity')">
                         <p>SỐ LƯỢNG</p>
-                        <p>{{$parent.obj.quantity}}</p>
+                        <p>{{obj.quantity}}</p>
                     </li>
                     <li class="promotion_1_1" :class="{active: promotion === 'tax'}" @click.stop.prevent="handleActive('tax')">
                         <p>THUẾ</p>
@@ -115,7 +118,7 @@
                 <button @click.stop.prevent="handleUpdate">Cập nhật</button>
             </div>
         </div>
-        <div class="mask" @click.stop.prevent="open = false"></div>
+        <div class="mask" @click.stop.prevent="openModalAdjust = false"></div>
     </div>
 </template>
 
@@ -133,7 +136,11 @@ export default {
             name_promotion: 'quantity',
             discount: '%',
             quantity: null,
-            number: '0'
+            number: '0',
+            obj: null,
+            openModalAdjust: false,
+            discount_item: false,
+            price_product: 0
         }
     },
     methods: {
@@ -189,7 +196,28 @@ export default {
         },
         handleUpdate: function(){
             let vm = this;
-            
+            if(vm.quantity == 0){
+                alert('Vui lòng chọn số lượng');
+            }else{
+                vm.obj.quantity = Number(vm.quantity);
+                vm.openModalAdjust = false;
+                let new_price = null;
+                let current_discount = null;
+                if(vm.discount == "%"){
+                    current_discount = (vm.obj.price * Number(vm.number)) / 100;
+                    new_price = vm.obj.price - current_discount;
+                    vm.obj.price = new_price;
+                    vm.obj.discount_type = vm.discount;
+                    vm.obj.discount_value = vm.number;
+                    vm.obj.discount_price = current_discount;
+                }else if(vm.discount == "VND"){
+                    new_price = vm.obj.price - vm.number;
+                    vm.obj.price = new_price;
+                    vm.obj.discount_type = vm.discount;
+                    vm.obj.discount_value = vm.number;
+                    vm.obj.discount_price = vm.number;
+                }
+            }
         }
     },
     computed: {

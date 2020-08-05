@@ -42,6 +42,7 @@ export default {
     components: {
         AddCustomer
     },
+    props: ['bill'],
     name: 'CreateCustomer',
     data: function(){
         return {
@@ -89,7 +90,7 @@ export default {
         handleSelect: function(item){
             let vm = this;
             vm.$parent.select_customer = true;
-            vm.$parent.name_customer = item.name;
+            vm.bill.customer = item.name;
             vm.search = '';
             vm.closePopup();
         },

@@ -20,21 +20,7 @@
             <li class="tab" :class="item.bill == tab ? 'active' : ''" @click.stop.prevent="handleTab(item)">
               <a><span>{{item.bill}}</span></a>
               <span class="close_tab" @click.stop.prevent="handleDeleteBill(item,index)"><i class="fal fa-times"></i></span>
-              <!-- <div class="modal_delete" v-if="modalDelete">
-                <div class="box">
-                  <div class="top">
-                    <h6 class="title">Xóa bỏ hóa đơn</h6>
-                  </div>
-                  <div class="center">
-                    <p>Bạn chắc chắn xóa hóa đơn này!</p>
-                  </div>
-                  <div class="bottom">
-                    <button class="bottom_1" id="deleteBill" @click.stop.prevent="handleDeleteBill(item,index)">Xóa</button>
-                    <button class="bottom_2" @click.stop.prevent="modalDelete = false">Hủy</button>
-                  </div>
-                </div>
-                <div class="mask"></div>
-              </div> -->
+              
             </li>
           </div>
           <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="handleAddBill">
@@ -59,12 +45,12 @@
       </div>
     </div>
     <div class="content_bill_2">
-      <div class="content_bill_2_1" v-for="item in data" :key="item.id" :class="[tab == item.bill ? 'active' : '']">
+      <div class="content_bill_2_1">
         <div class="block_2">
           <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true" v-if="select_customer">
             <div class="block_2_1_member">
               <i class="fal fa-user-circle"></i>
-              <p>{{name_customer}}</p>
+              <p>{{my_singleBill.customer ? my_singleBill.customer : 'Thêm khách hàng'}}</p>
             </div>
             <div class="block_2_1_button">
               <button class="times-circle" @click.stop.prevent="handleChangeCustomer">
@@ -84,10 +70,10 @@
             </div>
           </div>
         </div>
-        <div class="block_3" :class="{empty: $parent.data.length == 0}">
-          <SingleBill ref="SingleBill"></SingleBill>
+        <div class="block_3" :class="{empty: my_singleBill.products.length == 0}">
+          <SingleBill ref="SingleBill" :bill="my_singleBill"></SingleBill>
         </div>
-        <div class="block_4" v-if="$parent.data.length > 0">
+        <div class="block_4" v-if="my_singleBill.products.length > 0">
           <div class="block_4_1">
             <div class="tax">
               <div class="tax_txt">
@@ -109,7 +95,10 @@
             <div class="discount">
               <a @click.stop.prevent="$refs.ModalDiscount.open = true">
                 <p>Thêm giảm giá</p>
-                <i class="fal fa-plus-circle"></i>
+                <div class="icons_plus" v-if="!status_discount">
+                  <i class="fal fa-plus-circle"></i>
+                </div>
+                <div class="discount_1" v-else>-{{my_singleBill.discount_price + my_singleBill.discount_type}}</div>
               </a>
             </div>
           </div>
@@ -120,10 +109,10 @@
         </div>
       </div>
     </div>
-    <CreateCustomer ref="CreateCustomer"></CreateCustomer>
+    <CreateCustomer ref="CreateCustomer" :bill="my_singleBill"></CreateCustomer>
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
-    <CompCharge :data="$parent.data" ref="CompCharge"></CompCharge>
-    <ModalDiscount ref="ModalDiscount"></ModalDiscount>
+    <CompCharge :data="my_singleBill" ref="CompCharge"></CompCharge>
+    <ModalDiscount ref="ModalDiscount" @handleAddDiscount="handleAddDiscount"></ModalDiscount>
   </div>
 </template>
 
@@ -146,8 +135,15 @@ export default {
     return {
       data: [
         {
-          id: 1,
-          bill: "HD001"
+          bill: "HD001",
+          products: [],
+          customer: null,
+          total_price: 0,
+          discount_price: 0,
+          discount_type: 'VND',
+          discount_value: 0,
+          seller: localStorage.getItem('name'),
+          statusDiscountTotal: false
         }
       ],
       tax: 0,
@@ -162,7 +158,8 @@ export default {
       modalDelete: false,
       name_customer: '',
       select_customer: false,
-      seller: ''
+      seller: '',
+      status_discount: false
     };
   },
   methods: {
@@ -172,7 +169,7 @@ export default {
     },
     openCharge: function(){
       let vm = this;
-      if(vm.$parent.data != ''){
+      if(vm.my_singleBill.products != ''){
         vm.$refs.CompCharge.open = true;
       }else{
         alert('Vui lòng chọn sản phẩm!');
@@ -217,8 +214,15 @@ export default {
         if(j > 0){
           let h = k < 10 ? "" + "0" + k : "" + k;
           let new_bill = {
-            id: Number(h),
-            bill: `HD0${h}`
+            bill: `HD0${h}`,
+            products: [],
+            customer: null,
+            total_price: 0,
+            discount_price: 0,
+            discount_type: 'VND',
+            discount_value: 0,
+            seller: localStorage.getItem('name'),
+            statusDiscountTotal: false
           };
           vm.data.push(new_bill);
           let findIndex = vm.totalBill.indexOf(new_bill.bill);
@@ -239,8 +243,15 @@ export default {
           let o = vm.data.length;
           o = o < 9 ? "" + "0" + (o + 1) : "" + (o + 1);
           let new_bill = {
-            id: Number(o),
-            bill: `HD0${o}`
+            bill: `HD0${o}`,
+            products: [],
+            customer: null,
+            total_price: 0,
+            discount_price: 0,
+            discount_type: 'VND',
+            discount_value: 0,
+            seller: localStorage.getItem('name'),
+            statusDiscountTotal: false
           };
           vm.data.push(new_bill);
           let findBill = vm.totalBill.indexOf(new_bill.bill);
@@ -287,13 +298,27 @@ export default {
       }else{
         vm.tab = item.bill;
       }
+    },
+    handleAddDiscount: function(value){
+      let vm = this;
+      if(value.discount_price != 0){
+        vm.status_discount = true;
+        vm.my_singleBill.discount_type = value.discount_type;
+        vm.my_singleBill.discount_price = value.discount_price;
+        vm.$refs.ModalDiscount.open = false;
+      }else{
+        vm.my_singleBill.discount_type = value.discount_type;
+        vm.my_singleBill.discount_price = value.discount_price;
+        vm.status_discount = false;
+        vm.$refs.ModalDiscount.open = false;
+      }
     }
   },
   computed: {
     handleTotal: function(){
       let vm = this;
       let total = null;
-      vm.$parent.data.map((item,index) => {
+      vm.my_singleBill.products.map((item,index) => {
         total += item.price * item.quantity;
         vm.tax = total / 10;
       });
@@ -302,7 +327,7 @@ export default {
     handleQuantity: function(){
       let vm = this;
       let total = 0;
-      vm.$parent.data.map((item,index) => {
+      vm.my_singleBill.products.map((item,index) => {
         total += item.quantity;
       });
       return total;
@@ -316,6 +341,13 @@ export default {
         bill = vm.data.slice(0,4);
       };
       return bill;
+    },
+    my_singleBill: function(){
+      let vm = this;
+      let obj = null;
+      let findIndex = vm.data.findIndex(item => item.bill === vm.tab);
+      obj = vm.data[findIndex];
+      return obj;
     }
   },
   mounted: function(){
@@ -327,7 +359,18 @@ export default {
     vm.seller = localStorage.getItem('name')
   },
   watch: {
-    
+    'tab': {
+      deep:true,
+      handler: function(newval){
+        this.$parent.my_tab = newval;
+      }
+    },
+    'my_singleBill': {
+      deep: true,
+      handler: function(newval){
+        this.$parent.$parent.$refs.Print80.obj = newval;
+      }
+    }
   }
 };
 </script>
