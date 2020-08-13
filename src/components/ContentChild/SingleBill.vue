@@ -16,8 +16,8 @@
             <span>{{item.quantity}}</span>
           </div>
           <div class="total">
-            <div class="price">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}}</div>
-            <div class="discount_price" v-if="item.discount_price != 0">-{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.discount_price)}}</div>
+            <div class="price">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format((item.price * item.quantity) - (item.discount_price * item.quantity))}}</div>
+            <div class="discount_price" v-if="item.discount_price != 0">Đã giảm:{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.discount_price * item.quantity)}}</div>
           </div>
         </div>
         <div class="delete_product" v-if="openModalDelete">

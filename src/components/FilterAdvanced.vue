@@ -4,13 +4,22 @@
             <div class="filter_advanced_1">
                 <ul class="filter_advanced_1_1">
                     <li class="filter_advanced_1_1_1">
-                        <Datepicker class="date_picker" :language="vi" placeholder="Tìm theo ngày" input-class="input_picker"></Datepicker>
+                        <Datepicker class="date_picker" v-model="$parent.filters.date" :language="vi" placeholder="Tìm theo ngày" input-class="input_picker"></Datepicker>
                     </li>
                     <li class="filter_advanced_1_1_1">
-                        <SelectMulti ref="SelectMulti" title="Tìm theo loại khách hàng" :data="data"></SelectMulti>
-                    </li>
-                    <li class="filter_advanced_1_1_1">
-                        <SelectMulti ref="SelectMulti" title="Tìm theo loại sản phẩm" :data="category"></SelectMulti>
+                        <div class="select_multi">
+                            <div class="selecter" @click.stop.prevent="showEvent">
+                                <input type="text" class="text" placeholder="Loại người dùng" ref="customer" autocomplete="off" readonly="readonly" :value="$parent.filters.customer">
+                                <div class="icon"><i class="fal fa-chevron-down"></i></div>
+                                <div class="select_box" v-show="select">
+                                    <ul>
+                                        <li class="select_item" v-for="item in data" :key="item._id" @click.stop.prevent="selectCustomer(item)">
+                                            <a>{{item.name}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -21,69 +30,16 @@
                 </div>
                 <div class="filter_advanced_2_1" v-else>
                     <div class="list_order">
-                        <div class="item">
+                        <div class="item" v-for="(item, index) in arr" :key="index" @click.stop.prevent="handleSelect(item)">
                             <div class="code_bill">
-                                <p>#123456</p>
-                                <p>123</p>
+                                <p>HD: {{item.code_bill}}</p>
+                                <p>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.total_price)}}</p>
                             </div>
                             <div class="time_bill">
-                                <p>{{(new Date()).toLocaleDateString()}}</p>
-                                <p>Nguyễn Văn Tèo</p>
+                                <p>{{item.date}}</p>
                             </div>
                             <div class="invoice">
-                                <p>Hóa đơn: #123456</p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="code_bill">
-                                <p>#123456</p>
-                                <p>123</p>
-                            </div>
-                            <div class="time_bill">
-                                <p>{{(new Date()).toLocaleDateString()}}</p>
-                                <p>Nguyễn Văn Tèo</p>
-                            </div>
-                            <div class="invoice">
-                                <p>Hóa đơn: #123456</p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="code_bill">
-                                <p>#123456</p>
-                                <p>123</p>
-                            </div>
-                            <div class="time_bill">
-                                <p>{{(new Date()).toLocaleDateString()}}</p>
-                                <p>Nguyễn Văn Tèo</p>
-                            </div>
-                            <div class="invoice">
-                                <p>Hóa đơn: #123456</p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="code_bill">
-                                <p>#123456</p>
-                                <p>123</p>
-                            </div>
-                            <div class="time_bill">
-                                <p>{{(new Date()).toLocaleDateString()}}</p>
-                                <p>Nguyễn Văn Tèo</p>
-                            </div>
-                            <div class="invoice">
-                                <p>Hóa đơn: #123456</p>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="code_bill">
-                                <p>#123456</p>
-                                <p>123</p>
-                            </div>
-                            <div class="time_bill">
-                                <p>{{(new Date()).toLocaleDateString()}}</p>
-                                <p>Nguyễn Văn Tèo</p>
-                            </div>
-                            <div class="invoice">
-                                <p>Hóa đơn: #123456</p>
+                                <p>Người bán:</p>
                             </div>
                         </div>
                     </div>
@@ -106,6 +62,7 @@ export default {
         Datepicker,
         SelectMulti
     },
+    props: ['arrFilters'],
     name: 'FilterAdvanced',
     data: function(){
         return {
@@ -113,8 +70,60 @@ export default {
             en: en,
             vi: vi,
             filter: false,
-            data: ["Khách lẻ", "Khách A"],
-            category: ["Cà phê", "Sinh tố"]
+            select: false,
+            data: null,
+            arr: null
+        }
+    },
+    methods: {
+        showEvent: function(){
+            let vm = this;
+            vm.select = !vm.select;
+        },
+        selectCustomer: function(item){
+            let vm = this;
+            vm.select = false;
+            vm.$parent.filters.customer = item.name;
+        },
+        hideEvent: function(){
+            let vm = this;
+            vm.select = false;
+        },
+        loadCustomer: function(){
+            let vm = this;
+            vm.axios({
+                method: "GET",
+                url: vm.$root.API_GATE + '/api/customers',
+                headers: {'auth-token': localStorage.getItem('token')}
+            }).then(res => {
+                vm.data = res.data.data.docs;
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        handleSelect: function(item){
+            let vm = this;
+            vm.$parent.handleSelectBill(item);
+            vm.open = false;
+        }
+    },
+    created: function(){
+        let vm = this;
+        vm.loadCustomer();
+        vm.arr = vm.arrFilters;
+    },
+    watch: {
+        'arrFilters': {
+            deep: true,
+            handler: function(newval){
+                let vm = this;
+                vm.arr = newval;
+                if(newval.length != 0){
+                    vm.filter = true;
+                }else{
+                    vm.filter = false;
+                }
+            }
         }
     }
 }

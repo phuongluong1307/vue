@@ -9,7 +9,7 @@
         </div>
         <div class="sales">
           <span class="sales_1">Bán trong ngày:</span>
-          <span class="sales_2">100.000</span>
+          <span class="sales_2">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(totalSaleOfDate ? totalSaleOfDate : 0)}}</span>
         </div>
       </div>
     </div>
@@ -20,7 +20,6 @@
             <li class="tab" :class="item.bill == tab ? 'active' : ''" @click.stop.prevent="handleTab(item)">
               <a><span>{{item.bill}}</span></a>
               <span class="close_tab" @click.stop.prevent="handleDeleteBill(item,index)"><i class="fal fa-times"></i></span>
-              
             </li>
           </div>
           <li class="add_bill" :class="data.length > 4 ? 'extend_add_bill' :''" @click.stop.prevent="handleAddBill">
@@ -75,9 +74,9 @@
         </div>
         <div class="block_4" v-if="my_singleBill.products.length > 0">
           <div class="block_4_1">
-            <div class="tax">
+            <div class="tax" @click.stop.prevent="handleOpenTax">
               <div class="tax_txt">
-                <span>Thuế VAT(10%)</span>
+                <span>Thuế ({{my_singleBill.tax_value}}%)</span>
               </div>
               <div class="tax_price">
                 <b>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(tax)}}</b>
@@ -98,7 +97,7 @@
                 <div class="icons_plus" v-if="!status_discount">
                   <i class="fal fa-plus-circle"></i>
                 </div>
-                <div class="discount_1" v-else>-{{my_singleBill.discount_price + my_singleBill.discount_type}}</div>
+                <div class="discount_1" v-else>-{{my_singleBill.discount_value + my_singleBill.discount_type}}</div>
               </a>
             </div>
           </div>
@@ -113,6 +112,7 @@
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
     <CompCharge :data="my_singleBill" ref="CompCharge"></CompCharge>
     <ModalDiscount ref="ModalDiscount" @handleAddDiscount="handleAddDiscount"></ModalDiscount>
+    <ModalTax ref="ModalTax" @handleAddTax="handleAddTax"></ModalTax>
   </div>
 </template>
 
@@ -122,6 +122,7 @@ import AdjustProduct from '../AdjustProduct';
 import CompCharge from '../CompCharge';
 import ModalDiscount from '../ModalDiscount';
 import SingleBill from './SingleBill';
+import ModalTax from '../ModalTax';
 export default {
   name: "ContentBill",
   components: {
@@ -129,7 +130,8 @@ export default {
       AdjustProduct,
       CompCharge,
       ModalDiscount,
-      SingleBill
+      SingleBill,
+      ModalTax
     },
   data() {
     return {
@@ -138,11 +140,12 @@ export default {
           bill: "HD001",
           products: [],
           customer: null,
+          tax_value: 0,
+          tax_price: 0,
           total_price: 0,
           discount_price: 0,
           discount_type: 'VND',
           discount_value: 0,
-          seller: localStorage.getItem('name'),
           statusDiscountTotal: false
         }
       ],
@@ -159,10 +162,16 @@ export default {
       name_customer: '',
       select_customer: false,
       seller: '',
-      status_discount: false
+      status_discount: false,
+      sale_of_date: 0,
+      listInvoice: null
     };
   },
   methods: {
+    handleOpenTax: function(){
+      let vm = this;
+      vm.$refs.ModalTax.open = true;
+    },
     handleChangeCustomer: function(){
       let vm = this;
       vm.select_customer = false;
@@ -217,11 +226,12 @@ export default {
             bill: `HD0${h}`,
             products: [],
             customer: null,
+            tax_value: 0,
+            tax_price: 0,
             total_price: 0,
             discount_price: 0,
             discount_type: 'VND',
             discount_value: 0,
-            seller: localStorage.getItem('name'),
             statusDiscountTotal: false
           };
           vm.data.push(new_bill);
@@ -245,12 +255,13 @@ export default {
           let new_bill = {
             bill: `HD0${o}`,
             products: [],
+            tax_value: 0,
+            tax_price: 0,
             customer: null,
             total_price: 0,
             discount_price: 0,
             discount_type: 'VND',
             discount_value: 0,
-            seller: localStorage.getItem('name'),
             statusDiscountTotal: false
           };
           vm.data.push(new_bill);
@@ -301,17 +312,40 @@ export default {
     },
     handleAddDiscount: function(value){
       let vm = this;
-      if(value.discount_price != 0){
+      if(value.discount_value != 0){
         vm.status_discount = true;
         vm.my_singleBill.discount_type = value.discount_type;
-        vm.my_singleBill.discount_price = value.discount_price;
+        vm.my_singleBill.discount_value = value.discount_value;
         vm.$refs.ModalDiscount.open = false;
       }else{
         vm.my_singleBill.discount_type = value.discount_type;
-        vm.my_singleBill.discount_price = value.discount_price;
+        vm.my_singleBill.discount_value = value.discount_value;
         vm.status_discount = false;
         vm.$refs.ModalDiscount.open = false;
       }
+    },
+    handleAddTax: function(obj){
+      let vm = this;
+      if(obj){
+        vm.my_singleBill.tax_value = obj.tax_value;
+        vm.$refs.ModalTax.open = false;
+      }
+    },
+    loadInvoiceOfDate: function(){
+      let vm = this;
+      vm.axios({
+        method: "GET",
+        url: vm.$root.API_GATE + '/api/invoices/',
+        headers: {'auth-token': localStorage.getItem('token')}
+      }).then(res => {
+        if(res.data.error){
+
+        }else{
+          vm.listInvoice = res.data.data.docs;
+        };
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   computed: {
@@ -320,8 +354,14 @@ export default {
       let total = null;
       vm.my_singleBill.products.map((item,index) => {
         total += item.price * item.quantity;
-        vm.tax = total / 10;
       });
+      if(vm.my_singleBill.tax_value != 0){
+        vm.tax = (total * vm.my_singleBill.tax_value) / 100;
+        vm.my_singleBill.tax_price = vm.tax;
+      }else{
+        vm.tax = 0;
+        vm.my_singleBill.tax_price = 0;
+      }
       return total + vm.tax;
     },
     handleQuantity: function(){
@@ -348,6 +388,20 @@ export default {
       let findIndex = vm.data.findIndex(item => item.bill === vm.tab);
       obj = vm.data[findIndex];
       return obj;
+    },
+    totalSaleOfDate: function(){
+      let vm = this;
+      let date = (new Date());
+      let date_of_sale = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+      let total = 0;
+      if(vm.listInvoice){
+        vm.listInvoice.map((item,index) => {
+          if(item.date == date_of_sale){
+            total += item.total_price;
+          }
+        })
+      };
+      return total;
     }
   },
   mounted: function(){
@@ -356,19 +410,15 @@ export default {
   },
   created: function(){
     let vm = this;
-    vm.seller = localStorage.getItem('name')
+    vm.loadInvoiceOfDate();
+    let user = JSON.parse(localStorage.getItem('name'));
+    vm.seller = user.name;
   },
   watch: {
     'tab': {
       deep:true,
       handler: function(newval){
         this.$parent.my_tab = newval;
-      }
-    },
-    'my_singleBill': {
-      deep: true,
-      handler: function(newval){
-        this.$parent.$parent.$refs.Print80.obj = newval;
       }
     }
   }

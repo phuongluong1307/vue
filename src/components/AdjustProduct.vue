@@ -3,7 +3,7 @@
         <div class="box">
             <div class="detail_product">
                 <div class="image_product">
-                    <img :src="obj.image" alt="">
+                    <img :src="$root.API_GATE + obj.image" alt="">
                 </div>
                 <div class="info_product">
                     <div class="info_item">
@@ -29,10 +29,6 @@
                         <p>SỐ LƯỢNG</p>
                         <p>{{obj.quantity}}</p>
                     </li>
-                    <li class="promotion_1_1" :class="{active: promotion === 'tax'}" @click.stop.prevent="handleActive('tax')">
-                        <p>THUẾ</p>
-                        <p>10%</p>
-                    </li>
                     <li class="promotion_1_1" :class="{active: promotion === 'discount'}" @click.stop.prevent="handleActive('discount')">
                         <p>GIẢM GIÁ</p>
                         <p>0</p>
@@ -49,46 +45,6 @@
                             <Calculator @handleCal="handleCal" @handleMinus="handleMinus"></Calculator>
                         </div>
                     </div>
-                </div>
-                <div class="list_table table_2" :class="{active: promotion === 'tax'}">
-                    <ul>
-                        <li>
-                            <label class="label_radio">GST 10%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="label_radio">GST 10%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="label_radio">CSGT 10%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="label_radio">SGST 10%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="label_radio">VAT 14%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="label_radio">VAT 10%
-                                <input type="radio" name="radio">
-                                <span class="check_tax"></span>
-                            </label>
-                        </li>
-                    </ul>
                 </div>
                 <div class="list_table table_3" :class="{active: promotion === 'discount'}">
                     <div class="table_3_1">
@@ -205,14 +161,11 @@ export default {
                 let current_discount = null;
                 if(vm.discount == "%"){
                     current_discount = (vm.obj.price * Number(vm.number)) / 100;
-                    new_price = vm.obj.price - current_discount;
-                    vm.obj.price = new_price;
                     vm.obj.discount_type = vm.discount;
                     vm.obj.discount_value = vm.number;
                     vm.obj.discount_price = current_discount;
                 }else if(vm.discount == "VND"){
                     new_price = vm.obj.price - vm.number;
-                    vm.obj.price = new_price;
                     vm.obj.discount_type = vm.discount;
                     vm.obj.discount_value = vm.number;
                     vm.obj.discount_price = vm.number;

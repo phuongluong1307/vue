@@ -6,7 +6,7 @@
           <div class="btn_bars">
             <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
-          <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = true">Soul Master</div>
+          <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = false">{{nameBranch}}</div>
         </div>
       </div>
       <div class="block_1_1">
@@ -29,17 +29,13 @@
             <p>Tìm kiếm</p><b>{{arr_product.length}}</b><p>kết quả</p>
           </div>
           <div class="block_2_1_1_1" v-if="filter_category">
-            <div class="item item_filter" v-if="allCategory">
-              <p>Tất cả</p>
-              <span @click.stop.prevent="deleteFilter('all', 3)"><i class="fal fa-times"></i></span>
-            </div>
-            <div class="item item_filter" v-for="(item,index) in list_select_category" :key="index" v-else>
+            <div class="item item_filter" v-for="(item,index) in list_select_category" :key="index">
               <p>{{item}}</p>
               <span @click.stop.prevent="deleteFilter(item,index)"><i class="fal fa-times"></i></span>
             </div>
           </div>
         </div>
-        <div class="block_2_1_2" @click.stop.prevent="extend_filter = !extend_filter">
+        <div class="block_2_1_2" @click.stop.prevent="handleExtendFilter">
           <a class="filter">
             <i class="fal fa-filter"></i>
             Lọc sản phẩm
@@ -64,11 +60,11 @@
               <div class="item" v-for="(item, index) in handleAlpha(word)" :key="item.id" @click.stop.prevent="handleItem(item)">
                 <div class="item_box">
                   <div class="item_image" :class="index%2==0 ? 'by-height' : 'by-width'">
-                    <img :src="item.thumbnail" />
+                    <img :src="$root.API_GATE + item.thumbnail" />
                   </div>
                   <div class="item_info">
-                    <p class="name">{{item.product_name}}</p>
-                    <p class="price">{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price) }}</p>
+                    <div class="name">{{item.product_name}}</div>
+                    <div class="price">{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price) }}</div>
                   </div>
                 </div>
               </div>
@@ -159,9 +155,9 @@ export default {
       debounce: null,
       arr_filter: [],
       filter_category: false,
-      allCategory: false,
       isSearching: false,
-      filter_product: []
+      filter_product: [],
+      nameBranch: ''
     };
   },
   methods: {
@@ -210,22 +206,19 @@ export default {
       let checkbox = document.querySelectorAll('.checkbox_category');
       for(let i = 0; i < checkbox.length;i++){
         checkbox[i].checked = true;
-        if(vm.checkbox.includes(checkbox[i].value)){
+        if(!vm.checkbox.includes(checkbox[i].value)){
           vm.checkbox.push(checkbox[i].value);
         };
-        if(vm.list_select_category.includes(checkbox[i].value)){
-          vm.list_select_category.push(checkbox[i].value);
-        }
       };
     },
     unSelectAll: function(){
       let vm = this;
       let checkbox = document.querySelectorAll('.checkbox_category');
-      for(let i = 0; i < checkbox.length;i++){
-        checkbox[i].checked = false;
-        vm.checkbox.splice(checkbox[i], 1);
-        vm.list_select_category.splice(checkbox[i], 1);
-      };
+      // for(let i = 0; i < checkbox.length;i++){
+      //   checkbox[i].checked = false;
+      //   vm.checkbox.splice(checkbox[i], 1); 
+      // };
+      vm.checkbox = [];
     },
     loadProduct: function(){
       let vm = this;
@@ -249,26 +242,23 @@ export default {
       vm.filter_category = true;
       vm.extend_filter = false;
       if(vm.checkbox.length != 0){
-        if(vm.list_category.length == vm.checkbox.length){
-          vm.allCategory = true;
+        if(vm.list_category.length == 0){
           vm.loadProduct();
         }else{
-          vm.allCategory = false;
           let arr_filter = [];
           vm.checkbox.map((item) => {
-            if(!vm.list_select_category.includes(item)){
-              vm.list_select_category.push(item)
-            };
             vm.filter_product.map(row => {
-              if(item == row.category){
+              if(item == row.category && !arr_filter.includes(row)){
                 arr_filter.push(row);
               }
             });
           });
           vm.filter = true;
-          return vm.arr_product = arr_filter;
+          vm.list_select_category = vm.checkbox;
+          vm.arr_product = arr_filter;
         }
       }else{
+        vm.list_select_category = [];
         vm.filter = false;
         vm.loadProduct();
       }
@@ -277,12 +267,15 @@ export default {
       let vm = this;
       if(item == 'all'){
         vm.checkbox.splice(0, vm.checkbox.length);
-        vm.allCategory = false;
       };
       let findIndex = vm.list_select_category.indexOf(item);
-      vm.list_select_category.splice(findIndex,1);
       vm.checkbox.splice(findIndex, 1);
       vm.handleFilter();
+    },
+    handleExtendFilter: function(){
+      let vm = this;
+      vm.extend_filter = !vm.extend_filter;
+      vm.checkbox = vm.list_select_category;
     }
   },
   computed: {
@@ -347,8 +340,12 @@ export default {
     }
   },
   created: function(){
+    let vm = this;
     this.genCharArray('a','z');
     this.loadProduct();
+    if(localStorage.getItem('nameBranch')){
+      vm.nameBranch = localStorage.getItem('nameBranch');
+    }
   },
   mounted: function(){
     

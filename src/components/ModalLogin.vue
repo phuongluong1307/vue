@@ -54,36 +54,26 @@ export default {
                 if(res.data.error){
 
                 }else{
-                    vm.$parent.auth_token = true;
+                    let user = {
+                        id: result.id,
+                        name: result.name
+                    }
                     localStorage.setItem('auth_token', true)
                     vm.token = result.token;
                     localStorage.setItem('token', vm.token);
-                    localStorage.setItem('name', result.name)
+                    localStorage.setItem('name', JSON.stringify(user));
+                    vm.$parent.auth_token = true;
                 }
             }).catch(err => {
                 console.log(err)
             })
-        },
-        checkToken: function(){
-            let vm = this;
-            if(localStorage.getItem('token')){
-                vm.status_login = true;
-                vm.$forceUpdate();
-            }
         }
     },
     mounted: function(){
-        this.checkToken();
+        
     },
     watch: {
-        'token': {
-            deep: true,
-            handler: function(newval,oldval){
-                if(localStorage.getItem('token')){
-                    this.status_login = true;
-                }
-            }
-        }
+        
     }
 }
 </script>

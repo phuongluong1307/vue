@@ -93,7 +93,7 @@ export default {
         handleAddDiscount: function(){
             let vm = this;
             let obj = {
-                discount_price: vm.number,
+                discount_value: vm.number,
                 discount_type: vm.discount
             }
             vm.$emit("handleAddDiscount", obj)

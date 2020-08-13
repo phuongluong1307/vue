@@ -54,7 +54,9 @@ export default {
             is_result: false,
             list_customer: [],
             is_empty: false,
-            name_customer: ''
+            name_customer: '',
+            debounce_1: null,
+            debounce_2: null,
         }
     },
     methods: {
@@ -90,9 +92,21 @@ export default {
         handleSelect: function(item){
             let vm = this;
             vm.$parent.select_customer = true;
-            vm.bill.customer = item.name;
             vm.search = '';
-            vm.closePopup();
+            vm.$parent.$parent.$parent.loading = true;
+            vm.$parent.$parent.$parent.mask = true;
+            clearTimeout(vm.debounce_1);
+            vm.debounce_1 = setTimeout(function(){
+                vm.$parent.$parent.$parent.loadingModal = true;
+                vm.$parent.$parent.$parent.loading = false;
+                clearTimeout(vm.debounce_2);
+                vm.debounce_2 = setTimeout(function(){
+                    vm.$parent.$parent.$parent.loadingModal = false;
+                    vm.$parent.$parent.$parent.mask = false;
+                    vm.closePopup();
+                    vm.bill.customer = item.name;
+                }, 500);
+            }, 500)
         },
         closePopup: function(){
             let vm = this;
