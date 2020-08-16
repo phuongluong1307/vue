@@ -8,7 +8,7 @@
                 <form class="form-product">
                     <div class="form-group">
                         <label class="control-label">Barcode_id</label>
-                        <input type="text" v-model="form_product.barcode_id" placeholder="Enter barcode..." id="barcode" :disabled="$parent.editModal" />
+                        <input type="text" v-model="form_product.barcode_id" placeholder="Enter barcode..." id="barcode" />
                         <span class="warning-error"></span>
                     </div>
                     <div class="form-group">
@@ -310,6 +310,15 @@ export default {
     },
     created: function () {
         this.loadCategory();
+    },
+    watch: {
+        'form_product.barcode_id': {
+            deep: true,
+            handler: function(newval){
+                let vm = this;
+                vm.form_product.barcode_id = newval.split(' ').join('');
+            }
+        }
     }
 }
 </script>

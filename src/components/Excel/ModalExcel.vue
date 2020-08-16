@@ -17,11 +17,11 @@
                     <div class="center_2_1" v-show="step == 1">
                         <div class="center_2_1_1">Cần chuẩn bị file excel theo mẫu như sau</div>
                         <div class="center_2_1_2">
-                            <div class="center_2_1_2_1">thumbnail</div>
-                            <div class="center_2_1_2_1">product_name</div>
-                            <div class="center_2_1_2_1">product_SKU</div>
-                            <div class="center_2_1_2_1">price</div>
-                            <div class="center_2_1_2_1">category</div>
+                            <div class="center_2_1_2_1">Hình Ảnh</div>
+                            <div class="center_2_1_2_1">Tên SP</div>
+                            <div class="center_2_1_2_1">Mã SP</div>
+                            <div class="center_2_1_2_1">Giá</div>
+                            <div class="center_2_1_2_1">Loại SP</div>
                         </div>
                         <div class="center_2_1_3">
                             <div class="center_2_1_3_1">
@@ -46,11 +46,11 @@
                         <table class="table table-bordered center_2_1_1">
                             <thead>
                                 <tr style="text-align:center;">
-                                    <th>thumbnail</th>
-                                    <th>product_name</th>
-                                    <th>product_SKU</th>
-                                    <th>price</th>
-                                    <th>category</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>Tên SP</th>
+                                    <th>Mã SP</th>
+                                    <th>Giá</th>
+                                    <th>Loại SP</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,11 +68,11 @@
                         <table class="table table-bordered center_2_1_1">
                             <thead>
                                 <tr style="text-align:center;">
-                                    <th>thumbnail</th>
-                                    <th>product_name</th>
-                                    <th>product_SKU</th>
-                                    <th>price</th>
-                                    <th>category</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>Tên SP</th>
+                                    <th>Mã SP</th>
+                                    <th>Giá</th>
+                                    <th>Loại SP</th>
                                     <th>Trạng thái</th>
                                 </tr>
                             </thead>
@@ -176,17 +176,17 @@ export default {
         handleDownload: function(){
             let vm = this;
             let data = [
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà đào", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà vải", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà sữa", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà tắc", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà đá", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà đào", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà đào", product_SKU: "Trà đào", price: 15000,category: "tea"},
-                {thumbnail: "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", product_name: "Trà đào", product_SKU: "Trà đào", price: 15000,category: "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà vải", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà sữa", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà tắc", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đá", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
             ];
             if(data == '') return;
-            vm.JSONToCSVConvertor(data,"Vui lòng lấy full đường dẫn hình ảnh", true);
+            vm.JSONToCSVConvertor(data,"", true);
         },
         JSONToCSVConvertor: function(JSONData, ReportTitle, ShowLabel) {
             //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
@@ -195,7 +195,7 @@ export default {
             var CSV = '';    
             //Set Report title in first row or line
             
-            CSV += ReportTitle + '\r\n\n';
+            // CSV += ReportTitle + '\r\n\n';
 
             //This condition will generate the Label/Header
             if (ShowLabel) {
@@ -242,7 +242,7 @@ export default {
             fileName += ReportTitle.replace(/ /g,"_");
             
             //Initialize file format you want csv or xls
-            var uri = 'data:text/csv;charset=UTF-8,\uFEFF' + encodedUri;
+            var uri = 'data:text/xls;charset=UTF-8,\uFEFF' + encodedUri;
             
             // Now the little tricky part.
             // you can use either>> window.open(uri);
@@ -255,7 +255,7 @@ export default {
             
             //set the visibility hidden so it will not effect on your web-layout
             link.style = "visibility:hidden";
-            link.download = fileName + ".csv";
+            link.download = fileName + ".xls";
             
             //this part will append the anchor tag and remove it after automatic click
             document.body.appendChild(link);

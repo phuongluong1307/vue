@@ -17,7 +17,7 @@
             <div class="searching" v-if="isSearching">Đang tìm kiếm</div>
           </div>
           <div class="scan">
-            <button class="btn_scan" :class="scan ? 'active' : '' " @click.stop.prevent="scan = !scan"><i class="fal fa-barcode-read"></i></button>
+            <button class="btn_scan" :class="scan ? 'active' : '' " @click.stop.prevent="handleOpenBarcode"><i class="fal fa-barcode-read"></i></button>
           </div>
         </div>
       </div>
@@ -73,10 +73,13 @@
           <SearchProduct ref="SearchProduct" v-else></SearchProduct>
         </div>
       </div>
-      <div class="scan_qr" v-if="scan">
+      <div class="scan_qr" @click.stop.prevent="handleAutoFocus" v-if="scan">
         <div class="scan_qr_1">
           <p>Đang kích hoạt chế độ quét mã vạch</p>
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/UPC-A-036000291452.svg/1200px-UPC-A-036000291452.svg.png" alt="">
+          <input type="text" ref="inputBarcode" v-model="barcode_id" @keyup.enter="handleBarcode" placeholder="Nhập mã barcode" >
+          <div v-if="showBarcode">
+            <SvgBarcode v-model="barcode_show"></SvgBarcode>
+          </div>
         </div>
         <div class="scan_qr_mask"></div>
       </div>
@@ -122,10 +125,12 @@
 <script>
 import SelectMulti from '../SelectMulti';
 import SearchProduct from './SearchProduct';
+import SvgBarcode from '@/components/Product/SvgBarcode';
 export default {
   components: {
     SelectMulti,
-    SearchProduct
+    SearchProduct,
+    SvgBarcode
   },
   name: "ContentMenu",
   data() {
@@ -157,7 +162,10 @@ export default {
       filter_category: false,
       isSearching: false,
       filter_product: [],
-      nameBranch: ''
+      nameBranch: '',
+      barcode_id: '',
+      showBarcode: false,
+      barcode_show: ''
     };
   },
   methods: {
@@ -276,6 +284,52 @@ export default {
       let vm = this;
       vm.extend_filter = !vm.extend_filter;
       vm.checkbox = vm.list_select_category;
+    },
+    handleBarcode: function(){
+      let vm = this;
+      vm.axios({
+        method: "GET",
+        url: vm.$root.API_GATE + '/api/products/',
+        headers: {'auth-token': localStorage.getItem('token')},
+        params: {
+          barcode_id: vm.barcode_id
+        }
+      }).then(res => {
+        vm.showBarcode = true;
+        vm.barcode_show = vm.barcode_id;
+        if(res.data.error){
+
+        }else{
+          if(res.data.data.docs.length > 0){
+            vm.barcode_id = "";
+            vm.handleItem(res.data.data.docs[0]);
+            clearTimeout(vm.debounce);
+            vm.debounce = setTimeout(function(){
+              vm.showBarcode = false;
+              vm.barcode_show = "";
+            },1000)
+          }else{
+            
+          };
+        };
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleOpenBarcode: function(){
+      let vm = this;
+      vm.scan = !vm.scan;
+      vm.$nextTick(function(){
+        if(vm.$refs.inputBarcode){
+          vm.$refs.inputBarcode.focus();
+        };
+      })
+    },
+    handleAutoFocus: function(){
+      let vm = this;
+      if(vm.$refs.inputBarcode){
+        vm.$refs.inputBarcode.focus();
+      };
     }
   },
   computed: {
@@ -336,6 +390,22 @@ export default {
         document.getElementById('style-block3').style.overflow = 'hidden';
       }else{
         document.getElementById('style-block3').style.overflow = 'auto';
+      }
+    },
+    'scan': {
+      deep: true,
+      handler: function(newval){
+        let vm = this;
+        if(newval){
+          window.addEventListener('keyup', function(event){
+            console.log(event)
+            if(event.keyCode == 27){
+              vm.scan = false;
+            }
+          })
+        }else{
+          window.removeEventListener('keyup', function(){});
+        }
       }
     }
   },

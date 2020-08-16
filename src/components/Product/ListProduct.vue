@@ -39,6 +39,9 @@
         <ModalProduct ref="ModalProduct" :editModal="editModal"></ModalProduct>
         <ModalExcel ref="ModalExcel" v-if="openExcel"></ModalExcel>
         <iframe frameborder="0" id="print_barcode" name="print_barcode" style="display:none;"></iframe>
+        <!-- <div v-for="item in dataProduct" style="display:none;">
+            <SvgBarcode v-model="item.barcode_id"></SvgBarcode>
+        </div> -->
     </div>
 </template>
 
@@ -47,12 +50,14 @@ import ModalProduct from './ModalProduct';
 import TableProduct from './TableProduct';
 import PaginateProduct from './PaginateProduct';
 import ModalExcel from '../Excel/ModalExcel';
+// import SvgBarcode from './SvgBarCode';
 export default {
     components: {
         ModalProduct,
         TableProduct,
         PaginateProduct,
-        ModalExcel
+        ModalExcel,
+        // SvgBarcode
     },
     name: "ListProduct",
     data: function () {
@@ -79,7 +84,8 @@ export default {
             debounce: null,
             open: false,
             openExcel: false,
-            modalConfirm: false
+            modalConfirm: false,
+            test: ["test", "sdasda", "asdasdas"]
         }
     },
     methods: {
@@ -147,26 +153,14 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-            window.frames["print_barcode"].document.write(`<h4 style="text-align:center;">Bảng In Barcode</h4>`)
-            vm.dataProduct.map((item,index) => {
-                window.frames["print_barcode"].document.write(`
-                <svg class="barcode"
-                    jsbarcode-format="upc"
-                    jsbarcode-value="${item._id}"
-                    jsbarcode-textmargin="0"
-                    jsbarcode-fontoptions="bold">
-                </svg> 
-                `)
-            });
-            window.frames["print_barcode"].print();
-            window.frames["print_barcode"].document.close();
+            
         }
     },
     computed: {
 
     },
     mounted: function () {
-        JsBarcode(".barcode").init();
+        
     },
     created: function () {
         this.getListProduct();
