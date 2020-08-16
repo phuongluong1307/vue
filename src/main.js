@@ -8,6 +8,7 @@ import { Plugin } from 'vue-fragment'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '@/assets/css/index.css'
 import '@/assets/font-awesome/css/all.css'
+import '@/assets/js/JsBarcode.all.min.js'
 
 
 Vue.config.productionTip = false

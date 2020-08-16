@@ -9,8 +9,8 @@
                     <div class="card-top">
                         <div class="add-product" id="listButton">
                             <button class="button-item button-add-product" @click.stop.prevent="openAddProduct('')">Add Product</button>
-                            <button class="button-item button-import">Import Excel</button>
-                            <button class="button-item button-export">Export Excel</button>
+                            <button class="button-item button-import" @click.stop.prevent="openExcel = true">Import Excel</button>
+                            <button class="button-item button-print-barcode" @click.stop.prevent="modalConfirm = true">Print Barcode</button>
                         </div>
                         <div class="search-product">
                             <input type="search" name="search" v-model="search" placeholder="Search product">
@@ -24,8 +24,21 @@
                 </div>
                 <PaginateProduct :filter="filter"></PaginateProduct>
             </div>
+            <div class="modal_confirm" v-if="modalConfirm">
+                <div class="modal_confirm_box">
+                    <div class="top">Bảng in</div>
+                    <div class="center">Xác nhận in hóa đơn!</div>
+                    <div class="bottom">
+                        <button class="bottom_1" @click.stop.prevent="handlePrint">In</button>
+                        <button class="bottom_2" @click.stop.prevent="modalConfirm = false">Hủy</button>
+                    </div>
+                </div>
+                <div class="modal_confirm_mask"></div>
+            </div>
         </div>
         <ModalProduct ref="ModalProduct" :editModal="editModal"></ModalProduct>
+        <ModalExcel ref="ModalExcel" v-if="openExcel"></ModalExcel>
+        <iframe frameborder="0" id="print_barcode" name="print_barcode" style="display:none;"></iframe>
     </div>
 </template>
 
@@ -33,11 +46,13 @@
 import ModalProduct from './ModalProduct';
 import TableProduct from './TableProduct';
 import PaginateProduct from './PaginateProduct';
+import ModalExcel from '../Excel/ModalExcel';
 export default {
     components: {
         ModalProduct,
         TableProduct,
-        PaginateProduct
+        PaginateProduct,
+        ModalExcel
     },
     name: "ListProduct",
     data: function () {
@@ -62,7 +77,9 @@ export default {
                 number_page: 1,
             },
             debounce: null,
-            open: false
+            open: false,
+            openExcel: false,
+            modalConfirm: false
         }
     },
     methods: {
@@ -127,13 +144,29 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
+        },
+        handlePrint: function(){
+            let vm = this;
+            window.frames["print_barcode"].document.write(`<h4 style="text-align:center;">Bảng In Barcode</h4>`)
+            vm.dataProduct.map((item,index) => {
+                window.frames["print_barcode"].document.write(`
+                <svg class="barcode"
+                    jsbarcode-format="upc"
+                    jsbarcode-value="${item._id}"
+                    jsbarcode-textmargin="0"
+                    jsbarcode-fontoptions="bold">
+                </svg> 
+                `)
+            });
+            window.frames["print_barcode"].print();
+            window.frames["print_barcode"].document.close();
         }
     },
     computed: {
 
     },
     mounted: function () {
-
+        JsBarcode(".barcode").init();
     },
     created: function () {
         this.getListProduct();

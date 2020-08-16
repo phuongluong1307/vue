@@ -1171,20 +1171,23 @@
 .create-branch.open .form{background:#fff;padding:30px;position:relative;width:400px;border:1px solid #e1e1e1;border-radius:4px;-webkit-box-shadow:0 0 10px rgba(0,0,0,0.3);box-shadow:0 0 10px rgba(0,0,0,0.3);z-index:2;}
 .create-branch.open .mask{position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,0.3);z-index:1;}
 .create-branch .add-button{text-align:right;}
-.create-branch .add-button .cancel-button{padding:5px 10px;border-radius:4px;}
-.create-branch .add-button .add-branch{padding:5px 10px;border-radius:4px;}
+.create-branch .add-button button{padding:5px 10px;border-radius:4px;}
+.create-branch .add-button .add-branch{background:#03A6A6;color:#fff;border:1px solid #03A6A6;-webkit-transition:all .2s;transition:all .2s;}
+.create-branch .add-button .add-branch:hover{background:#039292;}
+.create-branch .add-button .cancel-branch{background:#fff;color:#03A6A6;border:1px solid #03A6A6;-webkit-transition:all .2s;transition:all .2s;}
+.create-branch .add-button .cancel-branch:hover{background:rgb(3 166 166 / 0.05);}
 /* End add branch*/
 /* Begin select branch*/
 .select_branch{display:none;position:fixed;z-index:2;top:0;right:0;bottom:0;left:0;-webkit-box-pack: center;-ms-flex-pack: center;justify-content: center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;}
 .select_branch.open{display:-webkit-box;display:-ms-flexbox;display:flex;}
-.select_branch .box{background:#fff;padding:30px;position:relative;width:400px;border:1px solid #e1e1e1;border-radius:4px;-webkit-box-shadow:0 0 10px rgba(0,0,0,0.3);box-shadow:0 0 10px rgba(0,0,0,0.3);z-index:2;-webkit-transform: scale(1);transform: scale(1);opacity:1;-webkit-transition: all .2s;transition: all .2s;}
+.select_branch .box{background:#fff;padding:30px;position:relative;max-width: 1024px;border:1px solid #e1e1e1;border-radius:4px;-webkit-box-shadow:0 0 10px rgba(0,0,0,0.3);box-shadow:0 0 10px rgba(0,0,0,0.3);z-index:2;-webkit-transform: scale(1);transform: scale(1);opacity:1;-webkit-transition: all .2s;transition: all .2s;}
 .select_branch .box.popup{-webkit-transform: scale(0.5);transform: scale(0.5);opacity:0;}
 .select_branch.open .mask{position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,0.3);z-index:1;}
 .modal-user .form-group .form-select button.btn_select_branch{width:100%;margin:0;}
 .select_branch .box .top{padding-bottom:15px;}
 .select_branch .box .top .title{font-size:20px;font-weight:500;}
 .select_branch .box .center{padding:15px 0;border-top:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;}
-.select_branch .box .center .list-checkbox{display:grid;grid-template-columns:repeat(3,1fr); grid-gap:5px;}
+.select_branch .box .center .list-checkbox{display:grid;grid-template-columns: repeat(4,1fr);grid-gap: 10px;}
 .select_branch .box .bottom{text-align:right;padding-top:15px;}
 .select_branch .box .bottom button{padding:5px 10px;border-radius:4px;}
 .select_branch .box .bottom button.add_branch{
@@ -1876,6 +1879,36 @@
 .modal_confirm .modal_confirm_box .bottom button.bottom_2{background:#fff;border:1px solid #a2a9cb;color:#a2a9cb;-webkit-transition:all .2s;transition:all .2s;}
 .modal_confirm .modal_confirm_box .bottom button.bottom_2:hover{background:#a2a9cb;color:#fff;}
 /* End modal confirm*/
+/* Begin Modal Excel*/
+.modal_excel{position:fixed;display:-webkit-box;display:-ms-flexbox;display:flex;top:0;left:0;bottom:0;right:0;-webkit-box-pack: center;-ms-flex-pack: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;align-items: center;z-index:5;}
+.modal_excel .modal_excel_box{width: 1024px;background:#fff;border-radius:4px;border: 1px solid #b2b2b2;-webkit-box-shadow:0 0 10px rgba(0,0,0,0.3);box-shadow:0 0 10px rgba(0,0,0,0.3);z-index:2;position:relative;}
+.modal_excel .modal_excel_mask{position:absolute;top:0;bottom:0;right:0;left:0;z-index:1;background:rgba(0,0,0,0.3);}
+.modal_excel .modal_excel_box .top{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack: center;-ms-flex-pack: center;justify-content: center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:10px 15px;background: #cae4e4;}
+.modal_excel .modal_excel_box .top .title{-webkit-box-flex:1;-ms-flex:1;flex:1;}
+.modal_excel .modal_excel_box .top .cancel_modal button{background:none;border:none;}
+.modal_excel .modal_excel_box .center{padding: 15px;}
+.modal_excel .modal_excel_box .center .center_1{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-pack:distribute;justify-content:space-around;-webkit-box-align:center;-ms-flex-align:center;align-items:center;}
+.modal_excel .modal_excel_box .center .center_1 .center_1_1{background:#eee;width:100%;text-align:center;margin: 0 15px;padding: 3px 0;}
+.modal_excel .modal_excel_box .center .center_1 .center_1_1.finished{background:#00cdcd;color:#fff;}
+.modal_excel .modal_excel_box .center .center_1 .center_1_1.active{background:#03a6a6;color:#fff;}
+.modal_excel .modal_excel_box .center .center_2{padding-top: 15px;}
+.modal_excel .modal_excel_box .center .center_2 .center_2_1 .center_2_1_1 td{padding:5px 0;}
+.modal_excel .modal_excel_box .center .center_2_1_1{text-align:center;font-weight:500;}
+.modal_excel .modal_excel_box .center .center_2_1_2{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align: center;-ms-flex-align: center;align-items: center;width:100%;padding: 15px 0;}
+.modal_excel .modal_excel_box .center .center_2_1_2 .center_2_1_2_1{padding:5px 10px;background:#e1e1e1;border-radius:5px;margin:0 5px;}
+.modal_excel .modal_excel_box .center .center_2_1_3{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;border:1px dashed #03a6a6;height:200px;background:#cae4e4;border-radius:4px;position: relative;}
+.modal_excel .modal_excel_box .center .center_2_1_3 .center_2_1_3_1{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;}
+.modal_excel .modal_excel_box .center .center_2_1_3 .center_2_1_3_1 .center_2_1_3_1_1{margin-right:15px;}
+.modal_excel .modal_excel_box .center .center_2_1_3 .center_2_1_3_1 .upload_file label{border:1px solid #03a6a6;border-radius:4px;padding:5px 10px;cursor:pointer;}
+.modal_excel .modal_excel_box .center .center_2_1_3 .center_2_1_3_1 .download_file{border:1px solid #03a6a6;border-radius:4px;padding:5px 10px;cursor:pointer;}
+.modal_excel .modal_excel_box .center .center_2_1_3 .center_2_1_3_2{position:absolute;bottom:10px;border:1px solid #03a6a6;padding:5px 15px;border-radius:4px;}
+.modal_excel .modal_excel_box .bottom{text-align:right;padding: 0 15px 15px 15px;}
+.modal_excel .modal_excel_box .bottom button{border-radius:4px;padding:5px 15px;}
+.modal_excel .modal_excel_box .bottom button.bottom_1{border:1px solid #e1e1e1;color:#444;background:#e1e1e1;-webkit-transition:all .2s;transition:all .2s;}
+.modal_excel .modal_excel_box .bottom button.bottom_1:hover{background:#c7c7c7;}
+.modal_excel .modal_excel_box .bottom button.bottom_2{border:1px solid #03A6A6;color:#fff;background:#03A6A6;-webkit-transition:all .2s;transition:all .2s;}
+.modal_excel .modal_excel_box .bottom button.bottom_2:hover{background:#039292;}
+/* End Modal Excel*/
 /* Begin Responsive */
 @media only screen and (min-width: 1024px) and (max-width: 1224px){
     .content_menu .block_3 .block_3_1_1 .list_item .item{width: calc(100% / 4)}
@@ -1908,11 +1941,6 @@
 /* End Responsive */
 ::-webkit-scrollbar{width:0px;height:0px;}
 ::-webkit-scrollbar-thumb{width:0px;background:#c1c1c1;border-radius:4px;border:1px solid #fff;}
-
-
-
-
-
 
 
 

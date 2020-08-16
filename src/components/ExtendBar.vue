@@ -9,7 +9,7 @@
             <div class="center">
                 <div class="list">
                     <ul>
-                        <li @click.stop.prevent="handleDashboard"><i class="fas fa-th-large"></i><span>Trang chủ</span></li>
+                        <li @click.stop.prevent="handleDashboard"><i class="fas fa-th-large"></i><span>Bán hàng</span></li>
                         <li @click.stop.prevent="handleOrder"><i class="fas fa-receipt"></i><span>Đơn đặt hàng</span></li>
                         <li @click.stop.prevent="handleListProduct"><i class="fal fa-list-alt"></i><span>Danh sách sản phẩm</span></li>
                         <li @click.stop.prevent="handleUser"><i class="fal fa-user"></i><span>Danh sách người dùng</span></li>

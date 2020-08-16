@@ -7,6 +7,11 @@
             <div class="form-modal-body">   
                 <form class="form-product">
                     <div class="form-group">
+                        <label class="control-label">Barcode_id</label>
+                        <input type="text" v-model="form_product.barcode_id" placeholder="Enter barcode..." id="barcode" :disabled="$parent.editModal" />
+                        <span class="warning-error"></span>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">Product SKU</label>
                         <input type="text" v-model="form_product.product_SKU" placeholder="Enter product SKU..." id="product-SKU" />
                         <span class="warning-error"></span>
@@ -100,7 +105,7 @@ export default {
         CreateCategory,
         AlbumSingle,
         AlbumMulti,
-        number
+        number,
     },
     name: "ModalProduct",
     props: ['editModal'],
@@ -108,6 +113,7 @@ export default {
         return {
             open: false,
             form_product: {
+                barcode_id: '',
                 thumbnail: '',
                 product_SKU: '',
                 product_name: '',
@@ -122,7 +128,7 @@ export default {
             duplicate: false,
             warningError: false,
             txtError: '',
-            listCategory: this.$root.list_category
+            listCategory: this.$root.list_category,
         }
     },
     methods: {
@@ -222,6 +228,7 @@ export default {
             let vm = this;
             vm.price = vm.$refs.number.number;
             let new_product = {
+                barcode_id: vm.form_product.barcode_id,
                 product_name: vm.form_product.product_name,
                 product_SKU: vm.form_product.product_SKU,
                 thumbnail: vm.image,
@@ -267,6 +274,23 @@ export default {
                     console.log(err)
                 })
             }
+        },
+        loadCategory: function(){
+            let vm = this;
+            vm.axios({
+                method: "GET",
+                url: vm.$root.API_GATE + '/api/product-categories/',
+                headers: {'auth-token': localStorage.getItem('token')}
+            }).then(res => {
+                let result = res.data;
+                if(result.error){
+
+                }else{
+                vm.listCategory = result.data;
+                }
+            }).catch(err => {
+                console.log(err)
+            })
         }
     },
     computed: {
@@ -285,6 +309,7 @@ export default {
         }
     },
     created: function () {
+        this.loadCategory();
     }
 }
 </script>
