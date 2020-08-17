@@ -7,6 +7,17 @@
             <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
           <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = false">{{nameBranch}}</div>
+          <div class="shortcut_key">
+            <div class="title">Danh sách phím tắt</div>
+            <div class="list_key">
+              <ul>
+                <li class="key_item">(F2) In hóa đơn</li>
+                <li class="key_item">(F4) Bật quét mã vạch</li>
+                <li class="key_item">(F7) Danh sách hóa đơn</li>
+                <li class="key_item">(F9) Danh sách sản phẩm</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="block_1_1">
@@ -319,6 +330,7 @@ export default {
     handleOpenBarcode: function(){
       let vm = this;
       vm.scan = !vm.scan;
+      window.removeEventListener('keyup', vm.myFunction);
       vm.$nextTick(function(){
         if(vm.$refs.inputBarcode){
           vm.$refs.inputBarcode.focus();
@@ -330,6 +342,33 @@ export default {
       if(vm.$refs.inputBarcode){
         vm.$refs.inputBarcode.focus();
       };
+    },
+    myFunction: function(event){
+      let vm = this;
+      if(event.keyCode == 27){
+        vm.handleOpenBarcode();
+      }
+    },
+    shortCutWindow: function(e){
+      let vm = this;
+      let keyCode = e.keyCode;
+      switch (keyCode) {
+        case 113:
+          
+          break;
+        case 115:
+          vm.handleOpenBarcode();
+          break;
+        case 118:
+          vm.$parent.$parent.$refs.ExtendBar.handleOrder();
+          break;
+        case 120:
+          
+          break;
+      
+        default:
+          break;
+      }
     }
   },
   computed: {
@@ -397,14 +436,7 @@ export default {
       handler: function(newval){
         let vm = this;
         if(newval){
-          window.addEventListener('keyup', function(event){
-            console.log(event)
-            if(event.keyCode == 27){
-              vm.scan = false;
-            }
-          })
-        }else{
-          window.removeEventListener('keyup', function(){});
+          window.addEventListener('keyup', vm.myFunction)
         }
       }
     }
@@ -418,7 +450,12 @@ export default {
     }
   },
   mounted: function(){
-    
+    let vm = this;
+    window.addEventListener('keyup', vm.shortCutWindow)
+  },
+  destroyed: function(){
+    let vm = this;
+    window.removeEventListener('keyup', vm.shortCutWindow)
   }
 };
 </script>

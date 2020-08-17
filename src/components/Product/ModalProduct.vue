@@ -52,10 +52,11 @@
                         </div>
                         <div class="form-file">
                             <div class="preview-primary-image" style="display:flex;width:30%;height:100px;border:1px solid #e1e1e1;margin:auto;">
-                                <button v-if="validSingle" class="close-preview-image" @click.stop.prevent="closePreviewImage"><i class="fas fa-times"></i></button>
-                                <button v-else class="close-preview-image" @click.stop.prevent="closePreviewImage"><i class="fas fa-times"></i></button>
-                                <img v-if="validSingle" :src="$root.API_GATE + image" style="height:100%;width:100%;" />
-                                <img v-else :src="image" style="height:100%;width:100%;" />
+                                <div v-if="validSingle">
+                                    <button class="close-preview-image" @click.stop.prevent="closePreviewImage"><i class="fas fa-times"></i></button>
+                                    <img v-if="validBase64" :src="image" style="height:100%;width:100%;"/>
+                                    <img v-else :src="$root.API_GATE + image" style="height:100%;width:100%;"/>
+                                </div>
                             </div>
                         </div>
                         <span class="warning-error"></span>
@@ -129,6 +130,7 @@ export default {
             warningError: false,
             txtError: '',
             listCategory: this.$root.list_category,
+            validBase64: false
         }
     },
     methods: {
@@ -193,7 +195,7 @@ export default {
         },
         handleApply: function (value) {
             this.image = value.hinhAnh;
-            this.validSingle = false;
+            this.validSingle = true;
             this.close_popup = false;
         },
         handleMulti: function (value) {
@@ -316,7 +318,24 @@ export default {
             deep: true,
             handler: function(newval){
                 let vm = this;
-                vm.form_product.barcode_id = newval.split(' ').join('');
+                if(vm.form_product.barcode_id != ''){
+                    vm.form_product.barcode_id = newval.split(' ').join('');
+                }
+            }
+        },
+        'image': {
+            deep: true,
+            handler: function(newval){
+                let vm = this;
+                let find = newval.indexOf(';base64,');
+                if(newval !=''){
+                    vm.validSingle = true;
+                }
+                if(find > -1){
+                    vm.validBase64 = true;
+                }else{
+                    vm.validBase64 = false;
+                }
             }
         }
     }

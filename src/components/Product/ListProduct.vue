@@ -39,9 +39,9 @@
         <ModalProduct ref="ModalProduct" :editModal="editModal"></ModalProduct>
         <ModalExcel ref="ModalExcel" v-if="openExcel"></ModalExcel>
         <iframe frameborder="0" id="print_barcode" name="print_barcode" style="display:none;"></iframe>
-        <!-- <div v-for="item in dataProduct" style="display:none;">
+        <div v-for="item in dataProduct" style="display:none;" ref="listBarcode">
             <SvgBarcode v-model="item.barcode_id"></SvgBarcode>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -50,14 +50,14 @@ import ModalProduct from './ModalProduct';
 import TableProduct from './TableProduct';
 import PaginateProduct from './PaginateProduct';
 import ModalExcel from '../Excel/ModalExcel';
-// import SvgBarcode from './SvgBarCode';
+import SvgBarcode from './SvgBarcode';
 export default {
     components: {
         ModalProduct,
         TableProduct,
         PaginateProduct,
         ModalExcel,
-        // SvgBarcode
+        SvgBarcode
     },
     name: "ListProduct",
     data: function () {
@@ -94,6 +94,7 @@ export default {
             vm.$refs.ModalProduct.open = true;
             vm.editModal = null;
             let new_product = {
+                barcode_id: '',
                 thumbnail: '',
                 product_SKU: '',
                 product_name: '',
@@ -115,6 +116,7 @@ export default {
             vm.productItem = value;
             var new_product = {
                 id: value.id,
+                barcode_id: value.barcode_id ? value.barcode_id : '',
                 product_SKU: value.product_SKU,
                 product_name: value.product_name,
                 category: value.category,
@@ -153,7 +155,13 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-            
+            window.frames['print_barcode'].document.write('<div style="display:grid;grid-template-columns:repeat(3,1fr);grid-gap:5px;">')
+            vm.$refs.listBarcode.map(item => {
+                window.frames['print_barcode'].document.write(`${item.innerHTML}`)
+            });
+            window.frames['print_barcode'].document.write('</div>')
+            window.frames['print_barcode'].print();
+            window.frames['print_barcode'].document.close();
         }
     },
     computed: {

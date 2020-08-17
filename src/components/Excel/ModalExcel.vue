@@ -55,11 +55,11 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, index) in json_excel" :key="index">
-                                    <td>{{item.thumbnail}}</td>
-                                    <td>{{item.product_name}}</td>
-                                    <td>{{item.product_SKU}}</td>
-                                    <td>{{item.price}}</td>
-                                    <td>{{item.category}}</td>
+                                    <td>{{item.HìnhẢnh}}</td>
+                                    <td>{{item.TênSP}}</td>
+                                    <td>{{item.MãSP}}</td>
+                                    <td>{{item.Giá}}</td>
+                                    <td>{{item.LoạiSP}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -176,14 +176,14 @@ export default {
         handleDownload: function(){
             let vm = this;
             let data = [
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà vải", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà sữa", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà tắc", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đá", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
-                {"Hình Ảnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "Tên SP": "Trà đào", "Mã SP": "Trà đào", "Giá": 15000,"Loại SP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà vải", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà sữa", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà tắc", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đá", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
             ];
             if(data == '') return;
             vm.JSONToCSVConvertor(data,"", true);
@@ -261,6 +261,22 @@ export default {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+    },
+    computed: {
+        handleJsonExcel: function(){
+            let vm = this;
+            let arr = [];
+            if(vm.json_excel.length > 0){
+                vm.json_excel.map((item,index) => {
+                    let value = Object.values(item);
+                    value.map(row => {
+                        console.log(row)
+                        // arr.push(obj);
+                    })  
+                })
+            };
+            return arr;
         }
     }
 }
