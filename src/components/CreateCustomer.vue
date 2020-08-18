@@ -12,7 +12,7 @@
                                 <div class="name">Tên</div>
                                 <div class="phone_number">Số điện thoại</div>
                             </li>
-                            <li class="item" v-for="(item,index) in list_customer" :key="index" @click.stop.prevent="handleSelect(item)">
+                            <li class="item" v-for="(item,index) in list_customer" :key="index" @click.stop.prevent="handleSelectCustomer(item)">
                                 <div class="name">{{item.name}}</div>
                                 <div class="phone_number">{{item.phone_number}}</div>
                             </li>
@@ -89,7 +89,7 @@ export default {
                 console.log(err)
             })
         },
-        handleSelect: function(item){
+        handleSelectCustomer: function(item){
             let vm = this;
             vm.$parent.select_customer = true;
             vm.search = '';
@@ -104,7 +104,7 @@ export default {
                     vm.$parent.$parent.$parent.loadingModal = false;
                     vm.$parent.$parent.$parent.mask = false;
                     vm.closePopup();
-                    vm.bill.customer = item.name;
+                    vm.bill.customer = item;
                 }, 500);
             }, 500)
         },

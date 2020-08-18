@@ -206,7 +206,7 @@ export default {
       barcode_show: '',
       displayShortcut: false,
       item: '',
-      invoiceOfDate: [],
+      listInvoice: [],
     };
   },
   methods: {
@@ -431,6 +431,16 @@ export default {
         }
       });
       return arr_category;
+    },
+    getInvoiceOfDate: function(){
+      let vm = this;
+      let data = new Date();
+      let date;
+      if(vm.listInvoice.length > 0){
+        vm.listInvoice.map((item,index) => {
+
+        })
+      }
     }
   },
   watch: {

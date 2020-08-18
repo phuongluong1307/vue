@@ -39,7 +39,8 @@ export default {
                 password: ''
             },
             status_login: false,
-            token: ''
+            token: '',
+            listBranch: null
         }
     },
     methods:{
@@ -63,6 +64,7 @@ export default {
                     localStorage.setItem('token', vm.token);
                     localStorage.setItem('name', JSON.stringify(user));
                     vm.$parent.auth_token = true;
+                    vm.listBranch = res.data.listBranch;
                 }
             }).catch(err => {
                 console.log(err)

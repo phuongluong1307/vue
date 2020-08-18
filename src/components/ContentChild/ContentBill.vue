@@ -49,7 +49,7 @@
           <div class="block_2_1" @click.stop.prevent="$refs.CreateCustomer.open = true" v-if="select_customer">
             <div class="block_2_1_member">
               <i class="fal fa-user-circle"></i>
-              <p>{{my_singleBill.customer ? my_singleBill.customer : 'Thêm khách hàng'}}</p>
+              <p>{{my_singleBill.customer ? my_singleBill.customer.name : 'Thêm khách hàng'}}</p>
             </div>
             <div class="block_2_1_button">
               <button class="times-circle" @click.stop.prevent="handleChangeCustomer">
@@ -342,6 +342,7 @@ export default {
 
         }else{
           vm.listInvoice = res.data.data.docs;
+          vm.$parent.$refs.ContentMenu.listInvoice = res.data.data.docs;
         };
       }).catch(err => {
         console.log(err)

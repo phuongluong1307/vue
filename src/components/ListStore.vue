@@ -1,11 +1,11 @@
 <template>
     <div class="list_store" :class="open ? 'close' : ''">
-        <div class="box">
+        <div class="box" v-if="$parent.$refs.ModalLogin">
             <div class="top">
                 <h6 class="title">Chọn cửa hàng</h6>
             </div>
             <div class="center">
-                <div class="store" v-for="item in listBranch" :key="item.id" :class="item.name == select ? 'active' : ''" @click.stop.prevent="handleSelectBranch(item)">
+                <div class="store" v-for="item in $parent.$refs.ModalLogin.listBranch" :key="item.id" @click.stop.prevent="handleSelectBranch(item)">
                     <p>{{item.name}}</p>
                 </div>
             </div>
@@ -24,8 +24,7 @@ export default {
         return {
             open: false,
             active: "",
-            listBranch: null,
-            select: '',
+            store: null,
             nameBranch: '',
             debounce: null,
         }
@@ -33,43 +32,22 @@ export default {
     methods: {
         handleSelectStore: function(){
             let vm = this;
-            if(vm.select == ''){
+            if(vm.store.name == ''){
                 alert('Vui lòng chọn cửa hàng')
             }else{
                 vm.open = true;
-                vm.nameBranch = vm.select;
+                vm.nameBranch = vm.store.name;
                 localStorage.setItem('nameBranch', vm.nameBranch);
                 vm.$parent.statusBranch = true;
             }
         },
         handleSelectBranch: function(item){
             let vm = this;
-            vm.select = item.name;
-        },
-        loadBranch: function(){
-            let vm = this;
-            let user = JSON.parse(localStorage.getItem('name'));
-            let form = {
-                id: user.id
-            }
-            vm.axios({
-                method: "GET",
-                url: vm.$root.API_GATE + '/api/users/' + form.id,
-                headers: {'auth-token': localStorage.getItem('token')},
-            }).then(res => {
-                if(res.data.error){
-
-                }else{
-                    vm.listBranch = res.data.data.list_branch;
-                }
-            }).catch(err => {
-                console.log(err)
-            })
+            vm.store = item;
         }
     },
     created: function(){
         let vm = this;
-        vm.loadBranch();
         if(localStorage.getItem('nameBranch')){
             vm.open = true;
         }

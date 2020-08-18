@@ -193,7 +193,7 @@ export default {
             // window.print();
             // document.body.innerHTML = body;
             let new_invoice = {
-                customer: vm.data.customer != null ? vm.data.customer : '',
+                customer_id: vm.data.customer != null ? vm.data.customer._id : null,
                 seller: JSON.parse(localStorage.getItem('name')).name,
                 total_price: vm.brandTotal,
                 subtotal: vm.subtotal,
@@ -203,7 +203,7 @@ export default {
                 discount_price: vm.discount_price,
                 discount_value: vm.data.discount_value,
                 products: vm.data.products,
-                nameBranch: localStorage.getItem('nameBranch')
+                branch_id: vm.$parent.$parent.$parent.$refs.ListStore.store ? vm.$parent.$parent.$parent.$refs.ListStore.store._id : null
             };
             vm.axios({
                 method: "POST",
