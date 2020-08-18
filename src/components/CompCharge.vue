@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <div class="right_2">
-                    <button class="delete" @click.stop.prevent="handleDeleteBill">Hủy</button>
+                    <button class="delete" @click.stop.prevent="delete_invoice = true">Hủy</button>
                     <button class="complete" @click.stop.prevent="open_confirm = true">Hoàn thành</button>
                 </div>
                 <div class="popupConfirm" :class="open_confirm ? 'open' : ''">
@@ -129,6 +129,21 @@
                         </div>
                     </div>
                     <div class="mask"></div>
+                </div>
+                <div class="deleteInvoice" :class="delete_invoice ? 'open' : ''">
+                    <div class="box">
+                        <div class="top">
+                            <h6>Xác nhận xóa</h6>
+                        </div>
+                        <div class="center">
+                            <p>Thao tác này xóa hóa đơn khỏi danh sách!</p>
+                        </div>
+                        <div class="bottom">
+                            <button class="print" @click.stop.prevent="handleDeleteBill">Xác nhận</button>
+                            <button class="cancel" @click.stop.prevent="delete_invoice = false">Hủy</button>
+                        </div>
+                    </div>
+                    <div class="mask_delete" @click.stop.prevent="delete_invoice = false"></div>
                 </div>
             </div>
         </div>
@@ -158,6 +173,7 @@ export default {
             paymentSuccess: false,
             debounce: null,
             debounce_1: null,
+            delete_invoice: false
         }
     },
     methods:{
@@ -224,6 +240,7 @@ export default {
                     if(findIndex > -1){
                         vm.$parent.data.splice(findIndex, 1);
                         vm.$parent.tab = vm.$parent.data[0].bill;
+                        vm.$parent.$parent.$parent.$refs.LoadingModal.title = "Thêm thành công!";
                         clearTimeout(vm.debounce);
                         vm.debounce = setTimeout(function(){
                             vm.$parent.$parent.$parent.loadingModal = true;
@@ -312,7 +329,43 @@ export default {
         },
         handleDeleteBill: function(){
             let vm = this;
-            
+            let findIndex = vm.$parent.data.findIndex(row => row.bill === vm.data.bill);
+            vm.delete_invoice = false;
+            vm.$parent.$parent.$parent.loading = true;
+            vm.$parent.$parent.$parent.mask = true;
+            if(findIndex > -1){
+                if(vm.$parent.data.length == 1){
+                    let obj = {
+                        bill: "HD001",
+                        products: [],
+                        customer: null,
+                        tax_value: 0,
+                        tax_price: 0,
+                        total_price: 0,
+                        discount_price: 0,
+                        discount_type: 'VND',
+                        discount_value: 0,
+                        statusDiscountTotal: false
+                    };
+                    vm.$parent.data.push(obj);
+                    vm.$parent.tab = "HD001";
+                };
+                vm.$parent.data.splice(findIndex, 1);
+                vm.$parent.tab = vm.$parent.data[0].bill;
+                vm.$parent.$parent.$parent.$refs.LoadingModal.title = "Xóa thành công!";
+                clearTimeout(vm.debounce);
+                vm.debounce = setTimeout(function(){
+                    vm.$parent.$parent.$parent.loadingModal = true;
+                    vm.$parent.$parent.$parent.loading = false;
+                    vm.open = false;
+                    clearTimeout(vm.debounce_1);
+                    vm.debounce_1 = setTimeout(function(){
+                        vm.$parent.$parent.$parent.loadingModal = false;
+                        vm.$parent.$parent.$parent.mask = false;
+                        vm.open = false;
+                    },1000)
+                },1000)
+            }
         }
     },
     computed:{

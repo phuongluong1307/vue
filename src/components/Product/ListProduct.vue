@@ -37,10 +37,10 @@
             </div>
         </div>
         <ModalProduct ref="ModalProduct" :editModal="editModal"></ModalProduct>
-        <ModalExcel ref="ModalExcel" v-if="openExcel"></ModalExcel>
+        <ModalExcel ref="ModalExcel" :data="data" v-if="openExcel"></ModalExcel>
         <iframe frameborder="0" id="print_barcode" name="print_barcode" style="display:none;"></iframe>
-        <div v-for="item in dataProduct" style="display:none;" ref="listBarcode">
-            <SvgBarcode v-model="item.barcode_id"></SvgBarcode>
+        <div v-for="(item,index) in dataProduct" :key="index" style="display:none;" ref="listBarcode">
+            <SvgBarcode v-model="item.barcode_id" :title="item.product_name"></SvgBarcode>
         </div>
     </div>
 </template>
@@ -85,7 +85,17 @@ export default {
             open: false,
             openExcel: false,
             modalConfirm: false,
-            test: ["test", "sdasda", "asdasdas"]
+            test: ["test", "sdasda", "asdasdas"],
+            data: [
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà vải", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà sữa", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà tắc", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đá", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
+            ]
         }
     },
     methods: {
@@ -155,7 +165,7 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-            window.frames['print_barcode'].document.write('<div style="display:grid;grid-template-columns:repeat(3,1fr);grid-gap:5px;">')
+            window.frames['print_barcode'].document.write('<div style="display:grid;grid-template-columns:repeat(3,1fr);">')
             vm.$refs.listBarcode.map(item => {
                 window.frames['print_barcode'].document.write(`${item.innerHTML}`)
             });

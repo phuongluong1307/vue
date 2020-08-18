@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div style="border:1px solid #444;text-align:center;">
+        <div style="text-align:center;font-size:20px;font-weight:500;">{{title}}</div>
         <svg class="barcode" jsbarcode-format="auto" 
             :jsbarcode-value="value"
             jsbarcode-textmargin="0"
@@ -10,7 +11,7 @@
 
 <script>
 export default {
-    props: ["value"],
+    props: ["value",'title'],
     name: "SvgBarcode",
     mounted: function(){
         JsBarcode(".barcode").init();

@@ -7,17 +7,6 @@
             <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
           <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = false">{{nameBranch}}</div>
-          <div class="shortcut_key">
-            <div class="title">Danh sách phím tắt</div>
-            <div class="list_key">
-              <ul>
-                <li class="key_item">(F2) In hóa đơn</li>
-                <li class="key_item">(F4) Bật quét mã vạch</li>
-                <li class="key_item">(F7) Danh sách hóa đơn</li>
-                <li class="key_item">(F9) Danh sách sản phẩm</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
       <div class="block_1_1">
@@ -26,6 +15,20 @@
             <i class="fal fa-search" @click.stop.prevent="handleInput"></i>
             <input type="text" placeholder="Tìm tên hoặc mã sản phẩm" v-model="search" @input="isSearching = true" />
             <div class="searching" v-if="isSearching">Đang tìm kiếm</div>
+          </div>
+          <div class="shortcut_key">
+            <div class="shortcut_key_1" @click.stop.prevent="displayShortcut = !displayShortcut">
+              <div class="shortcut_key_icons"><i class="fal fa-exclamation-circle"></i></div>
+              <div class="title">Danh sách phím tắt</div>
+            </div>
+            <div class="list_key" v-if="displayShortcut">
+              <ul>
+                <li class="key_item">(F2) In hóa đơn</li>
+                <li class="key_item">(F4) Bật quét mã vạch</li>
+                <li class="key_item">(F7) Danh sách hóa đơn</li>
+                <li class="key_item">(F9) Danh sách sản phẩm</li>
+              </ul>
+            </div>
           </div>
           <div class="scan">
             <button class="btn_scan" :class="scan ? 'active' : '' " @click.stop.prevent="handleOpenBarcode"><i class="fal fa-barcode-read"></i></button>
@@ -97,13 +100,37 @@
       <div class="extend_filter" :class="extend_filter ? 'extend-filter-opened' : ''">
         <ul class="extend_filter_1">
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <SelectMulti title="Vui lòng chọn sản phẩm" :status="false" :data="category"></SelectMulti>
+            <SelectMulti title="Vui lòng chọn sản phẩm" ref="SelectMulti1" :data="category"></SelectMulti>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <SelectMulti title="Sản phẩm bán chạy" :status="false" :data="category"></SelectMulti>
+            <SelectMulti title="Sản phẩm bán chạy" ref="SelectMulti2" :data="category"></SelectMulti>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_1">
-            <SelectMulti title="Sản phẩm bán trong ngày" :status="false" :data="selling"></SelectMulti>
+            <div class="select_multi">
+              <div class="selecter" @click.stop.prevent="select = !select">
+                <div class="text">{{item == "" ? "Sản phẩm bán trong ngày" : item}}</div>
+                <div class="icon"><i class="fal fa-chevron-down"></i></div>
+                <div class="select_box" v-if="select">
+                  <ul v-if="invoiceOfDate.length == 0">
+                    <li style="text-align:center;padding:5px 0;">Chưa có sản phẩm</li>
+                  </ul>
+                  <ul v-else>
+                    <li class="title">
+                      <div class="title_1">
+                        <div>Sản phẩm</div>
+                        <div>SL</div>
+                      </div>
+                    </li>
+                    <li class="select_item" v-for="(item,index) in data" :key="index" @click.stop.prevent="selectProduct(item)">
+                      <div class="list_product">
+                        <div class="product">{{item}}</div>
+                        <div class="quantity">{{item}}</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </li>
           <li class="extend_filter_1_1 extend_filter_1_1_2">
             <div class="extend_filter_1_1_2_1">
@@ -176,7 +203,10 @@ export default {
       nameBranch: '',
       barcode_id: '',
       showBarcode: false,
-      barcode_show: ''
+      barcode_show: '',
+      displayShortcut: false,
+      item: '',
+      invoiceOfDate: [],
     };
   },
   methods: {
@@ -447,11 +477,11 @@ export default {
     this.loadProduct();
     if(localStorage.getItem('nameBranch')){
       vm.nameBranch = localStorage.getItem('nameBranch');
-    }
+    };
   },
   mounted: function(){
     let vm = this;
-    window.addEventListener('keyup', vm.shortCutWindow)
+    window.addEventListener('keyup', vm.shortCutWindow);
   },
   destroyed: function(){
     let vm = this;

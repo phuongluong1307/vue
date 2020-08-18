@@ -18,8 +18,7 @@
 export default {
     props: {
         title: {type: String},
-        data:  {type: Array},
-        status: {type:Boolean}
+        data:  {type: Array}
     },
     name: 'SelectMulti',
     data: function(){

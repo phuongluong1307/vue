@@ -255,7 +255,7 @@ export default {
             vm.active = item.code_bill;
             vm.axios({
                 method: "GET",
-                url: vm.$root.API_GATE + '/api/invoice-detail/' + item._id,
+                url: vm.$root.API_GATE + '/api/invoices/' + item._id,
                 headers: {'auth-token': localStorage.getItem('token')},
                 params: {
                     seller_id: item.seller_id,

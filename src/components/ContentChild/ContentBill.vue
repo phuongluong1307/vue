@@ -367,9 +367,11 @@ export default {
     handleQuantity: function(){
       let vm = this;
       let total = 0;
-      vm.my_singleBill.products.map((item,index) => {
-        total += item.quantity;
-      });
+      if(vm.my_singleBill.products){
+        vm.my_singleBill.products.map((item,index) => {
+          total += item.quantity;
+        });
+      };
       return total;
     },
     totalBill: function(){
@@ -419,6 +421,12 @@ export default {
       deep:true,
       handler: function(newval){
         this.$parent.my_tab = newval;
+      }
+    },
+    listInvoice: {
+      deep: true,
+      handler: function(newval){
+        this.$parent.$refs.ContentMenu.listInvoice = newval;
       }
     }
   }

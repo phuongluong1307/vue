@@ -103,13 +103,15 @@
 import XLSX from 'xlsx';
 export default {
     name: "ModalExcel",
+    props: ['data'],
     data: function(){
         return {
             step: 1,
             selectedFile: null,
             json_excel: [],
             name_file_upload: null,
-            list_product: []
+            list_product: [],
+            sampleFile: []
         }
     },
     methods: {
@@ -175,16 +177,7 @@ export default {
         },
         handleDownload: function(){
             let vm = this;
-            let data = [
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà vải", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà sữa", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà tắc", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đá", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-                {"HìnhẢnh": "https://znews-photo.zadn.vn/w210/Uploaded/mdf_reovdl/2020_05_07/corona_117.jpg", "TênSP": "Trà đào", "MãSP": "Trà đào", "Giá": 15000,"LoạiSP": "tea"},
-            ];
+            let data = vm.sampleFile;
             if(data == '') return;
             vm.JSONToCSVConvertor(data,"", true);
         },
@@ -278,6 +271,10 @@ export default {
             };
             return arr;
         }
+    },
+    created: function(){
+        let vm = this;
+        vm.sampleFile = vm.data;
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="loading_modal">
-        <div class="loading_modal_1">Thêm thành công!</div>
+        <div class="loading_modal_1">{{title}}</div>
     </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
     name: "LoadingModal",
     data: function(){
         return {
-            
+            title: "Thêm thành công!"
         }
     }
 }

@@ -228,7 +228,9 @@ export default {
         },
         addProduct: function () {
             let vm = this;
-            vm.price = vm.$refs.number.number;
+            if(vm.$refs.number.number){
+                vm.price = vm.$refs.number.number;
+            };
             let new_product = {
                 barcode_id: vm.form_product.barcode_id,
                 product_name: vm.form_product.product_name,
@@ -293,7 +295,8 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
-        }
+        },
+        
     },
     computed: {
         getItemProduct: function () {
