@@ -14,7 +14,7 @@
                         <input type="text" placeholder="Tìm mã hóa đơn, tên hoặc sđt khách hàng" v-model="search">
                     </div>
                     <div class="search_advanced">
-                        <a @click.stop.prevent="$refs.FilterAdvanced.open = true">Tìm kiếm nâng cao</a>
+                        <a @click.stop.prevent="handleOpenFilterAdvance">Tìm kiếm nâng cao</a>
                     </div>
                 </div>
                 <div class="list_order">
@@ -27,7 +27,7 @@
                             <p>{{item.date}}</p>
                         </div>
                         <div class="invoice">
-                            <p>Người bán: </p>
+                            <p>Khách hàng: {{ item.customer ? item.customer.name : '' }}</p>
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,7 @@ export default {
             listReplace: null,
             filters: {
                 date: '',
-                customer: ''
+                customer_id: ''
             },
             debounce_1: null,
             modalConfirm: false,
@@ -239,8 +239,8 @@ export default {
                 headers: {'auth-token': localStorage.getItem('token')},
                 params: {
                     keyword: vm.search,
-                    date: vm.filters.date,
-                    customer: vm.filters.customer
+                    date: vm.filters.date ? vm.filters.date : null,
+                    customer_id: vm.filters.customer_id ? vm.filters.customer_id : null
                 }
             }).then(res => {
                 let result = res.data.data;
@@ -249,6 +249,11 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
+        },
+        handleOpenFilterAdvance:function(){
+            let vm = this;
+            vm.$refs.FilterAdvanced.open = true;
+            vm.$refs.FilterAdvanced.loadCustomer();
         },
         handleSelectBill: function(item){
             let vm = this;
@@ -410,7 +415,7 @@ export default {
         }
     },
     created: function(){
-        this.loadInvoice();
+        // this.loadInvoice();
     },
     computed: {
         grandTotal: function(){

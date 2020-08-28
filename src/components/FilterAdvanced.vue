@@ -9,7 +9,7 @@
                     <li class="filter_advanced_1_1_1">
                         <div class="select_multi">
                             <div class="selecter" @click.stop.prevent="showEvent">
-                                <input type="text" class="text" placeholder="Loại người dùng" ref="customer" autocomplete="off" readonly="readonly" :value="$parent.filters.customer">
+                                <input type="text" class="text" placeholder="Loại người dùng" ref="customer" autocomplete="off" readonly="readonly" :value="inputCustomer">
                                 <div class="icon"><i class="fal fa-chevron-down"></i></div>
                                 <div class="select_box" v-show="select">
                                     <ul>
@@ -39,7 +39,7 @@
                                 <p>{{item.date}}</p>
                             </div>
                             <div class="invoice">
-                                <p>Người bán:</p>
+                                <p>Khách hàng: {{ item.customer ? item.customer.name : '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                 <button><i class="fal fa-times"></i></button>
             </div>
         </div>
-        <div class="mask"></div>
+        <div class="mask" @click.stop.prevent="open = false"></div>
     </div>
 </template>
 
@@ -72,7 +72,8 @@ export default {
             filter: false,
             select: false,
             data: null,
-            arr: null
+            arr: null,
+            inputCustomer: ''
         }
     },
     methods: {
@@ -83,7 +84,8 @@ export default {
         selectCustomer: function(item){
             let vm = this;
             vm.select = false;
-            vm.$parent.filters.customer = item.name;
+            vm.inputCustomer = item.name;
+            vm.$parent.filters.customer_id = item._id;
         },
         hideEvent: function(){
             let vm = this;
@@ -109,7 +111,7 @@ export default {
     },
     created: function(){
         let vm = this;
-        vm.loadCustomer();
+        // vm.loadCustomer();
         vm.arr = vm.arrFilters;
     },
     watch: {

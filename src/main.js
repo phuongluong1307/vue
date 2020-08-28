@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '@/assets/css/index.css'
 import '@/assets/font-awesome/css/all.css'
 import '@/assets/js/JsBarcode.all.min.js'
-
+import io from 'socket.io-client';
 
 Vue.config.productionTip = false
 Vue.use(Plugin)
@@ -23,7 +23,8 @@ new Vue({
   data(){
     return {
       API_GATE: "http://localhost:3000",
-      list_category: []
+      list_category: [],
+      socket: io('http://localhost:3000')
     }
   },
   methods: {

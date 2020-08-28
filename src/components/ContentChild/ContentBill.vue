@@ -8,8 +8,12 @@
           </ul>
         </div>
         <div class="sales">
-          <span class="sales_1">Bán trong ngày:</span>
-          <span class="sales_2">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(totalSaleOfDate ? totalSaleOfDate : 0)}}</span>
+          <div class="sales_1">Bán trong ngày:</div>
+          <div class="sales_2" v-if="statusSaleOfDate">
+            <div class="sales_2_1">{{saleOfDate}}</div>
+            <div class="sales_2_2">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(totalSaleOfDate ? totalSaleOfDate : 0)}}</div>
+          </div>
+          <div class="sales_2" v-else>{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(totalSaleOfDate ? totalSaleOfDate : 0)}}</div>
         </div>
       </div>
     </div>
@@ -92,7 +96,7 @@
               </div>
             </div>
             <div class="discount">
-              <a @click.stop.prevent="$refs.ModalDiscount.open = true">
+              <a @click.stop.prevent="openModalDiscount = true">
                 <p>Thêm giảm giá</p>
                 <div class="icons_plus" v-if="!status_discount">
                   <i class="fal fa-plus-circle"></i>
@@ -103,7 +107,6 @@
           </div>
         </div>
         <div class="block_6">
-          <button class="provisional">Tạm tính</button>
           <button class="pay" @click.stop.prevent="openCharge">Thanh toán</button>
         </div>
       </div>
@@ -111,7 +114,7 @@
     <CreateCustomer ref="CreateCustomer" :bill="my_singleBill"></CreateCustomer>
     <AdjustProduct ref="AdjustProduct"></AdjustProduct>
     <CompCharge :data="my_singleBill" ref="CompCharge"></CompCharge>
-    <ModalDiscount ref="ModalDiscount" @handleAddDiscount="handleAddDiscount"></ModalDiscount>
+    <ModalDiscount ref="ModalDiscount" @handleAddDiscount="handleAddDiscount" v-if="openModalDiscount"></ModalDiscount>
     <ModalTax ref="ModalTax" @handleAddTax="handleAddTax"></ModalTax>
   </div>
 </template>
@@ -146,7 +149,7 @@ export default {
           discount_price: 0,
           discount_type: 'VND',
           discount_value: 0,
-          statusDiscountTotal: false
+          statusDiscountTotal: false,
         }
       ],
       tax: 0,
@@ -164,7 +167,10 @@ export default {
       seller: '',
       status_discount: false,
       sale_of_date: 0,
-      listInvoice: null
+      listInvoice: null,
+      openModalDiscount: false,
+      saleOfDate: 0,
+      statusSaleOfDate: false
     };
   },
   methods: {
@@ -316,12 +322,12 @@ export default {
         vm.status_discount = true;
         vm.my_singleBill.discount_type = value.discount_type;
         vm.my_singleBill.discount_value = value.discount_value;
-        vm.$refs.ModalDiscount.open = false;
+        vm.openModalDiscount = false;
       }else{
         vm.my_singleBill.discount_type = value.discount_type;
         vm.my_singleBill.discount_value = value.discount_value;
         vm.status_discount = false;
-        vm.$refs.ModalDiscount.open = false;
+        vm.openModalDiscount = false;
       }
     },
     handleAddTax: function(obj){
@@ -336,13 +342,15 @@ export default {
       vm.axios({
         method: "GET",
         url: vm.$root.API_GATE + '/api/invoices/',
-        headers: {'auth-token': localStorage.getItem('token')}
+        headers: {'auth-token': localStorage.getItem('token')},
+        params: {
+          branch_id: localStorage.getItem('branch_id')
+        }
       }).then(res => {
         if(res.data.error){
 
         }else{
-          vm.listInvoice = res.data.data.docs;
-          vm.$parent.$refs.ContentMenu.listInvoice = res.data.data.docs;
+          vm.listInvoice = res.data.listInvoiceByBranch;
         };
       }).catch(err => {
         console.log(err)
@@ -354,7 +362,7 @@ export default {
       let vm = this;
       let total = null;
       vm.my_singleBill.products.map((item,index) => {
-        total += item.price * item.quantity;
+        total += (item.price * item.quantity) - (item.discount_price * item.quantity);
       });
       if(vm.my_singleBill.tax_value != 0){
         vm.tax = (total * vm.my_singleBill.tax_value) / 100;
@@ -394,6 +402,7 @@ export default {
     },
     totalSaleOfDate: function(){
       let vm = this;
+      const socket = vm.$root.socket;
       let date = (new Date());
       let date_of_sale = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
       let total = 0;
@@ -404,6 +413,9 @@ export default {
           }
         })
       };
+      socket.on('add bill', function(data){
+        total += data.total_price;
+      })
       return total;
     }
   },
@@ -424,10 +436,18 @@ export default {
         this.$parent.my_tab = newval;
       }
     },
-    listInvoice: {
-      deep: true,
-      handler: function(newval){
-        this.$parent.$refs.ContentMenu.listInvoice = newval;
+    'totalSaleOfDate': {
+      deep:true,
+      handler:function(newval){
+        let vm = this;
+        if(newval > 1000000){
+          vm.statusSaleOfDate = true;
+          vm.saleOfDate = "" + newval;
+          vm.saleOfDate = vm.saleOfDate.replace(vm.saleOfDate.substr(-6,6), '');
+          vm.saleOfDate = vm.saleOfDate + "M";
+        }else{
+          vm.statusSaleOfDate = false;
+        }
       }
     }
   }

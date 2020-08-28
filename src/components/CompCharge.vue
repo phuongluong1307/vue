@@ -9,7 +9,7 @@
                 <div class="left_1">
                     <div class="left_1_1">
                         <div class="user_name">
-                            <p class="txt_name"><i class="fal fa-user-circle"></i><span>{{data.customer != null ? data.customer : 'Khách lẻ'}}</span></p>
+                            <p class="txt_name"><i class="fal fa-user-circle"></i><span>{{data.customer != null ? data.customer.name : 'Khách lẻ'}}</span></p>
                         </div>
                     </div>
                     <div class="left_1_2">
@@ -35,7 +35,7 @@
                                     <span>{{item.quantity}}</span>
                                 </div>
                                 <div class="total">
-                                    <div class="price">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}}</div>
+                                    <div class="price">{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format((item.price * item.quantity) - (item.discount_price * item.quantity))}}</div>
                                     <div class="discount_price" v-if="item.discount_price != 0">Đã giảm:{{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.discount_price * item.quantity)}}</div>
                                 </div>
                             </div>
@@ -186,7 +186,7 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-
+            const socket = vm.$root.socket;
             // let print = document.getElementById('print_80').innerHTML;
             // let body = document.body.innerHTML;
             // document.body.innerHTML = print;
@@ -203,7 +203,7 @@ export default {
                 discount_price: vm.discount_price,
                 discount_value: vm.data.discount_value,
                 products: vm.data.products,
-                branch_id: vm.$parent.$parent.$parent.$refs.ListStore.store ? vm.$parent.$parent.$parent.$refs.ListStore.store._id : null
+                branch_id: localStorage.getItem('branch_id') ? localStorage.getItem('branch_id') : null
             };
             vm.axios({
                 method: "POST",
@@ -214,6 +214,7 @@ export default {
                 if(res.data.error){
 
                 }else{
+                    socket.emit('new bill', res.data.invoice.branch_id, res.data.invoice.total_price, res.data.invoice.discount_price);
                     vm.$parent.loadInvoiceOfDate();
                     vm.$parent.$parent.$parent.$refs.CompOrder.loadInvoice();
                     let bill = res.data.data;
@@ -282,7 +283,7 @@ export default {
                                                 <div style="width:10%;">${item.quantity}</div>
                                                 <div style="width:25%;text-align:center;">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.price)}</div>
                                                 <div style="width:25%;text-align:right;position:relative;">
-                                                    <div style="position:relative;">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.quantity * item.price)}</div>
+                                                    <div style="position:relative;">${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format((item.price * item.quantity) - (item.discount_price * item.quantity))}</div>
                                                     ${item.discount_price > 0 ? `<div style="position:absolute;right:0;top:50%;font-size:12px;padding:10px 0;">Đã giảm ${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'VND' }).format(item.discount_price * item.quantity)}</div>` : ""}
                                                 </div>
                                             </div>

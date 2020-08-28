@@ -14,6 +14,8 @@
             <div class="mask_main" v-show="mask"></div>
             <LoadingModal ref="LoadingModal" v-show="loadingModal"></LoadingModal>
             <ListUser ref="ListUser"></ListUser>
+            <ListBranch ref="ListBranch"></ListBranch>
+            <Chart ref="Chart"></Chart>
         </Fragment>
     </Fragment>
 </template>
@@ -32,6 +34,8 @@ import ModalLogin from './ModalLogin';
 import Loading from './Loading';
 import LoadingModal from './LoadingModal';
 import ListUser from './ListUser';
+import ListBranch from './Branch/ListBranch';
+import Chart from './Chart/Chart';
 export default {
     components: {
         Header,
@@ -46,7 +50,9 @@ export default {
         ModalLogin,
         Loading,
         LoadingModal,
-        ListUser
+        ListUser,
+        ListBranch,
+        Chart
     },
     name: 'CompMain',
     data: function(){
@@ -57,7 +63,8 @@ export default {
             statusBranch: false,
             mask: false,
             loadingModal: false,
-            loading: false
+            loading: false,
+            listBranch: null
         }
     },
     created: function(){

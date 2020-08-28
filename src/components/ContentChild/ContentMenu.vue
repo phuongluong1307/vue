@@ -6,7 +6,7 @@
           <div class="btn_bars">
             <button @click.stop.prevent="$parent.$parent.open_menu_bar = true"><i class="fal fa-bars"></i></button>
           </div>
-          <div class="name_store" @click.stop.prevent="$parent.$parent.$refs.ListStore.open = false">{{nameBranch}}</div>
+          <div class="name_store">{{nameBranch}}</div>
         </div>
       </div>
       <div class="block_1_1">
@@ -111,10 +111,7 @@
                 <div class="text">{{item == "" ? "Sản phẩm bán trong ngày" : item}}</div>
                 <div class="icon"><i class="fal fa-chevron-down"></i></div>
                 <div class="select_box" v-if="select">
-                  <ul v-if="invoiceOfDate.length == 0">
-                    <li style="text-align:center;padding:5px 0;">Chưa có sản phẩm</li>
-                  </ul>
-                  <ul v-else>
+                  <ul>
                     <li class="title">
                       <div class="title_1">
                         <div>Sản phẩm</div>
@@ -206,7 +203,6 @@ export default {
       barcode_show: '',
       displayShortcut: false,
       item: '',
-      listInvoice: [],
     };
   },
   methods: {
@@ -224,6 +220,7 @@ export default {
     },
     handleItem: function(item) {
       let vm = this;
+      vm.extend_filter = false;
       let obj = {
         id: item.id,
         product_name: item.product_name,
@@ -263,10 +260,6 @@ export default {
     unSelectAll: function(){
       let vm = this;
       let checkbox = document.querySelectorAll('.checkbox_category');
-      // for(let i = 0; i < checkbox.length;i++){
-      //   checkbox[i].checked = false;
-      //   vm.checkbox.splice(checkbox[i], 1); 
-      // };
       vm.checkbox = [];
     },
     loadProduct: function(){
@@ -399,6 +392,24 @@ export default {
         default:
           break;
       }
+    },
+    getBranch: function(){
+      let vm = this;
+      if(localStorage.getItem('branch_id')){
+        vm.axios({
+          method: "GET",
+          url: vm.$root.API_GATE + '/api/branches/' + localStorage.getItem('branch_id'),
+          headers: {'auth-token': localStorage.getItem('token')}
+        }).then(res => {
+          if(res.data.error){
+
+          }else{
+            vm.nameBranch = res.data.data.name;
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     }
   },
   computed: {
@@ -431,16 +442,6 @@ export default {
         }
       });
       return arr_category;
-    },
-    getInvoiceOfDate: function(){
-      let vm = this;
-      let data = new Date();
-      let date;
-      if(vm.listInvoice.length > 0){
-        vm.listInvoice.map((item,index) => {
-
-        })
-      }
     }
   },
   watch: {
@@ -469,7 +470,7 @@ export default {
         document.getElementById('style-block3').style.overflow = 'hidden';
       }else{
         document.getElementById('style-block3').style.overflow = 'auto';
-      }
+      };
     },
     'scan': {
       deep: true,
@@ -483,10 +484,10 @@ export default {
   },
   created: function(){
     let vm = this;
-    this.genCharArray('a','z');
-    this.loadProduct();
-    if(localStorage.getItem('nameBranch')){
-      vm.nameBranch = localStorage.getItem('nameBranch');
+    vm.genCharArray('a','z');
+    vm.loadProduct();
+    if(localStorage.getItem('branch_id')){
+      vm.getBranch();
     };
   },
   mounted: function(){

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal_discount" :class="open ? 'open' : ''">
+    <div class="modal_discount">
         <div class="box">
             <div class="top">
                 <h4 class="title">Thêm giảm giá</h4>
@@ -43,7 +43,7 @@
                 <button @click.stop.prevent="handleAddDiscount">Thêm</button>
             </div>
         </div>
-        <div class="mask" @click.stop.prevent="open = false"></div>
+        <div class="mask" @click.stop.prevent="$parent.openModalDiscount = false"></div>
     </div>
 </template>
 
@@ -56,7 +56,6 @@ export default {
     name: 'ModalDiscount',
     data: function(){
         return {
-            open: false,
             discount: '%',
             number: '0'
         }

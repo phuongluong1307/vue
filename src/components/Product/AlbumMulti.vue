@@ -136,7 +136,7 @@ export default {
 
     },
     created: function () {
-        this.getListAlbum();
+        // this.getListAlbum();
     }
 }
 </script>

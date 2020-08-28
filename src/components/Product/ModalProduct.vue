@@ -148,6 +148,7 @@ export default {
         openAlbumMulti: function () {
             this.$refs.albummulti.open = true;
             this.close_popup = true;
+            this.$refs.albummulti.getListAlbum();
         },
         openCategory: function () {
             this.$refs.category.open = true;
@@ -314,7 +315,7 @@ export default {
         }
     },
     created: function () {
-        this.loadCategory();
+        // this.loadCategory();
     },
     watch: {
         'form_product.barcode_id': {

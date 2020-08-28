@@ -12,16 +12,30 @@
                         <span class="warning-error"></span>
                     </div>
                     <div class="form-group">
-                        <p class="title_listpermission">Permissions:</p>
-                        <div class="form-permission">
-                            <div class="list-checkbox">
-                                <div class="checkbox" v-for="(item,index) in listPer" :key="index">
-                                    <input type="checkbox" v-model="formRole.permissions" :name="item.name" :value="item.method + ':' + item.route">
-                                    <label>{{item.method + ':' + item.route}}</label><br>
-                                </div>
+                        <div class="title_check">
+                            <div class="title">
+                                <p class="title_listpermission">Permissions:</p>
                             </div>
-                            <div class="button_addrole">
-                                <button @click.stop.prevent="addPer()">Create Permission</button>
+                            <div class="check_input">
+                                <input type="checkbox" ref="checkAll" name="permission" id="check_all" @change.stop.prevent="hanleSelectAllRole">
+                                <label for="check_all">Chọn tất cả</label>
+                            </div>
+                        </div>
+                        <div class="form-permission">
+                            <div class="list_checkbox_1" v-for="(item, index) in getTypePermission" :key="index">
+                                <div class="list_checkbox_1_1">
+                                    <div class="title">{{item.route}}:</div>
+                                    <div class="check_input">
+                                        <input type="checkbox" ref="checkList" name="permission" @change.stop.prevent="handleSelectListRole($event,item)">
+                                        <label>Chọn</label>
+                                    </div>
+                                </div>
+                                <div class="list-checkbox">
+                                    <div class="checkbox" v-for="(row,rowIndex) in item.method" :key="rowIndex">
+                                        <input type="checkbox" ref="checkbox_permission" v-model="formRole.permissions" :name="row.name" :value="row.method + ':' + row.route">
+                                        <label>{{row.method}}</label><br>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <span class="warning-error"></span>
@@ -35,17 +49,12 @@
                 </div>
             </div>
         </div>
-        <addPermission ref="addPermission" @clicked-popup='popup = false'></addPermission>
         <div class="mask" @click.stop.prevent="changePopup()"></div>
     </div>
 </template>
 
 <script>
-import addPermission from './AddPermission';
 export default {
-    components: {
-        addPermission
-    },
     name: "addrole",
     data: function () {
         return {
@@ -56,7 +65,7 @@ export default {
                 permissions: []
             },
             newRoles: null,
-            listPer: []
+            listPer: [],
         }
     },
     methods: {
@@ -103,13 +112,70 @@ export default {
             }).catch(err => {
                 console.log(err)
             })
+        },
+        handleSelectListRole: function(e,item){
+            let vm = this;
+            let arr = item.method;
+            if(e.path[0].checked){
+                for(let i = 0; i < arr.length;i++){
+                    let j = arr[i].method + ':' + arr[i].route;
+                    if(!vm.formRole.permissions.includes(j)){
+                        vm.formRole.permissions.push(j);
+                    };
+                };
+            }else{
+                for(let i = 0; i < arr.length;i++){
+                    let url = arr[i].method + ':' + arr[i].route;
+                    let findIndex = vm.formRole.permissions.findIndex(row => row == url);
+                    if(findIndex > -1){
+                        vm.formRole.permissions.splice(findIndex, 1);
+                    }
+                };
+            } 
+        },
+        hanleSelectAllRole: function(){
+            let vm = this;
+            let list_role = vm.$refs.checkbox_permission;
+            if(vm.$refs.checkAll.checked){
+                list_role.map(item => {
+                    item.checked = true;
+                    if(!vm.formRole.permissions.includes(item.defaultValue)){
+                        vm.formRole.permissions.push(item.defaultValue)
+                    };
+                });
+            }else{
+                vm.formRole.permissions = [];
+            };
         }
     },
     computed: {
-
+        listRoute: function(){
+            let vm = this;
+            let listRoute = [];
+            vm.listPer.map((item,index) => {
+                let route = item.route.replace('/api/', '');
+                if(!listRoute.includes(route)){
+                    listRoute.push(route);
+                };
+            });
+            return listRoute;
+        },
+        getTypePermission: function(){
+            let vm = this;
+            let arr = null;
+            let arrMethod = [];
+            vm.listRoute.map(item => {
+                arr = vm.listPer.filter(row => row.route.replace('/api/', '') == item);
+                arrMethod.push({
+                    method: arr,
+                    route: item
+                });
+            });
+            return arrMethod;
+        }
     },
     created: function () {
-        this.listPermissions();
+        // this.listPermissions();
     }
 }
 </script>

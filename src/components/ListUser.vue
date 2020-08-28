@@ -10,8 +10,6 @@
                         <div class="card-top">
                             <div class="add-user" id="listButton">
                                 <button class="button-item button-list-user" @click.stop.prevent="openModal('')">Add User</button>
-                                <button class="button-item add-button">Import Excel</button>
-                                <button class="button-item button-edit-user">Export Excel</button>
                             </div>
                             <div class="search-user">
                                 <input type="search" name="search" v-model="search" placeholder="Search user" @keyup.enter="loadRecords()">
@@ -63,23 +61,25 @@ export default {
     },
     methods: {
         openModal: function (title) {
-            this.dataItem = title;
-            let role = title ? title.role_id.name : '';
-            let default_url = title ? title.default_url : '';
+            let vm = this;
+            vm.dataItem = title;
             var new_form = {
-                name: title.name,
-                username: title.username,
-                password: title.password,
-                email: title.email,
-                role: role,
-                default_url: default_url,
+                name: title != '' ? title.name : '',
+                username: title != '' ? title.username : '',
+                password: title != '' ? title.password : '',
+                email: title != '' ? title.email : '',
+                role: title != '' ? title.role.name : '',
+                default_url: title != '' ? title.default_url : '',
             }
-            this.titleModal = title;
-            this.$refs.modaluser.open = true;
-            this.$refs.modaluser.form = new_form;
-            if (this.$refs.modaluser.open) {
+            vm.titleModal = title;
+            vm.$refs.modaluser.open = true;
+            vm.$refs.modaluser.form = new_form;
+            if (vm.$refs.modaluser.open) {
                 document.querySelector('body').style.overflow = 'hidden';
-            }
+            };
+            vm.$refs.modaluser.listRoles();
+            vm.$refs.modaluser.listPages();
+            vm.$refs.modaluser.loadBranches();
         },
         loadRecords: function () {
             let vm = this;
@@ -115,7 +115,7 @@ export default {
 
     },
     created: function () {
-        this.loadRecords();
+        // this.loadRecords();
     },
     watch: {
         'search': {

@@ -46,6 +46,7 @@ export default {
     methods:{
         handleSubmit: function(){
             let vm = this;
+            const socket = vm.$root.socket;
             vm.axios({
                 method: 'POST',
                 url: vm.$root.API_GATE + '/api/auth',
@@ -58,13 +59,18 @@ export default {
                     let user = {
                         id: result.id,
                         name: result.name
-                    }
-                    localStorage.setItem('auth_token', true)
+                    };
+                    localStorage.setItem('auth_token', true);
                     vm.token = result.token;
                     localStorage.setItem('token', vm.token);
                     localStorage.setItem('name', JSON.stringify(user));
                     vm.$parent.auth_token = true;
-                    vm.listBranch = res.data.listBranch;
+                    vm.$parent.listBranch = res.data.listBranch;
+                    if(res.data.listBranch.length == 1){
+                        vm.$parent.statusBranch = true;
+                        localStorage.setItem('nameBranch', res.data.listBranch[0].name);
+                    };
+                    console.log(res.data)
                 }
             }).catch(err => {
                 console.log(err)

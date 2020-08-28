@@ -96,7 +96,7 @@ export default {
     'mybill': {
       deep: true,
       handler: function(newval){
-
+        this.$parent.my_singleBill = newval;
       }
     }
   }

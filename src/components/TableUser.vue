@@ -16,14 +16,11 @@
                 <td>{{ index + 1 }}</td>
                 <td>{{ item.username }}</td>
                 <td>{{ item.name }}</td>
-                <td>{{ displayName(item.role_id)}}</td>
+                <td>{{ item.role.name }}</td>
                 <td>{{ item.default_url }}</td>
                 <td>{{ item.created_at | mm-dd-yyyy}}</td>
                 <td>
                     <ul class="tb_ul">
-                        <li class="tb_li">
-                            <a href="#" data-toggle="tooltip" title="Change password!" data-placement="top" class="list__action"><i class="fas fa-exchange-alt"></i></a>
-                        </li>
                         <li class="tb_li">
                             <a href="#" data-toggle="tooltip" title="Delete user!" data-placement="top" class="list__action" @click.stop.prevent="openDeleteModal(item)"><i class="far fa-trash-alt"></i></a>
                         </li>
@@ -71,11 +68,6 @@ export default {
         openDeleteModal: function (item) {
             this.$refs.ModalWarningDelete.open = true;
             this.infoUser = item;
-        },
-        displayName: function (value) {
-            if (typeof value != 'undefined') {
-                return value['name'];
-            }
         },
         reloadTable: function () {
             return this.$parent.loadRecords();

@@ -1,11 +1,11 @@
 <template>
     <div class="list_store" :class="open ? 'close' : ''">
-        <div class="box" v-if="$parent.$refs.ModalLogin">
+        <div class="box">
             <div class="top">
                 <h6 class="title">Chọn cửa hàng</h6>
             </div>
             <div class="center">
-                <div class="store" v-for="item in $parent.$refs.ModalLogin.listBranch" :key="item.id" @click.stop.prevent="handleSelectBranch(item)">
+                <div class="store" v-for="(item,index) in $parent.listBranch" :key="index" :class="store && item.name == store.name ? 'active' : ''" @click.stop.prevent="handleSelectBranch(item)">
                     <p>{{item.name}}</p>
                 </div>
             </div>
@@ -25,19 +25,18 @@ export default {
             open: false,
             active: "",
             store: null,
-            nameBranch: '',
             debounce: null,
         }
     },
     methods: {
         handleSelectStore: function(){
             let vm = this;
+            const socket = vm.$root.socket;
             if(vm.store.name == ''){
                 alert('Vui lòng chọn cửa hàng')
             }else{
                 vm.open = true;
-                vm.nameBranch = vm.store.name;
-                localStorage.setItem('nameBranch', vm.nameBranch);
+                localStorage.setItem('branch_id', vm.store._id);
                 vm.$parent.statusBranch = true;
             }
         },
@@ -48,18 +47,12 @@ export default {
     },
     created: function(){
         let vm = this;
-        if(localStorage.getItem('nameBranch')){
+        if(localStorage.getItem('branch_id')){
             vm.open = true;
         }
     },
     watch: {
-        'nameBranch': {
-            deep: true,
-            handler: function(newval){
-                let vm = this;
-                vm.$parent.$refs.Content.$refs.ContentMenu.nameBranch = newval;
-            }
-        }
+        
     }
 }
 </script>

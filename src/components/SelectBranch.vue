@@ -8,7 +8,7 @@
                 <div class="form-branch">
                     <div class="list-checkbox">
                         <div class="checkbox" v-for="(item, index) in data" :key="index">
-                            <input type="checkbox" v-model="listBranch" :name="item.name" :value="item">
+                            <input type="checkbox" v-model="listBranch" :name="item.name" :value="item._id">
                             <label>{{item.name}}</label><br>
                         </div>
                     </div>
@@ -17,20 +17,14 @@
             </div>
             <div class="bottom">
                 <button class="add_branch" @click.stop.prevent="addBranch">Add</button>
-                <button class="create_branch" @click.stop.prevent="handleOpenAddBranch">Create branch</button>
             </div>
         </div>
         <div class="mask" @click.stop.prevent="close_open"></div>
-        <addbranch ref="addbranch"></addbranch>
     </div>
 </template>
 
 <script>
-import addbranch from './AddBranch';
 export default {
-    components: {
-        addbranch
-    },
     name: "SelectBranch",
     data: function(){
         return {
@@ -57,7 +51,7 @@ export default {
                 if(res.data.error){
 
                 }else{
-                    vm.data = res.data.data;
+                    vm.data = res.data.data.docs;
                 }
             }).catch(err => {
                 console.log(err)
@@ -86,14 +80,14 @@ export default {
         let vm = this;
     },
     created: function(){
-        this.loadBranches();
+        // this.loadBranches();
     },
     watch: {
         'listBranch': {
             deep: true,
             handler: function(newval){
                 let vm = this;
-                vm.$parent.list_branch = newval;
+                // vm.$parent.list_branch = newval;
             }
         }
     }

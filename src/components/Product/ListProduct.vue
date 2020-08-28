@@ -102,6 +102,7 @@ export default {
         openAddProduct: function () {
             let vm = this;
             vm.$refs.ModalProduct.open = true;
+            vm.$refs.ModalProduct.loadCategory();
             vm.editModal = null;
             let new_product = {
                 barcode_id: '',
@@ -137,6 +138,7 @@ export default {
             vm.$refs.ModalProduct.$children[0].number = value.price;
             this.editModal = value;
             this.$refs.ModalProduct.open = true;
+            vm.$refs.ModalProduct.loadCategory();
             this.$refs.ModalProduct.form_product = new_product;
         },
         getListProduct: function () {
@@ -181,7 +183,7 @@ export default {
         
     },
     created: function () {
-        this.getListProduct();
+        // this.getListProduct();
     },
     watch: {
         'filter': {

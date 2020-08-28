@@ -33,7 +33,7 @@
                         <div class="form-select">
                             <select id="edit-role" v-model="form.role">
                                 <option value="" disabled>Please select one</option>
-                                <option v-for="item in rolesData" :value="item.name" :key="item.name">{{item.name}}</option>
+                                <option v-for="item in rolesData" :value="item._id" :key="item._id">{{item.name}}</option>
                             </select>
                             <button @click.stop.prevent="addNewRole()">Create Role</button>
                         </div>
@@ -50,9 +50,20 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="edit-branch" class="control-label">Branch</label>
-                        <div class="form-select">
-                            <button @click.stop.prevent="openSelectBranch" class="btn_select_branch">Select Branch</button>
+                        <div class="label-select">
+                            <div class="label">
+                                <label for="edit-branch" class="control-label">Branch</label>
+                            </div>
+                        </div>
+                        <div class="list_select_branch">
+                            <div class="form-branch">
+                                <div class="list-checkbox">
+                                    <div class="checkbox" v-for="(item, index) in data" :key="index">
+                                        <label>{{item.name}}</label>
+                                        <input type="checkbox" v-model="listBranch" :name="item.name" :value="item._id">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div v-if="warningError != ''" class="text-danger">{{warningError}}</div>
@@ -69,7 +80,7 @@
         <div class="mask" @click.stop.prevent="closeModal" style="position: absolute;left:0px;bottom:0px;top:0px;right:0px;z-index: 1;background: rgba(0,0,0,0.4);"></div>
         <addrole ref="addrole" listRoles="listRoles" v-on:clicked-popup='popup = false'></addrole>
         <addpage ref="addpage" v-on:clicked-popup='popup = false'></addpage>
-        <SelectBranch ref="select_branch"></SelectBranch>
+        <!-- <SelectBranch ref="select_branch"></SelectBranch> -->
     </div>  
 </template>
 
@@ -97,13 +108,13 @@ export default {
                 forget_token: '',
                 token_exprired: '',
                 role: '',
-                
             },
-            list_branch: [],
             popup: false,
             rolesData: null,
             pagesData: null,
-            warningError: ''
+            warningError: '',
+            listBranch: [],
+            data: []
         }
     },
     methods: {
@@ -115,6 +126,7 @@ export default {
         addNewRole: function () {
             this.$refs.addrole.open = true;
             this.popup = true;
+            this.$refs.addrole.listPermissions();
         },
         addNewPage: function () {
             this.$refs.addpage.open = true;
@@ -131,7 +143,7 @@ export default {
                 forget_token: '',
                 token_exprired: '',
                 role_id: vm.form.role,
-                list_branch: vm.list_branch
+                list_branch: vm.listBranch
             };
             if (vm.titleModal == '') {
                 vm.axios({
@@ -154,12 +166,12 @@ export default {
                     data: new_form,
                     headers: { "auth-token": localStorage.getItem('token') }
                 })
-                    .then(res => {
-                        vm.closeModal();
-                        vm.$parent.loadRecords();
-                    }).catch(err => {
-                        console.log(err.response.data);
-                    })
+                .then(res => {
+                    vm.closeModal();
+                    vm.$parent.loadRecords();
+                }).catch(err => {
+                    console.log(err.response.data);
+                })
             }
         },
         listRoles: async function () {
@@ -188,8 +200,25 @@ export default {
         },
         openSelectBranch: function(){
             let vm = this;
-            this.$refs.select_branch.open = true;
+            // this.$refs.select_branch.open = true;
             this.popup = true;
+            // this.$refs.select_branch.loadBranches();
+        },
+        loadBranches: function(){
+            let vm = this;
+            vm.axios({
+                method: "GET",
+                url: vm.$root.API_GATE + '/api/branches/',
+                headers: {'auth-token': localStorage.getItem('token')}
+            }).then(res => {
+                if(res.data.error){
+
+                }else{
+                    vm.data = res.data.data.docs;
+                }
+            }).catch(err => {
+                console.log(err)
+            })
         }
     },
     computed: {
@@ -199,8 +228,8 @@ export default {
 
     },
     created: function () {
-        this.listRoles();
-        this.listPages();
+        // this.listRoles();
+        // this.listPages();
     }
 }
 </script>
