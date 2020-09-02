@@ -214,7 +214,7 @@ export default {
                 if(res.data.error){
 
                 }else{
-                    socket.emit('new bill', res.data.invoice.branch_id, res.data.invoice.total_price, res.data.invoice.discount_price);
+                    socket.emit('new bill', res.data.invoice.branch_id, res.data.invoice.total_price);
                     vm.$parent.loadInvoiceOfDate();
                     vm.$parent.$parent.$parent.$refs.CompOrder.loadInvoice();
                     let bill = res.data.data;

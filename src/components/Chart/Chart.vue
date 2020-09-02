@@ -6,12 +6,21 @@
                     <div class="title">Biểu đồ bán hàng</div>
                 </div>
                 <div class="card-body">
-                    <div class="card-text">Biểu đồ trong ngày</div>
-                    <canvas id="myChart" ref="myChart" width="100" height="20"></canvas>
-                </div>
-                <div class="card-body">
-                    <Datepicker class="date_picker" v-model="filters.date" style="width:200px;" :language="vi" placeholder="Tìm theo ngày" input-class="input_picker"></Datepicker>
-                    <canvas id="chartFilter" ref="chartFilter" width="100" height="20"></canvas>
+                    <div class="nav_chart">
+                        <div class="nav_chart_1">
+                            <button class="nav_chart_1_1" :class="{active: step == 1}" @click.stop.prevent="handleSelectFollowChart(1, 'ChartBranch')">Cửa hàng</button>
+                        </div>
+                        <div class="nav_chart_1">
+                            <button class="nav_chart_1_2" :class="{active: step == 2}" @click.stop.prevent="handleSelectFollowChart(2, 'ChartUser')">Nhân viên</button>
+                        </div>
+                        <div class="nav_chart_1">
+                            <button class="nav_chart_1_3" :class="{active: step == 3}" @click.stop.prevent="handleSelectFollowChart(3, 'ChartProduct')">Sản phẩm</button>
+                        </div>
+                        <div class="nav_chart_1">
+                            <button class="nav_chart_1_4" :class="{active: step == 4}" @click.stop.prevent="handleSelectFollowChart(4, 'CompareChart')">So sánh</button>
+                        </div>
+                    </div>
+                    <component ref="chartTable" v-bind:is="chart_component"></component>
                 </div>
             </div>
         </div>
@@ -19,32 +28,86 @@
 </template>
 
 <script>
-import Chart from 'chart.js';
-import Datepicker from 'vuejs-datepicker';
-import {en, vi} from 'vuejs-datepicker/dist/locale';
+import ChartBranch from './ChartBranch';
+import ChartUser from './ChartUser';
+import ChartProduct from './ChartProduct';
+import CompareChart from './CompareChart';
 export default {
     components: {
-        Datepicker
+        ChartBranch,
+        ChartUser,
+        ChartProduct,
+        CompareChart
     },
     name: 'Chart',
     data(){
         return {
             open: false,
+            chart_component: 'ChartBranch',
+            step : 1,
+            statusBody: false,
             listBranch: [],
-            invoiceOfDate: [],
-            arr: [],
-            debounce: null,
-            en: en,
-            vi: vi,
-            filters: {
-                date: ''
-            }
+            status: true
         }
     },
     methods: {
-        promise: function(){
+        handleSelectFollowChart(index, item){
             let vm = this;
-            return new Promise(function(resolve, reject){
+            vm.step = index;
+            vm.chart_component = item;
+            vm.$nextTick(function(){
+                switch (vm.step) {
+                    case 1:
+                        if(vm.$refs.chartTable.status){
+                            vm.$refs.chartTable.status = false;
+                            vm.$refs.chartTable.createChart();
+                        };
+                        break;
+                    case 2:
+                        if(vm.$refs.chartTable.status){
+                            vm.$refs.chartTable.status = false;
+                            vm.$refs.chartTable.loadInvoice();
+                        };;
+                        break;
+                    case 3: 
+                        if(vm.$refs.chartTable.status){
+                            vm.$refs.chartTable.status = false;
+                            vm.$refs.chartTable.loadDetailProduct();
+                        };
+                        
+                        break;
+                    default:
+                        break;
+                };
+            })
+        },
+        getInvoiceByIdBranch:async function(id){
+            let vm = this;
+            let result = null;
+            let promise = new Promise(function(resolve,reject){
+                vm.axios({
+                    method: "GET",
+                    url: vm.$root.API_GATE + '/api/invoices/',
+                    headers: {'auth-token': localStorage.getItem('token')},
+                    params: {
+                        branch_id: id ? id : null
+                    }
+                }).then(res => {
+                    if(res.data.error){
+
+                    }else{
+                        resolve(res.data);
+                    };
+                }).catch(err => {
+                    console.log(err)
+                });
+            });
+            result = await promise;
+            return result;
+        },
+        loadListBranch: function(){
+            let vm = this;
+            if(vm.status){
                 vm.axios({
                     method: "GET",
                     url: vm.$root.API_GATE + '/api/branches/',
@@ -54,173 +117,34 @@ export default {
 
                     }else{
                         if(res.data.data.docs){
-                            let arr = [];
-                            res.data.data.docs.map(item => {
-                                arr.push(item.name);
-                            });
-                            resolve(arr);
+                            vm.listBranch = res.data.data.docs;
                         }
                     }
                 }).catch(err => {
                     console.log(err)
                 });
-            });
+                vm.status = false;
+            }
         },
-        async createChart(){
-            let vm = this;
-            let arr = [];
-            // let promise = new Promise(function(resolve, reject){
-            //     vm.axios({
-            //         method: "GET",
-            //         url: vm.$root.API_GATE + '/api/branches/',
-            //         headers: {'auth-token': localStorage.getItem('token')}
-            //     }).then(res => {
-            //         if(res.data.error){
-
-            //         }else{
-            //             if(res.data.data.docs){
-            //                 let arr = [];
-            //                 res.data.data.docs.map(item => {
-            //                     arr.push(item.name);
-            //                 });
-            //                 resolve(arr);
-            //             }
-            //         }
-            //     }).catch(err => {
-            //         console.log(err)
-            //     });
-            // });
-            vm.listBranch = await vm.promise();
-            vm.$nextTick(function(){
-                let dataLabelPrice = Array.from({length: vm.listBranch.length}, x => 0);
-                let dataLabelDiscount = Array.from({length: vm.listBranch.length}, x => 0);
-                const socket = vm.$root.socket;
-                let ctx = vm.$refs.myChart;
-                let data = new Date();
-                let date = data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear();
-                const myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: vm.listBranch ? vm.listBranch : [],
-                        datasets: [{
-                            label: 'Doanh số trong ngày',
-                            data: dataLabelPrice,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-                let newDataset = {
-                    label: 'Khuyến mãi',
-                    backgroundColor: 'rgba(99, 255, 132, 0.2)',
-                    borderColor: 'rgba(99, 255, 132, 1)',
-                    borderWidth: 1,
-                    data: dataLabelDiscount,
-                };
-                myChart.data.datasets.push(newDataset);
-                myChart.update();
-                socket.on('list branch', function(data){
-                    data.map(item => {
-                        let find = myChart.data.labels.findIndex(row => row == item.branch.name);
-                        if(find > -1){
-                            myChart.data.datasets[0].data[find] += item.total_price;
-                            myChart.data.datasets[1].data[find] += item.discount_price;
-                            myChart.update();
-                        }
-                    })
-                });
-                socket.on('add bill', function(data){
-                    let findBranch = myChart.data.labels.findIndex(item => item == data.branch);
-                    if(findBranch > -1){
-                        myChart.data.datasets[0].data[findBranch] += data.total_price;
-                        myChart.data.datasets[1].data[findBranch] += data.discount_price;
-                        myChart.update();
-                    };
-                });
-            });
-        },
-        chartFilter: async function(){
-            let vm = this;
-            vm.listBranch = await vm.promise();
-            let dataLabelPrice = Array.from({length: vm.listBranch.length}, x => 0);
-            let dataLabelDiscount = Array.from({length: vm.listBranch.length}, x => 0);
-            const socket = vm.$root.socket;
-            let ctx = vm.$refs.chartFilter;
-            const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: vm.listBranch ? vm.listBranch : [],
-                    datasets: [{
-                        label: 'Đã bán',
-                        data: dataLabelPrice,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Khuyến mãi',
-                        data: dataLabelDiscount,
-                        backgroundColor: 'rgba(99, 255, 132, 0.2)',
-                        borderColor: 'rgba(99, 255, 132, 1)',
-                        borderWidth: 1,
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-            socket.on('list sale of date', function(data){
-                if(data.length == 0){
-                    myChart.data.datasets[0].data = Array.from({length: vm.listBranch.length}, x => 0);
-                    myChart.data.datasets[1].data = Array.from({length: vm.listBranch.length}, x => 0);
-                    myChart.update();
-                }else{
-                    myChart.data.datasets[0].data = Array.from({length: vm.listBranch.length}, x => 0);
-                    myChart.data.datasets[1].data = Array.from({length: vm.listBranch.length}, x => 0);
-                    data.map(item => {
-                        let find = myChart.data.labels.findIndex(row => row == item.branch.name);
-                        if(find > -1){
-                            myChart.data.datasets[0].data[find] += item.total_price;
-                            myChart.data.datasets[1].data[find] += item.discount_price;
-                            myChart.update();
-                        }
-                    })
-                };
-            })
-        },
-    },
-    mounted: function(){
-        this.createChart();
-        this.chartFilter();
-    },
-    created: function(){
-        // this.loadBranch();
     },
     watch: {
-        'filters.date'(newval){
-            let vm = this;
-            const socket = vm.$root.socket;
-            let data = new Date(newval);
-            let date = (data.getMonth() + 1) + '/' + data.getDate() + '/' + data.getFullYear();
-            socket.emit('date of sale', date);
-        }
-    }
+        'listBranch': {
+            deep: true,
+            handler: function(newval){
+                let vm = this;
+                if(newval.length > 0 && vm.step == 1){
+                    vm.listBranch.map(item => {
+                        vm.$refs.chartTable.listBranch.push({
+                            _id: item._id,
+                            name: item.name
+                        });
+                    });
+                    vm.$refs.chartTable.inputBranch = vm.$refs.chartTable.listBranch[0].name;
+                    vm.$refs.chartTable.objBranch = vm.$refs.chartTable.listBranch[0];
+                }
+            }
+        },
+    },
 }
 </script>
 

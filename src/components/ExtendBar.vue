@@ -14,7 +14,7 @@
                         <li @click.stop.prevent="handleListProduct"><i class="fal fa-list-alt"></i><span>Danh sách sản phẩm</span></li>
                         <li @click.stop.prevent="handleUser"><i class="fal fa-user"></i><span>Danh sách người dùng</span></li>
                         <li @click.stop.prevent="handleOpenListBranch"><i class="fal fa-store-alt"></i><span>Danh sách chi nhánh</span></li>
-                        <li @click.stop.prevent="handleOpenChart"><i class="fal fa-chart-bar"></i><span>Biểu đồ</span></li>
+                        <li @click.stop.prevent="handleOpenChart"><i class="fal fa-chart-bar"></i><span>Báo cáo</span></li>
                     </ul>
                 </div>
             </div>
@@ -94,6 +94,14 @@ export default {
             vm.$parent.$refs.ListProduct.open = false;
             vm.$parent.$refs.ListBranch.open = false;
             vm.$parent.$refs.Chart.open = true;
+            vm.$parent.$refs.Chart.loadListBranch();
+            vm.$parent.$refs.Chart.step = 1;
+            vm.$parent.$refs.Chart.chart_component = 'ChartBranch';
+            if(vm.$parent.$refs.Chart.step == 1){
+                setTimeout(function(){
+                    vm.$parent.$refs.Chart.$refs.chartTable.createChart();
+                },100);
+            };
         }
     },
     created: function(){

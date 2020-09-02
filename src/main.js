@@ -4,13 +4,17 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import { Plugin } from 'vue-fragment'
+import { MonthPicker } from 'vue-month-picker'
+import { MonthPickerInput } from 'vue-month-picker'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '@/assets/css/index.css'
 import '@/assets/font-awesome/css/all.css'
 import '@/assets/js/JsBarcode.all.min.js'
 import io from 'socket.io-client';
-
+ 
+Vue.use(MonthPicker)
+Vue.use(MonthPickerInput)
 Vue.config.productionTip = false
 Vue.use(Plugin)
 
@@ -44,10 +48,28 @@ new Vue({
       }).catch(err => {
         console.log(err)
       })
+    },
+    formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
+      try {
+        decimalCount = Math.abs(decimalCount);
+        decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+        const negativeSign = amount < 0 ? "-" : "";
+
+        let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+        let j = (i.length > 3) ? i.length % 3 : 0;
+
+        return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+      } catch (e) {
+        console.log(e)
+      };
     }
   },
   created: function(){
     this.loadCategory();
+  },
+  filters: {
+    
   }
 })
 
