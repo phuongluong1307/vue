@@ -16,48 +16,50 @@
                 </div>
             </div>
             <MonthPickerInput ref="monthPicker1" v-model="filter.month1" lang="vi"></MonthPickerInput>
-            <MonthPickerInput ref="monthPicker2" v-model="filter.month2" lang="vi"></MonthPickerInput>
+            <MonthPickerInput ref="monthPicker2" v-model="filter.month2" lang="vi" class="month_picker1"></MonthPickerInput>
         </div>
         <div class="table_compare_chart" v-if="handleDataOfFilter.length > 0">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th rowspan="2">#</th>
+                        <th rowspan="2" style="width:50px;">#</th>
                         <th rowspan="2">Chi nhánh</th>
                         <th colspan="2">Số đơn</th>
                         <th colspan="2">Doanh thu</th>
                         <th rowspan="2" class="profit">Lợi nhuận tháng {{ filter.month1.monthIndex }}</th>
                         <th rowspan="2" class="profit">Lợi nhuận tháng {{ filter.month2.monthIndex }}</th>
-                        <th rowspan="2">Tỉ lệ tăng trưởng</th>
+                        <th rowspan="2" class="profit">Tỉ lệ tăng trưởng</th>
                     </tr>
                     <tr>
-                        <th>Tháng {{ filter.month1.monthIndex }}</th>
-                        <th>Tháng {{ filter.month2.monthIndex }}</th>
-                        <th>Tháng {{ filter.month1.monthIndex }}</th>
-                        <th>Tháng {{ filter.month2.monthIndex }}</th>
+                        <th class="month">Tháng {{ filter.month1.monthIndex }}</th>
+                        <th class="month">Tháng {{ filter.month2.monthIndex }}</th>
+                        <th class="month">Tháng {{ filter.month1.monthIndex }}</th>
+                        <th class="month">Tháng {{ filter.month2.monthIndex }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item,index) in handleDataOfFilter" :key="index">
-                        <td>{{ index+1 }}</td>
+                        <td style="text-align:center;">{{ index+1 }}</td>
                         <td>{{ item.branch }}</td>
-                        <td>{{ item.quantity1 || 0 }}</td>
-                        <td>{{ item.quantity2 || 0 }}</td>
-                        <td>{{ $root.formatMoney(item.total_price1 || 0) }}</td>
-                        <td>{{ $root.formatMoney(item.total_price2 || 0) }}</td>
-                        <td>{{ $root.formatMoney(item.total_price1 || 0) }}</td>
-                        <td>{{ $root.formatMoney(item.total_price2 || 0) }}</td>
-                        <td v-if="item.rate > 0" style="color:green;">+{{ item.rate || 0 }}%</td>
-                        <td v-else style="color:red;">{{ item.rate || 0 }}%</td>
+                        <td class="number">{{ item.quantity1 || 0 }}</td>
+                        <td class="number">{{ item.quantity2 || 0 }}</td>
+                        <td class="number">{{ $root.formatMoney(item.total_price1 || 0) }}</td>
+                        <td class="number">{{ $root.formatMoney(item.total_price2 || 0) }}</td>
+                        <td class="number">{{ $root.formatMoney(item.total_price1 || 0) }}</td>
+                        <td class="number">{{ $root.formatMoney(item.total_price2 || 0) }}</td>
+                        <td v-if="item.rate > 0" style="color:green;text-align:center;">+{{ item.rate || 0 }}%</td>
+                        <td v-else style="color:red;text-align:center;">{{ item.rate || 0 }}%</td>
                     </tr>
                 </tbody>
             </table>
+            <canvas id="myChart" ref="myChart" width="100" height="40"></canvas>
         </div>
     </div>
 </template>
 
 <script>
-import { MonthPickerInput  } from 'vue-month-picker'
+import { MonthPickerInput  } from 'vue-month-picker';
+import Chart from 'chart.js';
 export default {
     components: {
         MonthPickerInput 
@@ -78,9 +80,6 @@ export default {
             objBranch: null,
             statusPush: true,
             arrayAllId: [],
-            month: [],
-            arrFilter: [],
-            sortMonth: []
         }
     },
     methods: {
@@ -106,7 +105,6 @@ export default {
             };
             let month = [];
             month.push(month_1, month_2);
-            vm.month = month;
             vm.axios({
                 method: "GET",
                 url: vm.$root.API_GATE + '/api/invoices',
@@ -173,13 +171,52 @@ export default {
                     }
                 });
             };
-            arr.sort(function(a,b){
-                let x = a.month1;
-                let y = b.month2;
-                if(x > y) return 1;
-                if(x < y) return -1;
-                return 0;
-            })
+            vm.$nextTick(function(){
+                let ctx = vm.$refs.myChart;
+                if(arr.length > 0){
+                    let listBranch = [],dataMonth1 = [],dataMonth2 = [];
+                    arr.map(item => {
+                        if(!listBranch.includes(item.branch)){
+                            listBranch.push(item.branch);
+                        };
+                        if(!dataMonth1.includes(item.total_price1)){
+                            dataMonth1.push(item.total_price1)
+                        };
+                        if(!dataMonth2.includes(item.total_price2)){
+                            dataMonth2.push(item.total_price2)
+                        }
+                    });
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: listBranch,
+                            datasets: [{
+                                label: 'Doanh số tháng ' + vm.filter.month1.monthIndex,
+                                data: dataMonth1,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Doanh số tháng ' + vm.filter.month2.monthIndex,
+                                data: dataMonth2,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            },
+                        },
+                    });
+                };
+            });
             return arr;;
         }
     },
