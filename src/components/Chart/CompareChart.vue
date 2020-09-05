@@ -114,6 +114,7 @@ export default {
                     listBranch: input == 'Tất cả' ? vm.arrayAllId : vm.objBranch._id
                 }
             }).then(res => {
+                console.log(res)
                 if(res.data.error){
 
                 }else{
