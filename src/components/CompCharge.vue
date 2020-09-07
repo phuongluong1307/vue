@@ -187,11 +187,7 @@ export default {
         handlePrint: function(){
             let vm = this;
             const socket = vm.$root.socket;
-            // let print = document.getElementById('print_80').innerHTML;
-            // let body = document.body.innerHTML;
-            // document.body.innerHTML = print;
-            // window.print();
-            // document.body.innerHTML = body;
+            vm.$parent.$parent.$parent.takePicture();
             let new_invoice = {
                 customer_id: vm.data.customer != null ? vm.data.customer._id : null,
                 seller: JSON.parse(localStorage.getItem('name')).name,
@@ -203,7 +199,8 @@ export default {
                 discount_price: vm.discount_price,
                 discount_value: vm.data.discount_value,
                 products: vm.data.products,
-                branch_id: localStorage.getItem('branch_id') ? localStorage.getItem('branch_id') : null
+                branch_id: localStorage.getItem('branch_id') ? localStorage.getItem('branch_id') : null,
+                image: vm.$parent.$parent.$parent.image
             };
             vm.axios({
                 method: "POST",
@@ -395,6 +392,9 @@ export default {
     },
     created: function(){
         let vm = this;
+    },
+    mounted: function(){
+        
     }
 }
 </script>
