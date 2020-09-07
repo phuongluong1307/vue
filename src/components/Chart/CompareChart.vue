@@ -274,7 +274,11 @@ export default {
     mounted: function(){
         let vm = this;
         vm.$refs.monthPicker1.$el.children[0].placeholder = "Vui lòng chọn tháng!!!!";
-        vm.$refs.monthPicker2.$el.children[0].placeholder = "Vui lòng chọn tháng!!!!"
+        vm.$refs.monthPicker2.$el.children[0].placeholder = "Vui lòng chọn tháng!!!!";
+        const socket = vm.$root.socket;
+        socket.on('add bill', function(data){
+            vm.loadInvoiceByMonth(vm.filter.month1, vm.filter.month2, vm.inputBranch);
+        })
     },
 }
 </script>

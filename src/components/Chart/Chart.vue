@@ -19,6 +19,9 @@
                         <div class="nav_chart_1">
                             <button class="nav_chart_1_4" :class="{active: step == 4}" @click.stop.prevent="handleSelectFollowChart(4, 'CompareChart')">So sánh</button>
                         </div>
+                        <div class="nav_chart_1">
+                            <button class="nav_chart_1_4" :class="{active: step == 5}" @click.stop.prevent="handleSelectFollowChart(5, 'CompStream')">Stream</button>
+                        </div>
                     </div>
                     <component ref="chartTable" v-bind:is="chart_component"></component>
                 </div>
@@ -32,12 +35,14 @@ import ChartBranch from './ChartBranch';
 import ChartUser from './ChartUser';
 import ChartProduct from './ChartProduct';
 import CompareChart from './CompareChart';
+import CompStream from './CompStream';
 export default {
     components: {
         ChartBranch,
         ChartUser,
         ChartProduct,
-        CompareChart
+        CompareChart,
+        CompStream
     },
     name: 'Chart',
     data(){
@@ -74,7 +79,6 @@ export default {
                             vm.$refs.chartTable.status = false;
                             vm.$refs.chartTable.loadDetailProduct();
                         };
-                        
                         break;
                     default:
                         break;
