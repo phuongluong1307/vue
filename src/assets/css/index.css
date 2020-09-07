@@ -2048,6 +2048,8 @@
 /* End compare_chart */
 /* Begin Responsive */
 @media only screen and (min-width: 1024px) and (max-width: 1224px){
+    .extend_bar .extend_box{width:250px;}
+    .list-product,.modal_chart,.manage__content,.list_branch{left:250px;}
     .content_menu .block_3 .block_3_1_1 .list_item .item{width: calc(100% / 4)}
     .content_menu .block_3 .block_3_1_1 .list_item .item .item_image{height:110px;}
 }
