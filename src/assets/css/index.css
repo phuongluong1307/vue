@@ -2042,6 +2042,12 @@
 /* End modal chart*/
 /* Begin compare_chart */
 .compare_chart{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-pack: distribute;justify-content: space-around;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin-bottom: 15px;}
+.compare_chart .month_picker1 .month-picker__container{right:0;}
+.compare_chart .month_picker1 .month-picker__container .month-picker__year{height: 40px;line-height: 40px;background: #eee;}
+.compare_chart .month_picker1 .month-picker__container .month-picker__year button{top:0;height:40px;line-height:40px;}
+.compare_chart .month_picker1 .month-picker__container .month-picker__year button:hover{background:rgb(255 255 255 / 0.5);-webkit-transition:all .2s;transition:all .2s;}
+.compare_chart .month_picker1 .month-picker__container .month-picker__month{flex-basis:calc(100% / 3);}
+.compare_chart .month_picker1 .month-picker__container .month-picker__month.selected{background:#03a6a6;}
 .table_compare_chart table tr th{vertical-align:middle;text-align:center;}
 .table_compare_chart table tr th.profit{width:120px}
 .table_compare_chart table tr th.month{width:100px;}
@@ -2059,6 +2065,7 @@
     .content_menu .block_3 .block_3_1_1 .list_item .item .item_image{margin: 0;}
 }
 @media only screen and (min-width: 1024px) and (max-width: 1439px){
+    .compare_chart .month_picker1 .month-picker__container{width:300px;font-size:12px;}
     .block_3_1_1 .list_item .item .item_info .name{max-width: 130px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
     .content_bill{min-width:345px;}
     .content_menu .block_3 .block_3_1_1 .item{width:calc(100% / 5);}
@@ -2081,6 +2088,8 @@
 /* End Responsive */
 ::-webkit-scrollbar{width:0px;height:0px;}
 ::-webkit-scrollbar-thumb{width:0px;background:#c1c1c1;border-radius:4px;border:1px solid #fff;}
+
+
 
 
 

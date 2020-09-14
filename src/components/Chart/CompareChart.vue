@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-            <MonthPickerInput ref="monthPicker1" v-model="filter.month1" lang="vi"></MonthPickerInput>
+            <MonthPickerInput ref="monthPicker1" v-model="filter.month1" lang="vi" class="month_picker1"></MonthPickerInput>
             <MonthPickerInput ref="monthPicker2" v-model="filter.month2" lang="vi" class="month_picker1"></MonthPickerInput>
         </div>
         <div class="table_compare_chart" v-if="handleDataOfFilter.length > 0">
@@ -130,63 +130,44 @@ export default {
             let vm = this;
             let arr = [];
             if(vm.dataOfFilter){
-                vm.dataOfFilter.map(row => {
-                    let findIndexBranch = arr.findIndex(i => i.branch == row.branch.name);
-                    let date = (new Date(row.date));
-                    if(findIndexBranch > -1){
-                        if('month1' in arr[findIndexBranch] && arr[findIndexBranch].month1 == (date.getMonth() + 1) && arr[findIndexBranch].month1 == vm.filter.month1.monthIndex){
-                            arr[findIndexBranch].total_price1 += row.total_price;
-                            arr[findIndexBranch].quantity1 += 1;
-                        }else{
-                            if('month2' in arr[findIndexBranch] && arr[findIndexBranch].month2 == (date.getMonth() + 1) && arr[findIndexBranch].month2 == vm.filter.month2.monthIndex){
-                                arr[findIndexBranch].total_price2 += row.total_price;
-                                arr[findIndexBranch].quantity2 += 1;
-                            }else{
-                                arr[findIndexBranch].month2 = (date.getMonth() + 1);
-                                arr[findIndexBranch].year2 = date.getFullYear();
-                                arr[findIndexBranch].total_price2 = row.total_price;
-                                arr[findIndexBranch].quantity2 = 1;
-                            }
-                        };
-                    }else{
+                let dataMonth1 = [];
+                let dataMonth2 = [];
+                let listBranch = [];
+                vm.dataOfFilter.map(item => {
+                    let month = (new Date(item.month)).getMonth() + 1;
+                    let findIndex = arr.findIndex(row => row._id == item._id);
+                    if(findIndex == -1){
                         arr.push({
-                            branch: row.branch.name,
-                            month1: date.getMonth() + 1,
-                            year1: date.getFullYear(),
-                            total_price1: row.total_price,
-                            quantity1: 1
+                            quantity1: item.count,
+                            total_price1: item.total,
+                            month1: month
                         })
-                    };
-                });
-            };
-            if(arr.length > 0){
-                arr.map((item, index) => {
-                    if(item.month1 > item.month2){
-                        let total = item.total_price1 - item.total_price2;
-                        arr[index].rate = (Math.floor((total / item.total_price2) * 100))
-                    }else if(item.month2 > item.month1){
-                        let total = item.total_price2 - item.total_price1;
-                        arr[index].rate = (Math.floor((total / item.total_price1) * 100))
                     }else{
-                        arr[index].rate = 0;
-                    }
+                        arr[findIndex].quantity2 = item.count;
+                        arr[findIndex].total_price2 = item.total;
+                        arr[findIndex].month2 = month;
+                    };
+                    if(month == vm.filter.month1.monthIndex){
+                        dataMonth1.push(item.total);
+                    }else{
+                        dataMonth2.push(item.total);
+                    }   
                 });
-            };
-            vm.$nextTick(function(){
-                let ctx = vm.$refs.myChart;
                 if(arr.length > 0){
-                    let listBranch = [],dataMonth1 = [],dataMonth2 = [];
-                    arr.map(item => {
-                        if(!listBranch.includes(item.branch)){
-                            listBranch.push(item.branch);
-                        };
-                        if(!dataMonth1.includes(item.total_price1)){
-                            dataMonth1.push(item.total_price1)
-                        };
-                        if(!dataMonth2.includes(item.total_price2)){
-                            dataMonth2.push(item.total_price2)
+                    arr.map((item, index) => {
+                        if(item.month1 > item.month2){
+                            let total = item.total_price1 - item.total_price2;
+                            arr[index].rate = (Math.floor((total / item.total_price2) * 100))
+                        }else if(item.month2 > item.month1){
+                            let total = item.total_price2 - item.total_price1;
+                            arr[index].rate = (Math.floor((total / item.total_price1) * 100))
+                        }else{
+                            arr[index].rate = 0;
                         }
                     });
+                };
+                vm.$nextTick(function(){
+                    let ctx = vm.$refs.myChart;
                     const myChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
@@ -216,8 +197,8 @@ export default {
                             },
                         },
                     });
-                };
-            });
+                })
+            };
             return arr;;
         }
     },
