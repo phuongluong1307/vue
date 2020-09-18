@@ -339,18 +339,20 @@ export default {
     },
     loadInvoiceOfDate: function(){
       let vm = this;
+      let date = new Date();
       vm.axios({
         method: "GET",
         url: vm.$root.API_GATE + '/api/invoices/',
         headers: {'auth-token': localStorage.getItem('token')},
         params: {
-          branch_id: localStorage.getItem('branch_id')
+          branch_id: localStorage.getItem('branch_id'),
+          date_by_branch: (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear()
         }
       }).then(res => {
         if(res.data.error){
 
         }else{
-          vm.listInvoice = res.data.listInvoiceByBranch;
+          vm.listInvoice = res.data.data;
         };
       }).catch(err => {
         console.log(err)
@@ -403,14 +405,10 @@ export default {
     totalSaleOfDate: function(){
       let vm = this;
       const socket = vm.$root.socket;
-      let date = (new Date());
-      let date_of_sale = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
       let total = 0;
       if(vm.listInvoice){
         vm.listInvoice.map((item,index) => {
-          if(item.date == date_of_sale){
-            total += item.total_price;
-          }
+          total += item.total;
         })
       };
       socket.on('add bill', function(data){
@@ -440,11 +438,16 @@ export default {
       deep:true,
       handler:function(newval){
         let vm = this;
-        if(newval > 1000000){
+        if(10e8 > newval > 10e5){
           vm.statusSaleOfDate = true;
           vm.saleOfDate = "" + newval;
           vm.saleOfDate = vm.saleOfDate.replace(vm.saleOfDate.substr(-6,6), '');
           vm.saleOfDate = vm.saleOfDate + "M";
+        }else if(newval > 10e8){
+          vm.statusSaleOfDate = true;
+          vm.saleOfDate = "" + newval;
+          vm.saleOfDate = vm.saleOfDate.replace(vm.saleOfDate.substr(-9,9), '');
+          vm.saleOfDate = vm.saleOfDate + "B";
         }else{
           vm.statusSaleOfDate = false;
         }

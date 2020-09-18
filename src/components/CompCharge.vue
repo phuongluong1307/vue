@@ -186,6 +186,9 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
+            if(!vm.$parent.$parent.$parent.streaming){
+                alert('Vui lòng truy cập camera!!!')
+            };
             const socket = vm.$root.socket;
             vm.$parent.$parent.$parent.takePicture();
             let new_invoice = {

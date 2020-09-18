@@ -70,6 +70,11 @@ export default {
                         vm.$parent.statusBranch = true;
                         localStorage.setItem('nameBranch', res.data.listBranch[0].name);
                     };
+                    if(res.data.listBranch.length == 0){
+                        vm.$parent.statusBranch = true;
+                        vm.$parent.$refs.ListStore.open = true;
+                        vm.$parent.$refs.ExtendBar.handleOpenListBranch();
+                    };   
                     console.log(res.data)
                 }
             }).catch(err => {

@@ -2046,13 +2046,17 @@
 .compare_chart .month_picker1 .month-picker__container .month-picker__year{height: 40px;line-height: 40px;background: #eee;}
 .compare_chart .month_picker1 .month-picker__container .month-picker__year button{top:0;height:40px;line-height:40px;}
 .compare_chart .month_picker1 .month-picker__container .month-picker__year button:hover{background:rgb(255 255 255 / 0.5);-webkit-transition:all .2s;transition:all .2s;}
-.compare_chart .month_picker1 .month-picker__container .month-picker__month{flex-basis:calc(100% / 3);}
+.compare_chart .month_picker1 .month-picker__container .month-picker__month{-ms-flex-preferred-size:calc(100% / 3);flex-basis:calc(100% / 3);}
 .compare_chart .month_picker1 .month-picker__container .month-picker__month.selected{background:#03a6a6;}
 .table_compare_chart table tr th{vertical-align:middle;text-align:center;}
 .table_compare_chart table tr th.profit{width:120px}
 .table_compare_chart table tr th.month{width:100px;}
 .table_compare_chart table tr td.number{text-align:right;}
 /* End compare_chart */
+/* Begin notification*/
+.notification{display: none;position:fixed;top: 120px;left:40%;-webkit-transform:translate(-20%, -40%);transform: translate(-120px, -40%);padding:10px;width:300px;background:#fff;border:1px solid #e1e1e1;-webkit-box-shadow:0 0 10px rgba(0,0,0,.3);box-shadow:0 0 10px rgba(0,0,0,.3);border-radius:4px;z-index:9999;}
+.notification.open{display:-webkit-box;display:-ms-flexbox;display:flex;}
+/* End notification*/
 /* Begin Responsive */
 @media only screen and (min-width: 1024px) and (max-width: 1224px){
     .extend_bar .extend_box{width:250px;}
@@ -2088,6 +2092,7 @@
 /* End Responsive */
 ::-webkit-scrollbar{width:0px;height:0px;}
 ::-webkit-scrollbar-thumb{width:0px;background:#c1c1c1;border-radius:4px;border:1px solid #fff;}
+
 
 
 

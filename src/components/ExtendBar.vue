@@ -66,8 +66,10 @@ export default {
         },
         handleLogout: function(){
             let vm = this;
-            localStorage.clear();
+            const socket = vm.$root.socket;
+            socket.emit('user disconnect', JSON.parse(localStorage.getItem('name')).name);
             window.location.reload();
+            localStorage.clear();
         },
         handleUser: function(){
             let vm = this;

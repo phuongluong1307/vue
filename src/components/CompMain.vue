@@ -16,10 +16,11 @@
             <ListUser ref="ListUser"></ListUser>
             <ListBranch ref="ListBranch"></ListBranch>
             <Chart ref="Chart"></Chart>
-            <div style="display: none;">
+            <!-- <div style="display: none;">
                 <video ref="video" style="visibility: hidden;"></video>
                 <canvas ref="canvas" style="visibility: hidden;"></canvas>
-            </div>
+            </div> -->
+            <Notification ref="Notification"></Notification>
         </Fragment>
     </Fragment>
 </template>
@@ -40,6 +41,7 @@ import LoadingModal from './LoadingModal';
 import ListUser from './ListUser';
 import ListBranch from './Branch/ListBranch';
 import Chart from './Chart/Chart';
+import Notification from './Notification/Notification';
 export default {
     components: {
         Header,
@@ -56,7 +58,8 @@ export default {
         LoadingModal,
         ListUser,
         ListBranch,
-        Chart
+        Chart,
+        Notification
     },
     name: 'CompMain',
     data: function(){
@@ -72,7 +75,8 @@ export default {
             width: 320,
             height: 0,
             video: null,
-            image: ''
+            image: '',
+            streaming: false
         }
     },
     created: function(){
@@ -91,7 +95,6 @@ export default {
             vm.video = vm.$refs.video;
             let canvas = vm.$refs.canvas;
             let ctx = canvas.getContext('2d');
-            let streaming = false;
             navigator.mediaDevices.getUserMedia({video:true, audio: false})
             .then(function(stream){
                 vm.video.srcObject = stream;
@@ -102,7 +105,7 @@ export default {
                 console.log(err)
             });
             vm.video.addEventListener('canplay', function(ev){
-                if (!streaming) {
+                if (!vm.streaming) {
                     vm.height = vm.video.videoHeight / (vm.video.videoWidth/vm.width);
                 
                     // Firefox currently has a bug where the height can't be read from
@@ -117,7 +120,7 @@ export default {
                     canvas.setAttribute('width', vm.width);
                     canvas.setAttribute('height', vm.height);
                     ctx.drawImage(vm.video, 0, 0, vm.width, vm.height);
-                    streaming = true;
+                    vm.streaming = true;
                 }
             }, false);
             function update(){

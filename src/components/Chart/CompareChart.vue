@@ -41,8 +41,8 @@
                     <tr v-for="(item,index) in handleDataOfFilter" :key="index">
                         <td style="text-align:center;">{{ index+1 }}</td>
                         <td>{{ item.branch }}</td>
-                        <td class="number">{{ item.quantity1 || 0 }}</td>
-                        <td class="number">{{ item.quantity2 || 0 }}</td>
+                        <td class="number">{{ $root.formatMoney(item.quantity1) || 0 }}</td>
+                        <td class="number">{{ $root.formatMoney(item.quantity2) || 0 }}</td>
                         <td class="number">{{ $root.formatMoney(item.total_price1 || 0) }}</td>
                         <td class="number">{{ $root.formatMoney(item.total_price2 || 0) }}</td>
                         <td class="number">{{ $root.formatMoney(item.total_price1 || 0) }}</td>
@@ -94,35 +94,29 @@ export default {
         loadInvoiceByMonth: function(month1, month2, input){
             let vm = this;
             if(month1 && month2){
-                var month_1 = {
-                    month: month1.monthIndex,
-                    year: month1.year
-                };
-                var month_2 = {
-                    month: month2.monthIndex,
-                    year: month2.year
-                };
+                var month_1 = month1.monthIndex + "/" + month1.year;
+                var month_2 = month2.monthIndex + "/" + month2.year;
             };
             let month = [];
             month.push(month_1, month_2);
-            vm.axios({
-                method: "GET",
-                url: vm.$root.API_GATE + '/api/invoices',
-                headers: {'auth-token': localStorage.getItem('token')},
-                params: {
-                    arrMonth: month,
-                    listBranch: input == 'Tất cả' ? vm.arrayAllId : vm.objBranch._id
-                }
-            }).then(res => {
-                console.log(res)
-                if(res.data.error){
+            // vm.axios({
+            //     method: "GET",
+            //     url: vm.$root.API_GATE + '/api/invoices',
+            //     headers: {'auth-token': localStorage.getItem('token')},
+            //     params: {
+            //         arrMonth: month,
+            //         listBranch: input == 'Tất cả' ? vm.arrayAllId : vm.objBranch._id
+            //     }
+            // }).then(res => {
+            //     console.log(res)
+            //     if(res.data.error){
 
-                }else{
-                    vm.dataOfFilter = res.data.data;
-                }
-            }).catch(err => {
-                console.log(err)
-            });
+            //     }else{
+            //         vm.dataOfFilter = res.data.data;
+            //     }
+            // }).catch(err => {
+            //     console.log(err)
+            // });
         }
     },
     computed: {
@@ -140,7 +134,8 @@ export default {
                         arr.push({
                             quantity1: item.count,
                             total_price1: item.total,
-                            month1: month
+                            month1: month,
+                            _id: item._id
                         })
                     }else{
                         arr[findIndex].quantity2 = item.count;
