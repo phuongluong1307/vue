@@ -19,6 +19,9 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="statusError" class="mb-3">
+                    <span class="text-danger">{{msgError}}</span>
+                </div>
             </div>
             <div class="bottom">
                 <div class="form-group">
@@ -40,7 +43,9 @@ export default {
             },
             status_login: false,
             token: '',
-            listBranch: null
+            listBranch: null,
+            msgError: '',
+            statusError: false
         }
     },
     methods:{
@@ -54,7 +59,8 @@ export default {
             }).then(res => {
                 let result = res.data;
                 if(res.data.error){
-
+                    vm.statusError = res.data.error;
+                    vm.msgError = res.data.message;
                 }else{
                     let user = {
                         id: result.id,

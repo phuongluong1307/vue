@@ -94,29 +94,28 @@ export default {
         loadInvoiceByMonth: function(month1, month2, input){
             let vm = this;
             if(month1 && month2){
-                var month_1 = month1.monthIndex + "/" + month1.year;
-                var month_2 = month2.monthIndex + "/" + month2.year;
+                var month_1 = "" + month1.monthIndex;
+                var month_2 = "" + month2.monthIndex;
             };
             let month = [];
             month.push(month_1, month_2);
-            // vm.axios({
-            //     method: "GET",
-            //     url: vm.$root.API_GATE + '/api/invoices',
-            //     headers: {'auth-token': localStorage.getItem('token')},
-            //     params: {
-            //         arrMonth: month,
-            //         listBranch: input == 'Tất cả' ? vm.arrayAllId : vm.objBranch._id
-            //     }
-            // }).then(res => {
-            //     console.log(res)
-            //     if(res.data.error){
+            vm.axios({
+                method: "GET",
+                url: vm.$root.API_GATE + '/api/invoice-of-month',
+                headers: {'auth-token': localStorage.getItem('token')},
+                params: {
+                    arrMonth: month,
+                    listBranch: input == 'Tất cả' ? vm.arrayAllId : vm.objBranch._id
+                }
+            }).then(res => {
+                if(res.data.error){
 
-            //     }else{
-            //         vm.dataOfFilter = res.data.data;
-            //     }
-            // }).catch(err => {
-            //     console.log(err)
-            // });
+                }else{
+                    vm.dataOfFilter = res.data.data;
+                }
+            }).catch(err => {
+                console.log(err)
+            });
         }
     },
     computed: {
@@ -129,20 +128,20 @@ export default {
                 let listBranch = [];
                 vm.dataOfFilter.map(item => {
                     let month = (new Date(item.month)).getMonth() + 1;
-                    let findIndex = arr.findIndex(row => row._id == item._id);
+                    let findIndex = arr.findIndex(row => row._id == item._id.id);
                     if(findIndex == -1){
                         arr.push({
                             quantity1: item.count,
                             total_price1: item.total,
-                            month1: month,
-                            _id: item._id
+                            month1: item._id.month,
+                            _id: item._id.id
                         })
                     }else{
                         arr[findIndex].quantity2 = item.count;
                         arr[findIndex].total_price2 = item.total;
-                        arr[findIndex].month2 = month;
+                        arr[findIndex].month2 = item._id.month;
                     };
-                    if(month == vm.filter.month1.monthIndex){
+                    if(item._id.month == vm.filter.month1.monthIndex){
                         dataMonth1.push(item.total);
                     }else{
                         dataMonth2.push(item.total);

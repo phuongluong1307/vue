@@ -60,7 +60,7 @@ export default {
             let year = data.getFullYear();
             let listDateOfMonth = vm.getDaysInMonth(month, year);
             let listInvoice = await vm.$parent.getInvoiceByIdBranch(vm.objBranch._id);
-            listInvoice = listInvoice.listInvoiceByBranch;
+            listInvoice = listInvoice.data;
             let saleOfDate = [];
             if(listDateOfMonth.length > 0){
                saleOfDate = Array.from({length: listDateOfMonth.length}, x => x = 0);
@@ -68,14 +68,9 @@ export default {
             let total = 0;
             if(listInvoice != 'undefined'){
                 listDateOfMonth.map((row, rowIndex) => {
-                    let filter = listInvoice.filter(item => item.date == row);
-                    if(filter.length > 0){
-                        filter.map(i => {
-                            saleOfDate[rowIndex] += i.total_price;
-                        })
-                    }else{
-                        saleOfDate[rowIndex] = 0;
-                    };
+                    let date = new Date(row).getDate();
+                    let filter = listInvoice.filter(item => item._id.day == date);
+                    saleOfDate[rowIndex] = filter[0].total;
                 });
             };
             if(vm.listBranch){

@@ -88,13 +88,16 @@ export default {
         getInvoiceByIdBranch:async function(id){
             let vm = this;
             let result = null;
+            let date = new Date();
+            let month = "" + (date.getMonth() + 1);
             let promise = new Promise(function(resolve,reject){
                 vm.axios({
                     method: "GET",
-                    url: vm.$root.API_GATE + '/api/invoices/',
+                    url: vm.$root.API_GATE + '/api/invoice-of-day',
                     headers: {'auth-token': localStorage.getItem('token')},
                     params: {
-                        branch_id: id ? id : null
+                        branch_id: id ? id : null,
+                        month_of_year: month
                     }
                 }).then(res => {
                     if(res.data.error){

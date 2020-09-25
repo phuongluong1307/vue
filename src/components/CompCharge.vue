@@ -186,11 +186,11 @@ export default {
         },
         handlePrint: function(){
             let vm = this;
-            if(!vm.$parent.$parent.$parent.streaming){
-                alert('Vui lòng truy cập camera!!!')
-            };
+            // if(!vm.$parent.$parent.$parent.streaming){
+            //     alert('Vui lòng truy cập camera!!!')
+            // };
             const socket = vm.$root.socket;
-            vm.$parent.$parent.$parent.takePicture();
+            // vm.$parent.$parent.$parent.takePicture();
             let new_invoice = {
                 customer_id: vm.data.customer != null ? vm.data.customer._id : null,
                 seller: JSON.parse(localStorage.getItem('name')).name,

@@ -7,8 +7,6 @@
             <Content ref="Content"></Content>
             <ExtendBar ref="ExtendBar"></ExtendBar>
             <CompOrder ref="CompOrder"></CompOrder>
-            <!-- <Print ref="Print"></Print> -->
-            <!-- <Print80 ref="Print80"></Print80> -->
             <ListProduct ref="ListProduct"></ListProduct>
             <Loading ref="Loading" v-show="loading"></Loading>
             <div class="mask_main" v-show="mask"></div>
@@ -146,7 +144,7 @@ export default {
         },
     },
     mounted: function(){
-        this.streamVideo(); 
+        // this.streamVideo(); 
     }
 }
 </script>

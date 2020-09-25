@@ -913,14 +913,14 @@
 .login .box .bottom button{width:100%;padding:10px;border:1px solid #03A6A6;background:#03A6A6;border-radius:4px;color:#fff;}
 .login .box .bottom button:hover{background:#059696;-webkit-transition:background .2s;transition:background .2s;}
 .login__wrapper .title{
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
     font-size: 20px;
     color: #444;
     text-transform: uppercase;
     margin: 0;
 }
 .login__wrapper .form-group{
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .login__wrapper .form-group label{
     text-transform: uppercase;
@@ -2092,6 +2092,7 @@
 /* End Responsive */
 ::-webkit-scrollbar{width:0px;height:0px;}
 ::-webkit-scrollbar-thumb{width:0px;background:#c1c1c1;border-radius:4px;border:1px solid #fff;}
+
 
 
 
