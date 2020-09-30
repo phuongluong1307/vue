@@ -337,26 +337,21 @@ export default {
         vm.$refs.ModalTax.open = false;
       }
     },
-    loadInvoiceOfDate: function(){
+    loadInvoiceOfDate: async function(){
       let vm = this;
       let date = new Date();
-      vm.axios({
-        method: "GET",
-        url: vm.$root.API_GATE + '/api/invoices/',
-        headers: {'auth-token': localStorage.getItem('token')},
-        params: {
-          branch_id: localStorage.getItem('branch_id'),
-          date_by_branch: (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear()
-        }
-      }).then(res => {
-        if(res.data.error){
-
-        }else{
-          vm.listInvoice = res.data.data;
-        };
-      }).catch(err => {
-        console.log(err)
-      })
+      let axios = new vm.$root.apiAxios(vm.axios);
+      let params = {
+        branch_id: localStorage.getItem('branch_id'),
+        date_by_branch: (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear()
+      };
+      let url = '/api/invoices/';
+      let res = await axios.get(url, params);
+      if(res.data.error){
+        console.log(res.data.error)
+      }else{
+        vm.listInvoice = res.data.data;
+      };
     }
   },
   computed: {
@@ -421,7 +416,7 @@ export default {
     let vm = this;
     vm.scrollToFixed();
   },
-  created: function(){
+  created:async function(){
     let vm = this;
     vm.loadInvoiceOfDate();
     let user = JSON.parse(localStorage.getItem('name'));

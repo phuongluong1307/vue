@@ -63,6 +63,91 @@ new Vue({
       } catch (e) {
         console.log(e)
       };
+    },
+    apiAxios: function(axios){
+      const API_GATEWAY = 'http://localhost:3000';
+      this._axios = axios;
+      this.get = function(url,params){
+        this.url = url;
+        this.params = params;
+        return this._axios({
+          method: "GET",
+          url: API_GATEWAY + this.url,
+          headers: {'auth-token': localStorage.getItem('token')},
+          params: this.params
+        })
+        .then(res => {
+          return res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      };
+      this.getId = function(url,params, id){
+        this.url = url;
+        this.params = params;
+        this.id = id;
+        return this._axios({
+          method: "GET",
+          url: API_GATEWAY + this.url + this.id,
+          headers: {'auth-token': localStorage.getItem('token')},
+          params: this.params
+        })
+        .then(res => {
+          return res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      };
+      this.post = function(url, data){
+        this.data = data;
+        this.url = url;
+        return this._axios({
+          method: "POST",
+          url: API_GATEWAY + this.url,
+          headers: {'auth-token': localStorage.getItem('token')},
+          data: this.data
+        })
+        .then(res => {
+          return res;
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      };
+      this.delete = function(url, data){
+        this.data = data;
+        this.url = url;
+        return this._axios({
+          method: "DELETE",
+          url: API_GATEWAY + this.url,
+          headers: {'auth-token': localStorage.getItem('token')},
+          data: this.data
+        })
+        .then(res => {
+          return res;
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      };
+      this.put = function(url, data){
+        this.data = data;
+        this.url = url;
+        return this._axios({
+          method: "PUT",
+          url: API_GATEWAY + this.url,
+          headers: {'auth-token': localStorage.getItem('token')},
+          data: this.data
+        })
+        .then(res => {
+          return res;
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      }
     }
   },
   created: function(){

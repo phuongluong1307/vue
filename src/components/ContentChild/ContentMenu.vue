@@ -262,22 +262,21 @@ export default {
       let checkbox = document.querySelectorAll('.checkbox_category');
       vm.checkbox = [];
     },
-    loadProduct: function(){
+    loadProduct: async function(){
       let vm = this;
-      vm.axios({
-        method: "GET",
-        url: vm.$root.API_GATE + '/api/products',
-        headers: {'auth-token': localStorage.getItem('token')},
-        params: {
-          keyword: vm.search
-        }
-      }).then(res => {
+      let params = {
+        keyword: vm.search
+      };
+      let url = '/api/products';
+      let axios = new vm.$root.apiAxios(vm.axios);
+      let res = await axios.get(url, params);
+      if(res.data.error){
+        console.log(res.data.message);
+      }else{
         let result = res.data.data;
         vm.filter_product = result.docs;
         vm.arr_product = result.docs;
-      }).catch(err => {
-        console.log(err)
-      })
+      };
     },
     handleFilter: function(){
       let vm = this;
@@ -319,20 +318,19 @@ export default {
       vm.extend_filter = !vm.extend_filter;
       vm.checkbox = vm.list_select_category;
     },
-    handleBarcode: function(){
+    handleBarcode: async function(){
       let vm = this;
-      vm.axios({
-        method: "GET",
-        url: vm.$root.API_GATE + '/api/products/',
-        headers: {'auth-token': localStorage.getItem('token')},
-        params: {
-          barcode_id: vm.barcode_id
-        }
-      }).then(res => {
+      let params = {
+        barcode_id: vm.barcode_id
+      };
+      let url = '/api/products/';
+      const axios = new vm.$root.apiAxios(vm.axios);
+      let res = await axios.get(url, params);
+      if(res){
         vm.showBarcode = true;
         vm.barcode_show = vm.barcode_id;
         if(res.data.error){
-
+          console.log(res.data.message);
         }else{
           if(res.data.data.docs.length > 0){
             vm.barcode_id = "";
@@ -346,9 +344,7 @@ export default {
             
           };
         };
-      }).catch(err => {
-        console.log(err)
-      })
+      };
     },
     handleOpenBarcode: function(){
       let vm = this;
@@ -393,22 +389,18 @@ export default {
           break;
       }
     },
-    getBranch: function(){
+    getBranch: async function(){
       let vm = this;
       if(localStorage.getItem('branch_id')){
-        vm.axios({
-          method: "GET",
-          url: vm.$root.API_GATE + '/api/branches/' + localStorage.getItem('branch_id'),
-          headers: {'auth-token': localStorage.getItem('token')}
-        }).then(res => {
-          if(res.data.error){
-
-          }else{
-            vm.nameBranch = res.data.data.name;
-          }
-        }).catch(err => {
-          console.log(err)
-        })
+        const axios = new vm.$root.apiAxios(vm.axios);
+        let url = '/api/branches/';
+        let id = localStorage.getItem('branch_id');
+        let res = await axios.getId(url, null, id);
+        if(res.data.error){
+          console.log(res.data.message)
+        }else{
+          vm.nameBranch = res.data.data.name;
+        };
       }
     }
   },
