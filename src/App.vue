@@ -4,6 +4,7 @@
     <p>Hello every body!</p>
     <h3>App vue</h3>
     <h6>Hello vue!</h6>
+    <span>Say yeah!</span>
     <router-view/>
   </div>
 </template>
