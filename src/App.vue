@@ -3,6 +3,7 @@
     <header>Hello world!</header>
     <p>Hello every body!</p>
     <h3>App vue</h3>
+    <h6>Hello vue!</h6>
     <router-view/>
   </div>
 </template>
