@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <header>Hello world!</header>
     <router-view/>
   </div>
 </template>
@@ -9,7 +10,7 @@ export default {
   name: 'App',
   data:function(){
     return {
-      
+
     }
   }
 }
