@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <header>Hello world!</header>
+    <p>Hello every body!</p>
     <router-view/>
   </div>
 </template>
