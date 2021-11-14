@@ -2,6 +2,7 @@
   <div id="app">
     <header>Hello world!</header>
     <p>Hello every body!</p>
+    <h3>App vue</h3>
     <router-view/>
   </div>
 </template>
